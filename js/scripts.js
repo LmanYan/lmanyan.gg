@@ -31,7 +31,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
     // Activate Bootstrap scrollspy on the main nav element
     const mainNav = document.body.querySelector('#mainNav');
-    if (mainNav) {
+    if (mainNav && typeof bootstrap !== 'undefined') {
         new bootstrap.ScrollSpy(document.body, {
             target: '#mainNav',
             rootMargin: '0px 0px -40%',
@@ -45,10 +45,37 @@ window.addEventListener('DOMContentLoaded', event => {
     );
     responsiveNavItems.map(function (responsiveNavItem) {
         responsiveNavItem.addEventListener('click', () => {
-            if (window.getComputedStyle(navbarToggler).display !== 'none') {
+            if (navbarToggler && window.getComputedStyle(navbarToggler).display !== 'none') {
                 navbarToggler.click();
             }
         });
     });
+
+    // Portfolio project data. Add new projects here and create the matching page in /projects.
+    const projects = [
+    {
+        title: "Sample Project Title",
+        date: "May 1, 2026",
+        image: "assets/img/portfolio/stm32-clock-generator.svg",
+        description: "Dummy test project page for the new portfolio feed layout.",
+        link: "projects/sample-project.html"
+    }
+    ];
+
+    const portfolioPosts = document.body.querySelector('#portfolio-posts');
+    if (portfolioPosts) {
+        portfolioPosts.innerHTML = projects.map(project => `
+            <article class="portfolio-post-card">
+                <a class="portfolio-post-image-link" href="${project.link}">
+                    <img class="portfolio-post-image" src="${project.image}" alt="${project.imageAlt}" />
+                </a>
+                <div class="portfolio-post-content">
+                    <h3 class="portfolio-post-title"><a href="${project.link}">${project.title}</a></h3>
+                    <p class="portfolio-post-date">${project.date}</p>
+                    <p class="portfolio-post-description">${project.description}</p>
+                </div>
+            </article>
+        `).join('');
+    }
 
 });
