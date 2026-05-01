@@ -13,6 +13,7 @@
         <!-- Google fonts-->
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
     </head>
@@ -160,10 +161,17 @@
                 <!-- Contact Section Form-->
                 <div class="row justify-content-center">
                     <div class="col-lg-8 col-xl-7">
-                        <form action="https://api.web3forms.com/submit" method="POST">
-                            <input type="hidden" name="access_key" value="2aca55a7-9163-46de-8a88-298626084342">
-                            <input type="hidden" name="subject" value="New portfolio contact form submission">
-                            <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+                        <!-- * * * * * * * * * * * * * * *-->
+                        <!-- * * SB Forms Contact Form * *-->
+                        <!-- * * * * * * * * * * * * * * *-->
+                        <!-- This form is pre-integrated with SB Forms.-->
+                        <!-- To make this form functional, sign up at-->
+                        <!-- https://startbootstrap.com/solution/contact-forms-->
+                        <!-- to get an API token!-->
+                        <form id="contactForm">
+                            <input type="hidden" name="access_key" value="2aca55a7-9163-46de-8a88-298626084342" />
+                            <input type="hidden" name="subject" value="New portfolio contact form submission" />
+                            <input type="checkbox" name="botcheck" class="hidden" style="display: none;" />
 
                             <!-- Name input-->
                             <div class="form-floating mb-3">
@@ -178,9 +186,9 @@
                             </div>
 
                             <!-- Phone number input-->
-                            <div class="form-floating mb-3">
-                                <input class="form-control" id="phone" name="phone" type="tel" placeholder="(123) 456-7890" />
-                                <label for="phone">Phone number</label>
+                            <div class="mb-3 phone-field">
+                                <label for="phone" class="phone-label">Phone number</label>
+                                <input id="phone" name="phone" type="tel" placeholder="(888) 888-8888" />
                             </div>
 
                             <!-- Message input-->
@@ -190,8 +198,21 @@
                             </div>
 
                             <!-- Submit Button-->
-                            <button class="btn btn-primary btn-xl" id="submitButton" type="submit">Send</button>
+                            <div class="text-center">
+                                <button class="btn btn-primary btn-xl" id="submitButton" type="submit">Send</button>
+                            </div>
                         </form>
+                        <div id="form-success" style="display:none; text-align:center; margin-top:20px;">
+                        <p style="color:#1abc9c; font-weight:600; font-size:1.2rem;">
+                            Message sent successfully! I will get back to you ASAP.
+                        </p>
+                        </div>
+
+                        <div id="form-error" style="display:none; text-align:center; margin-top:20px;">
+                        <p style="color:red;">
+                            Something went wrong. Try again.
+                        </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -430,5 +451,58 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+        <!-- * *                               SB Forms JS                               * *-->
+        <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+        <!-- International phone input JS -->
+        <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
+        <script>
+            const phoneInput = document.querySelector("#phone");
+
+            if (phoneInput) {
+                const iti = window.intlTelInput(phoneInput, {
+                    initialCountry: "us",
+                    separateDialCode: true,
+                    preferredCountries: [],
+                    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"
+                });
+
+                document.querySelector("#contactForm").addEventListener("submit", function () {
+                    phoneInput.value = iti.getNumber();
+                });
+            }
+        </script>
+    <script>
+        const form = document.getElementById("contactForm");
+        const success = document.getElementById("form-success");
+        const error = document.getElementById("form-error");
+
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const data = new FormData(form);
+
+            try {
+                const response = await fetch("https://api.web3forms.com/submit", {
+                    method: "POST",
+                    body: data
+                });
+
+                if (response.ok) {
+                    form.reset();
+                    form.style.display = "none";
+                    success.style.display = "block";
+                    error.style.display = "none";
+                } else {
+                    throw new Error("Failed");
+                }
+
+            } catch (err) {
+                success.style.display = "none";
+                error.style.display = "block";
+            }
+        });
+    </script>
     </body>
 </html>

@@ -11044,3 +11044,64 @@ html {
 .copyright {
   background-color: #1a252f;
 }
+/* Contact form phone field using intl-tel-input */
+.phone-field {
+  margin-bottom: 1rem;
+}
+
+.phone-label {
+  display: block;
+  font-family: inherit;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #6c757d;
+  margin-bottom: 0.75rem;
+}
+
+.phone-field .iti {
+  width: 100%;
+  display: block;
+  font-family: inherit;
+}
+
+.phone-field .iti__flag-container,
+.phone-field .iti__selected-dial-code,
+.phone-field .iti__country-list {
+  font-family: inherit;
+}
+
+.phone-field .iti input,
+.phone-field input#phone {
+  display: block;
+  width: 100%;
+  height: calc(3.5rem + 2px);
+  font-family: inherit;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #6c757d;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 0;
+  border-bottom: 1px solid #ced4da;
+  border-radius: 0;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  padding-left: 6rem !important;
+  box-shadow: none;
+  outline: 0;
+}
+
+.phone-field .iti input::placeholder,
+.phone-field input#phone::placeholder {
+  color: #6c757d;
+  opacity: 0.75;
+}
+
+.phone-field .iti input:focus,
+.phone-field input#phone:focus {
+  border-bottom-color: #1abc9c;
+  box-shadow: none;
+  outline: 0;
+}
