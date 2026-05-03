@@ -53,13 +53,13 @@ window.addEventListener('DOMContentLoaded', event => {
 
     // Portfolio project data. Add new projects here and create the matching page in /projects.
     const projects = [
-    {
-        title: "Sample Project Title",
-        date: "May 1, 2026",
-        image: "assets/img/portfolio/stm32-clock-generator.svg",
-        description: "Dummy test project page for the new portfolio feed layout.",
-        link: "projects/sample-project.html"
-    }
+        {
+            title: "UART Interface Extension for STM32",
+            date: "May 3, 2026",
+            image: "assets/img/projects/uart-interface/figure-4.png",
+            description: "A UART-based command-line interface for real-time interaction with STM32 firmware, eliminating the need for repeated reflashing during development and debugging.",
+            link: "projects/uart-interface-stm32.html"
+        }
     ];
 
     const portfolioPosts = document.body.querySelector('#portfolio-posts');
