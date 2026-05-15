@@ -54,9 +54,18 @@ window.addEventListener('DOMContentLoaded', event => {
     // Portfolio project data. Add new projects here and create the matching page in /projects.
     const projects = [
         {
+            title: "Transmission Line Playground",
+            date: "May 14, 2026",
+            image: "assets/img/projects/transmission-line-playground/figure-31.webp",
+            imageAlt: "ADS comparison plot of transmission line impedance matching techniques",
+            description: "A Keysight ADS project exploring transmission line reflections, Smith charts, microstrip parameter sweeps, and quarter-wave, single-stub, and double-stub matching networks.",
+            link: "projects/transmission-line-playground.html"
+        },
+        {
             title: "UART Interface Extension for STM32",
             date: "May 3, 2026",
             image: "assets/img/projects/uart-interface/figure-4.png",
+            imageAlt: "CP2102 USB-to-UART bridge connected to an STM32 development board",
             description: "A UART-based command-line interface for real-time interaction with STM32 firmware, eliminating the need for repeated reflashing during development and debugging.",
             link: "projects/uart-interface-stm32.html"
         }
