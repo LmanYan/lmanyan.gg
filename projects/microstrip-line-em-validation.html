@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<meta content="A microstrip EM validation project comparing analytical equations, ADS LineCalc, ADS MLIN, ADS Momentum, and Ansys HFSS for a 50 Ω FR-4 microstrip line." name="description"/>
+<meta content="Yaniv Lieberman" name="author"/>
+<title>Microstrip Line EM Validation | Yaniv Lieberman</title>
+<link href="../assets/favicon.ico" rel="icon" type="image/x-icon"/>
+<script crossorigin="anonymous" src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
+<link href="../css/styles.css" rel="stylesheet"/>
+<style>
+.project-page p { line-height: 1.75; }
+.project-page h2 { margin-top: 3rem; }
+.project-page h3 { margin-top: 2.25rem; }
+.project-page h4 { margin-top: 1.75rem; color: #2c3e50; }
+.project-page li { margin-bottom: 0.45rem; }
+.project-figure { margin: 2rem 0; text-align: center; }
+.project-figure img { max-width: 100%; height: auto; border-radius: 0.5rem; box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.12); background: #fff; }
+.project-figure figcaption { margin-top: 0.75rem; font-size: 0.95rem; color: #6c757d; text-align: left; }
+.equation { background: #f8f9fa; border-left: 0.35rem solid #1A81BC; border-radius: 0.5rem; padding: 1rem; margin: 1.25rem 0 1.5rem; overflow-x: auto; font-family: Georgia, 'Times New Roman', serif; font-size: 1.08rem; text-align: center; }
+.frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1.05; margin: 0 0.15em; }
+.frac .num { border-bottom: 1px solid currentColor; padding: 0 0.25em 0.08em; }
+.frac .den { padding: 0.08em 0.25em 0; }
+.sqrt { display: inline-flex; align-items: flex-start; vertical-align: middle; white-space: nowrap; }
+.sqrt .root-symbol { font-size: 1.25em; line-height: 0.95; padding-right: 0.03em; }
+.sqrt .radicand { border-top: 1px solid currentColor; padding: 0.05em 0.18em 0; }
+.project-page table { width: 100%; margin: 1.25rem 0 2rem; border-collapse: collapse; }
+.project-page th, .project-page td { border: 1px solid #dee2e6; padding: 0.75rem; vertical-align: top; }
+.project-page th { background: #f8f9fa; color: #2c3e50; }
+.project-toc { background: #f8f9fa; border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin: 2rem 0; }
+.project-toc a { text-decoration: none; }
+.project-code { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 1rem; overflow-x: auto; font-size: 0.9rem; line-height: 1.45; }
+</style>
+</head>
+<body id="page-top">
+<nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
+<div class="container">
+<a class="navbar-brand" href="../index.html#page-top">YANIV LIEBERMAN</a>
+<button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <i class="fas fa-bars"></i></button>
+<div class="collapse navbar-collapse" id="navbarResponsive">
+<ul class="navbar-nav ms-auto">
+<li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#about">About</a></li>
+<li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#portfolio">Portfolio</a></li>
+<li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#contact">Contact</a></li>
+</ul>
+</div>
+</div>
+</nav>
+<header class="project-masthead bg-primary text-white">
+<div class="container">
+<p class="project-kicker text-uppercase mb-2">RF &amp; Microwave EM Simulation Project</p>
+<h1 class="project-heading text-uppercase mb-3">Microstrip Line EM Validation</h1>
+<p class="project-subheading mb-0">Comparing analytical equations, ADS LineCalc, ADS MLIN, ADS Momentum, and HFSS on the same 50 Ω FR-4 microstrip line</p>
+</div>
+</header>
+<main class="page-section project-page">
+<div class="container">
+<div class="row justify-content-center">
+<div class="col-lg-9">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-16.png" rel="noopener" target="_blank"><img alt="S11 magnitude comparison between ADS MLIN, ADS Momentum, and HFSS" class="project-hero-image mb-4" decoding="async" fetchpriority="high" height="485" loading="eager" src="../assets/img/projects/microstrip-line-em-validation/figure-16.webp" width="887"/></a>
+<p class="project-date">June 1, 2026</p>
+<div class="project-toc">
+<h3 class="mt-0 text-secondary text-uppercase">Project Sections</h3>
+<ol class="mb-0">
+<li><a href="#motivation">Motivation: from circuit models to EM simulation</a></li>
+<li><a href="#design-target">Design target and substrate definition</a></li>
+<li><a href="#analytical-estimate">Analytical microstrip estimate</a></li>
+<li><a href="#linecalc-mlin">ADS LineCalc and MLIN baseline</a></li>
+<li><a href="#momentum">ADS Momentum EM simulation</a></li>
+<li><a href="#hfss">HFSS 3D EM simulation</a></li>
+<li><a href="#comparison">Comparison between models</a></li>
+<li><a href="#summary">Summary and key takeaways</a></li>
+</ol>
+</div>
+<h2 class="text-secondary text-uppercase" id="motivation">1. Motivation: From Circuit Models to EM Simulation</h2>
+<p>In the previous article, I built a small transmission-line playground in ADS to explore how RF transmission lines behave in a controlled schematic environment. That project focused on the core ideas: reflections, matched and mismatched loads, line length, phase rotation, Smith chart behavior, and basic microstrip parameter sweeps.</p>
+<p>That workflow is useful because it isolates the transmission-line concepts from the physical layout details. Using ideal transmission lines and ADS microstrip models makes it easy to see how impedance, electrical length, load mismatch, S<sub>11</sub>, S<sub>21</sub>, and the impedance seen at the input relate to each other.</p>
+<p>However, a real PCB trace is not just an abstract transmission line. It is a physical copper structure placed over a dielectric substrate and ground plane. The fields are distributed partly in the dielectric and partly in air, the trace has finite thickness, the substrate has loss, and the port definition itself can affect the extracted result. At some point, the simplified schematic model is no longer enough.</p>
+<p>The goal of this project is to take the next step: design a nominal 50 Ω microstrip line, then validate it using full-wave electromagnetic simulation. I start from analytical microstrip equations and ADS LineCalc, build a schematic-level ADS baseline, and then compare that result against EM simulations in ADS Momentum and Ansys HFSS.</p>
+<p>The purpose is not only to get a 50 Ω line. The more important goal is to understand how the different modeling levels compare:</p>
+<ul>
+<li>closed-form equations</li>
+<li>ADS LineCalc synthesis</li>
+<li>ADS schematic microstrip models</li>
+<li>ADS Momentum planar EM simulation</li>
+<li>HFSS 3D full-wave simulation</li>
+</ul>
+<p>By comparing these approaches on the same structure, this project shows where the simple models are reliable, where they begin to diverge, and what practical details matter when moving from theory to PCB implementation.</p>
+<h2 class="text-secondary text-uppercase" id="design-target">2. Design Target and Substrate Definition</h2>
+<p>Before comparing analytical models and EM solvers, the first step is to define one physical microstrip structure that will be used consistently throughout the project.</p>
+<p>For this article, the design target is a nominal 50 Ω microstrip transmission line on a simple two-layer PCB stackup. The structure is intentionally kept simple: a copper trace on the top layer, a continuous ground plane on the bottom layer, and an FR-4 dielectric substrate between them.</p>
+<p>The goal is not to design a production-ready RF board, but to create a controlled test case that can be analyzed using several levels of modeling.</p>
+<table>
+<thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Target impedance</td><td>50 Ω</td></tr>
+<tr><td>Substrate material</td><td>FR-4</td></tr>
+<tr><td>Relative permittivity, ε<sub>r</sub></td><td>4.3</td></tr>
+<tr><td>Substrate height, h</td><td>1.6 mm</td></tr>
+<tr><td>Copper thickness, t</td><td>35 µm</td></tr>
+<tr><td>Loss tangent, tanδ</td><td>0.02</td></tr>
+<tr><td>Conductor</td><td>Copper</td></tr>
+<tr><td>Line length</td><td>50 mm</td></tr>
+<tr><td>Frequency sweep</td><td>100 MHz to 6 GHz</td></tr>
+</tbody>
+</table>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-1.png" rel="noopener" target="_blank"><img alt="Baseline 3D microstrip geometry with top copper trace, FR-4 substrate, and bottom ground plane" decoding="async" height="549" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-1.webp" width="976"/></a>
+<figcaption><strong>Figure 1:</strong> Baseline microstrip geometry used throughout this project: a top copper trace over an FR-4 substrate with a continuous bottom ground plane. The trace width W is selected to achieve approximately 50 Ω characteristic impedance.</figcaption>
+</figure>
+<p>A 50 mm line length is long enough to show meaningful phase delay across the frequency sweep, while still being simple to model in both ADS Momentum and HFSS. Since the purpose of this article is model validation rather than matching-network design, a fixed physical length is more useful than designing the line to be a specific fraction of a wavelength at one frequency.</p>
+<p>FR-4 is used here because it is common, inexpensive, and familiar from typical PCB fabrication. However, it is also not an ideal RF substrate. Its dielectric constant and loss tangent are not perfectly controlled, and both may vary with frequency, manufacturer, resin content, and glass weave. This makes it a useful example: simple enough for a first EM validation project, but realistic enough to show why physical modeling matters.</p>
+<p>The baseline geometry is therefore:</p>
+<div class="equation">Z<sub>0</sub> ≈ 50 Ω,   h = 1.6 mm,   t = 35 µm,   L = 50 mm</div>
+<p>A copper thickness of t = 35 µm was used, corresponding to standard 1 oz PCB copper. The remaining unknown is the trace width, W, required to achieve approximately 50 Ω. That value is first estimated analytically, then calculated using ADS LineCalc, and finally validated using schematic and EM simulations.</p>
+<h2 class="text-secondary text-uppercase" id="analytical-estimate">3. Analytical Microstrip Estimate</h2>
+<p>Before using ADS LineCalc or an EM solver, I first estimated the required microstrip width using standard closed-form microstrip equations. This gives a useful reference point and helps verify that the software-generated dimensions are reasonable.</p>
+<p>For a microstrip line, the characteristic impedance is mainly controlled by the ratio between the trace width and substrate height:</p>
+<div class="equation"><span class="frac"><span class="num">W</span><span class="den">h</span></span></div>
+<p>where W is the trace width and h is the substrate height. The dielectric constant also affects the result because the electromagnetic fields are partly inside the substrate and partly in air. For this reason, microstrip lines are usually described using an effective dielectric constant, ε<sub>eff</sub>, rather than only the substrate dielectric constant ε<sub>r</sub>.</p>
+<p>For the baseline stackup:</p>
+<div class="equation">ε<sub>r</sub> = 4.3,   h = 1.6 mm,   t = 35 µm,   Z<sub>0</sub> = 50 Ω</div>
+<p>Ignoring copper thickness for the first estimate, the effective dielectric constant for <span class="frac"><span class="num">W</span><span class="den">h</span></span> &gt; 1 can be approximated as:</p>
+<div class="equation">ε<sub>eff</sub> = <span class="frac"><span class="num">ε<sub>r</sub> + 1</span><span class="den">2</span></span> + <span class="frac"><span class="num">ε<sub>r</sub> - 1</span><span class="den">2</span></span> · <span class="frac"><span class="num">1</span><span class="den"><span class="sqrt"><span class="root-symbol">√</span><span class="radicand">1 + <span class="frac"><span class="num">12h</span><span class="den">W</span></span></span></span></span></span></div>
+<p>The corresponding characteristic impedance approximation is:</p>
+<div class="equation">Z<sub>0</sub> = <span class="frac"><span class="num">120π</span><span class="den"><span class="sqrt"><span class="root-symbol">√</span><span class="radicand">ε<sub>eff</sub></span></span> · [ <span class="frac"><span class="num">W</span><span class="den">h</span></span> + 1.393 + 0.667 ln(<span class="frac"><span class="num">W</span><span class="den">h</span></span> + 1.444) ]</span></span></div>
+<p>While closed-form synthesis approximations exist for estimating the required microstrip width, I chose to solve the equations numerically using a short Python script. The script sweeps the trace width W, calculates the corresponding characteristic impedance Z<sub>0</sub>, and extracts the width closest to the 50 Ω target from the resulting curve.</p>
+<p>The code used for the sweep is shown below:</p>
+<pre class="project-code"><code>import numpy as np
+import matplotlib.pyplot as plt
+
+# Baseline substrate parameters
+er = 4.3
+h = 1.6e-3          # substrate height [m]
+z0_target = 50      # target impedance [Ω]
+
+def microstrip_z0(W, h, er):
+    """First-order microstrip impedance approximation."""
+    wh = W / h
+    eps_eff = (er + 1) / 2 + ((er - 1) / 2) / np.sqrt(1 + 12 / wh)
+
+    if wh &lt;= 1:
+        z0 = (60 / np.sqrt(eps_eff)) * np.log(8 / wh + wh / 4)
+    else:
+        z0 = (120 * np.pi) / (
+            np.sqrt(eps_eff) *
+            (wh + 1.393 + 0.667 * np.log(wh + 1.444))
+        )
+    return z0, eps_eff
+
+# Sweep width from 0.1 mm to 8 mm
+widths = np.linspace(0.1e-3, 8e-3, 10000)
+z0_values = np.array([microstrip_z0(W, h, er)[0] for W in widths])
+
+best_index = np.argmin(np.abs(z0_values - z0_target))
+best_W = widths[best_index]
+best_z0, best_eps_eff = microstrip_z0(best_W, h, er)
+
+print(f"Best width: {best_W * 1e3:.3f} mm")
+print(f"Calculated Z0: {best_z0:.2f} Ω")
+print(f"Effective dielectric constant: {best_eps_eff:.3f}")
+print(f"W/h ratio: {best_W / h:.3f}")
+
+plt.figure(figsize=(8, 5))
+plt.plot(widths * 1e3, z0_values, color="red", label="Z0 vs trace width")
+plt.axhline(z0_target, color="black", linestyle="--", label="Target: 50 Ω")
+plt.scatter(best_W * 1e3, best_z0, color="green", edgecolor="black", linewidth=1.5, s=80, zorder=5)
+plt.annotate(
+    f"W = {best_W * 1e3:.2f} mm\nZ0 = {best_z0:.2f} Ω",
+    xy=(best_W * 1e3, best_z0),
+    xytext=(best_W * 1e3 + 0.5, best_z0 + 10),
+    arrowprops=dict(arrowstyle="-&gt;", color="black")
+)
+plt.xlabel("Trace width W [mm]")
+plt.ylabel("Characteristic impedance Z0 [Ω]")
+plt.title("Analytical Microstrip Impedance Estimate")
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.show()</code></pre>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-2.png" rel="noopener" target="_blank"><img alt="Analytical microstrip impedance estimate plot" decoding="async" height="500" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-2.webp" width="800"/></a>
+<figcaption><strong>Figure 2:</strong> First-order analytical estimate of microstrip characteristic impedance as a function of trace width. For the baseline FR-4 stackup, the closest calculated value to 50 Ω occurs at approximately W = 3.1 mm.</figcaption>
+</figure>
+<p>From this first-order calculation, the closest width to a 50 Ω line is approximately W ≈ 3.14 mm. This value is used as the initial estimate before checking the result with ADS LineCalc and later with EM simulation.</p>
+<h2 class="text-secondary text-uppercase" id="linecalc-mlin">4. ADS LineCalc and MLIN Baseline</h2>
+<p>After estimating the trace width numerically, the next step was to check the result using ADS LineCalc. LineCalc provides a practical synthesis tool for transmission-line structures, allowing the physical geometry to be calculated from a target impedance and substrate definition.</p>
+<p>Using the same baseline stackup as before — ε<sub>r</sub> = 4.3, h = 1.6 mm, t = 35 µm, and tanδ = 0.02 — the goal was to synthesize a microstrip line with Z<sub>0</sub> = 50 Ω.</p>
+<p>The analytical Python estimate gave a trace width of approximately W ≈ 3.1 mm. LineCalc was then used as an independent ADS-based check of this value. Since LineCalc includes a more complete microstrip model than the simplified hand equations used in the first estimate, a small difference between the two results is expected.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-3.png" rel="noopener" target="_blank"><img alt="ADS LineCalc synthesis window" decoding="async" height="695" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-3.webp" width="845"/></a>
+<figcaption><strong>Figure 3:</strong> ADS LineCalc synthesis of a 50 Ω microstrip on the baseline FR-4 stackup.</figcaption>
+</figure>
+<p>LineCalc was evaluated at 3 GHz, the center of the intended 0.1–6 GHz simulation range. Since the goal at this stage was to synthesize the trace width rather than define a specific electrical length, only the calculated width was used in the following simulations.</p>
+<p>ADS LineCalc synthesized a trace width of W = 3.11047 mm, which is very close to the numerical Python estimate of approximately 3.1 mm. The LineCalc-generated length was not used, since the project uses a fixed physical line length of L = 50 mm for the comparison between schematic and EM simulations.</p>
+<p>After synthesizing the line in LineCalc, the resulting dimensions were used to build a schematic-level ADS model using an MSUB substrate definition and an MLIN microstrip transmission-line element. This provides a baseline ADS circuit simulation before moving into EM simulation.</p>
+<p>At this stage, the structure is still not a drawn PCB layout. It is a circuit-level microstrip model. However, unlike an ideal TLIN, the MLIN element includes substrate-dependent behavior, making it a useful intermediate step between closed-form equations and full-wave EM.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-4.png" rel="noopener" target="_blank"><img alt="ADS MLIN schematic baseline" decoding="async" height="628" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-4.webp" width="1254"/></a>
+<figcaption><strong>Figure 4:</strong> ADS schematic baseline using an MLIN microstrip element with the LineCalc-derived width W = 3.11 mm and fixed physical length L = 50 mm.</figcaption>
+</figure>
+<p>The baseline ADS simulation was then used to observe the expected S-parameter behavior of a 50 Ω microstrip line terminated in 50 Ω ports. Since the line is designed to match the port impedance, the return loss should remain low across the sweep, while S<sub>21</sub> should mainly show insertion loss and phase delay caused by propagation along the 50 mm line.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-5.png" rel="noopener" target="_blank"><img alt="ADS MLIN S11 plot" decoding="async" height="386" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-5.webp" width="1245"/></a>
+<figcaption><strong>Figure 5:</strong> Simulated S11 of the ADS MLIN baseline. The periodic ripple is caused by the finite line length and small residual mismatch, while the overall return loss remains very low across the 0.1–6 GHz sweep.</figcaption>
+</figure>
+<p>The ADS MLIN baseline shows a low but frequency-dependent S<sub>11</sub>, with periodic minima caused by the finite electrical length of the line. Although the line is nominally 50 Ω, the microstrip model is not perfectly identical to the 50 Ω port reference impedance across the full sweep, so a small residual mismatch remains. The return loss remains better than approximately 35 dB across the simulated range, indicating that the LineCalc-derived width provides a very good schematic-level match.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-6.png" rel="noopener" target="_blank"><img alt="ADS MLIN S21 magnitude and phase plot" decoding="async" height="722" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-6.webp" width="1175"/></a>
+<figcaption><strong>Figure 6:</strong> ADS MLIN baseline S21 magnitude and phase for the 50 mm microstrip line. The magnitude shows increasing insertion loss with frequency, while the phase response is approximately linear apart from the expected ±180° phase wrapping.</figcaption>
+</figure>
+<p>The S<sub>21</sub> magnitude remains close to 0 dB at low frequency and gradually decreases with frequency due to dielectric and conductor losses. The S<sub>21</sub> phase is approximately linear with frequency, as expected for a fixed-length transmission line. The discontinuities in the plotted phase are phase wrapping at ±180°, not physical discontinuities in the line behavior.</p>
+<p>This gives the first software baseline for the project:</p>
+<div class="equation">Analytical estimate → ADS LineCalc → ADS MLIN schematic simulation</div>
+<p>The next sections compare this circuit-level result against ADS Momentum and HFSS EM simulations of the physical structure.</p>
+<h2 class="text-secondary text-uppercase" id="momentum">5. ADS Momentum EM Simulation</h2>
+<p>After building the ADS schematic-level MLIN baseline, the next step was to simulate the same microstrip line as a physical layout using ADS Momentum.</p>
+<p>In the previous section, the microstrip was represented by an MLIN element. That model uses parameters such as width, length, substrate height, dielectric constant, copper thickness, and loss tangent, but the line is still treated as a predefined transmission-line component inside a schematic simulation.</p>
+<p>Momentum uses a different modeling approach. Instead of simulating a symbolic microstrip component, the copper trace is drawn as an actual layout shape, the substrate stackup is defined in the Momentum substrate editor, and the solver calculates the electromagnetic behavior of that physical geometry.</p>
+<p>This means that Momentum can capture effects related to the actual planar structure, such as current distribution across the finite-width trace, fringing fields at the trace edges, conductor loss, dielectric loss, port discontinuities, and sensitivity to mesh and layout setup. For a simple straight microstrip line, the Momentum result should follow the same general behavior as the MLIN schematic result, but the two are not expected to be numerically identical.</p>
+<p>The simulated Momentum structure uses the same baseline dimensions:</p>
+<div class="equation">W = 3.11 mm,   L = 50 mm,   h = 1.6 mm,   t = 35 µm,   ε<sub>r</sub> = 4.3,   tanδ = 0.02</div>
+<p>A practical detail in this setup is that the ADS layout technology used for this Momentum layout is based on micron layout units. Therefore, the physical line dimensions were entered as L = 50000 µm and W = 3110 µm. These values correspond to the intended physical dimensions of L = 50 mm and W = 3.11 mm.</p>
+<p>This unit conversion is important. If the values 50 and 3.11 were entered directly into a micron-based layout, the resulting structure would be 50 µm long instead of 50 mm, producing a completely different EM result.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-7.png" rel="noopener" target="_blank"><img alt="ADS Momentum microstrip layout" decoding="async" height="316" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-7.webp" width="1197"/></a>
+<figcaption><strong>Figure 7:</strong> ADS Momentum layout of the manually drawn microstrip line. The layout uses micron units, so the 50 mm × 3.11 mm trace was entered as 50000 µm × 3110 µm.</figcaption>
+</figure>
+<p>The Momentum substrate was defined independently from the schematic MSUB block. Since this layout was drawn manually, the schematic substrate definition does not automatically apply to the EM layout. The substrate stackup was therefore configured directly in the Momentum substrate editor.</p>
+<p>The final Momentum model consists of a rectangular copper trace on the top conductor layer, an FR-4 dielectric layer, and a bottom ground plane. The ports were placed at both ends of the trace and referenced to the ground plane through the Momentum substrate definition.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-8.png" rel="noopener" target="_blank"><img alt="ADS Momentum substrate stackup" decoding="async" height="646" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-8.webp" width="1118"/></a>
+<figcaption><strong>Figure 8:</strong> Momentum substrate stackup used for the EM simulation. The top copper trace is placed over a 1.6 mm FR-4 substrate with εr = 4.3 and tanδ = 0.02, with a bottom ground plane used as the return reference.</figcaption>
+</figure>
+<p>The simulation was performed over the same frequency range used for the ADS schematic baseline:</p>
+<div class="equation">0.1 GHz ≤ f ≤ 6 GHz</div>
+<p>The expected result is a well-matched line with low S<sub>11</sub>, insertion loss that increases with frequency, and an approximately linear S<sub>21</sub> phase response with normal ±180° phase wrapping.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-9.png" rel="noopener" target="_blank"><img alt="ADS Momentum S11 plot" decoding="async" height="384" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-9.webp" width="917"/></a>
+<figcaption><strong>Figure 9:</strong> Momentum EM-simulated S11 of the 50 mm microstrip line. Compared with the schematic MLIN model, the EM result shows higher residual reflection due to the physical layout, port definition, and finite geometry, while still maintaining a generally good match across the sweep.</figcaption>
+</figure>
+<p>The Momentum S<sub>11</sub> result is higher than the schematic MLIN baseline, but still remains well below 0 dB across the frequency sweep. This difference is expected because Momentum simulates the physical layout and port geometry rather than an idealized transmission-line element. The periodic peaks and nulls are caused by the finite electrical length of the line and the small residual mismatch between the EM structure and the 50 Ω port reference.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-10.png" rel="noopener" target="_blank"><img alt="ADS Momentum S21 magnitude and phase plot" decoding="async" height="571" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-10.webp" width="758"/></a>
+<figcaption><strong>Figure 10:</strong> Momentum EM-simulated S21 magnitude and phase of the 50 mm microstrip line. The insertion loss increases with frequency due to dielectric and conductor losses in the physical stackup, while the phase response shows the expected electrical delay and ±180° wrapping of a finite-length transmission line.</figcaption>
+</figure>
+<p>The S<sub>21</sub> phase response is approximately linear with frequency, with discontinuities caused by phase wrapping at ±180°. This confirms that the EM layout represents the intended 50 mm line length. During setup, this phase behavior was also useful as a sanity check: an accidentally micron-scale line would show very little phase shift across the same frequency range.</p>
+<p>Overall, the Momentum simulation follows the same general trend as the ADS MLIN baseline, but with more visible layout-dependent effects. This is the expected result, since Momentum is solving the drawn physical structure rather than a predefined schematic transmission-line element.</p>
+<h2 class="text-secondary text-uppercase" id="hfss">6. HFSS 3D EM Simulation</h2>
+<p>After validating the physical layout in ADS Momentum, I recreated the same microstrip line in Ansys HFSS as a 3D full-wave EM model.</p>
+<p>This provides another level of validation beyond both the ADS schematic simulation and the Momentum planar EM simulation. In the ADS MLIN schematic, the microstrip is represented as a parameterized transmission-line element. In ADS Momentum, the line is drawn as a planar metal shape on a substrate stackup. In HFSS, the structure is built as explicit 3D geometry: the substrate, copper trace, bottom ground plane, surrounding air region, and excitation ports are all separate modeled objects.</p>
+<p>The same baseline dimensions were used:</p>
+<div class="equation">W = 3.11 mm,   L = 50 mm,   h = 1.6 mm,   t = 35 µm,   ε<sub>r</sub> = 4.3,   tanδ = 0.02</div>
+<p>The line was modeled with the x-axis as the propagation direction, the y-axis as the trace-width direction, and the z-axis as the vertical stackup direction. The FR-4 substrate was modeled as a 50 mm long, 20 mm wide, 1.6 mm thick dielectric block. The copper trace was placed on top of the substrate, and a copper ground plane was placed underneath it.</p>
+<p>The HFSS geometry used the following dimensions:</p>
+<table>
+<thead><tr><th>Object</th><th>Position (X, Y, Z)</th><th>Size (XSize, YSize, ZSize)</th><th>Material</th></tr></thead>
+<tbody>
+<tr><td>FR-4 substrate</td><td>(0, -10, 0) mm</td><td>(50, 20, 1.6) mm</td><td>FR-4</td></tr>
+<tr><td>Bottom ground plane</td><td>(0, -10, -0.035) mm</td><td>(50, 20, 0.035) mm</td><td>Copper</td></tr>
+<tr><td>Top microstrip trace</td><td>(0, -1.555, 1.6) mm</td><td>(50, 3.11, 0.035) mm</td><td>Copper</td></tr>
+<tr><td>Air box</td><td>(-5, -20, -2.035) mm</td><td>(60, 40, 13.635) mm</td><td>Air</td></tr>
+</tbody>
+</table>
+<p>The air box surrounds the structure and was assigned a radiation boundary. This allows the fields around the microstrip to exist in the simulation volume without forcing the structure into a closed conducting box.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-11.png" rel="noopener" target="_blank"><img alt="HFSS 3D microstrip model" decoding="async" height="449" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-11.webp" width="967"/></a>
+<figcaption><strong>Figure 11:</strong> HFSS 3D model of the 50 mm microstrip line. The FR-4 substrate, copper trace, bottom ground plane, and surrounding air region are modeled as separate 3D objects.</figcaption>
+</figure>
+<h3>Port setup</h3>
+<p>For this HFSS model, I used lumped ports at both ends of the microstrip line. Each lumped port was drawn as a vertical sheet between the signal trace and the ground plane.</p>
+<p>This is different from a wave port, which usually requires a larger cross-sectional sheet that includes the surrounding field region. A lumped port is more compact and easier to visualize for this simple validation model. It represents a voltage excitation between two conductors: the microstrip trace and the ground reference.</p>
+<table>
+<thead><tr><th>Port</th><th>Plane</th><th>Position</th><th>Size</th></tr></thead>
+<tbody>
+<tr><td>Port 1</td><td>YZ</td><td>x = 0 mm</td><td>3.11 mm × 1.6 mm</td></tr>
+<tr><td>Port 2</td><td>YZ</td><td>x = 50 mm</td><td>3.11 mm × 1.6 mm</td></tr>
+</tbody>
+</table>
+<p>Each port sheet spans y = -1.555 mm to +1.555 mm and z = 0 mm to 1.6 mm. The integration line was defined from the signal trace to the ground plane. This tells HFSS that the port voltage is measured between the top trace and the ground reference, similar to how a coaxial connector or VNA port would excite a microstrip line.</p>
+<p>For Port 1, the integration line was defined from (0, 0, 1.6 mm) to (0, 0, 0). For Port 2, it was defined from (50 mm, 0, 1.6 mm) to (50 mm, 0, 0).</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-12.png" rel="noopener" target="_blank"><img alt="HFSS lumped port definition" decoding="async" height="306" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-12.webp" width="749"/></a>
+<figcaption><strong>Figure 12:</strong> HFSS lumped port definition at the end of the microstrip line. The port sheet spans between the signal trace and the ground plane, with the integration line directed from trace to ground.</figcaption>
+</figure>
+<h3>HFSS simulation setup</h3>
+<p>The HFSS simulation was configured as a driven modal solution. The adaptive solution frequency was set near the upper end of the band, and the final frequency sweep covered the same range used in the ADS simulations:</p>
+<div class="equation">0.1 GHz ≤ f ≤ 6 GHz</div>
+<p>The main extracted quantities were dB(S<sub>11</sub>), dB(S<sub>21</sub>), and phase(S<sub>21</sub>). This keeps the HFSS results directly comparable to the ADS MLIN and Momentum simulations.</p>
+<h3>HFSS S<sub>11</sub> result</h3>
+<p>The HFSS S<sub>11</sub> result shows that the 3D microstrip model remains well matched across the simulated frequency range. The return loss stays roughly between -21 dB and -45 dB.</p>
+<p>This is a good result for the full 3D model. It is not identical to the ADS MLIN or Momentum results, but that is expected. HFSS includes the explicit 3D geometry, finite substrate and ground plane size, lumped-port definition, radiation boundary, and adaptive mesh. These details can shift the exact reflection response compared with the more idealized schematic model.</p>
+<p>The periodic shape of the S<sub>11</sub> curve is also expected. A small residual mismatch exists between the physical structure and the 50 Ω port reference. Since the line has finite electrical length, the reflected wave rotates with frequency, producing peaks and dips in the return loss.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-13.png" rel="noopener" target="_blank"><img alt="HFSS S11 plot" decoding="async" height="597" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-13.webp" width="1649"/></a>
+<figcaption><strong>Figure 13:</strong> HFSS-simulated S11 of the 50 mm microstrip line using lumped ports between the trace and ground plane. The return loss remains low across the sweep, showing that the LineCalc-derived width provides a good 50 Ω match in the 3D EM model.</figcaption>
+</figure>
+<h3>HFSS S<sub>21</sub> magnitude result</h3>
+<p>The HFSS S<sub>21</sub> magnitude follows the expected behavior of a lossy microstrip transmission line. At low frequency, the transmission is close to 0 dB. As frequency increases, the insertion loss gradually increases.</p>
+<p>At 6 GHz, the simulated insertion loss is approximately S<sub>21</sub> ≈ -1.15 dB. This is physically reasonable for a 50 mm FR-4 microstrip line over this frequency range. The loss comes mainly from the dielectric loss of the FR-4 and the finite conductivity of the copper conductors.</p>
+<p>The HFSS result is also in the same general range as the ADS Momentum result, which reached roughly -1.4 dB at 6 GHz. The difference is acceptable because the two solvers use different modeling approaches, port definitions, boundary conditions, and meshing strategies.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-14.png" rel="noopener" target="_blank"><img alt="HFSS S21 magnitude plot" decoding="async" height="599" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-14.webp" width="1652"/></a>
+<figcaption><strong>Figure 14:</strong> HFSS-simulated S21 magnitude of the 50 mm microstrip line. The insertion loss increases with frequency, reaching approximately -1.15 dB at 6 GHz.</figcaption>
+</figure>
+<h3>HFSS S<sub>21</sub> phase result</h3>
+<p>The S<sub>21</sub> phase response is approximately linear with frequency, with normal phase wrapping at ±180°. This is exactly what is expected from a fixed-length transmission line. As frequency increases, the 50 mm line becomes electrically longer, so the phase delay increases. When the displayed phase crosses the plot boundary, it wraps back around.</p>
+<p>This phase plot is also a useful sanity check. If the HFSS model had accidentally been built with the wrong physical length, the phase delay would not match the expected finite-line behavior.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-15.png" rel="noopener" target="_blank"><img alt="HFSS S21 phase plot" decoding="async" height="595" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-15.webp" width="1650"/></a>
+<figcaption><strong>Figure 15:</strong> HFSS-simulated S21 phase of the 50 mm microstrip line. The phase response is approximately linear with frequency and wraps at ±180°, as expected for a finite-length transmission line.</figcaption>
+</figure>
+<h3>Section summary</h3>
+<p>The HFSS simulation successfully reproduced the expected behavior of the 50 mm microstrip line in a full 3D EM environment. The return loss remained low across the simulated range, the insertion loss increased with frequency, and the phase response showed the expected delay and wrapping of a finite-length line.</p>
+<p>Compared with ADS MLIN, the HFSS model is less idealized because it includes the actual 3D geometry, finite substrate and ground plane, explicit port sheets, air region, radiation boundary, and adaptive meshing. Compared with ADS Momentum, HFSS provides an independent full-wave validation using a different solver approach and a fully modeled 3D structure.</p>
+<p>This makes HFSS a useful final validation step before comparing all methods together. At this point, the project has moved through the full modeling chain:</p>
+<div class="equation">Analytical estimate → ADS LineCalc → ADS MLIN → ADS Momentum → HFSS</div>
+<h2 class="text-secondary text-uppercase" id="comparison">7. Comparison Between Models</h2>
+<p>At this point, the same nominal 50 Ω microstrip line has been evaluated using several modeling approaches:</p>
+<div class="equation">Analytical estimate → ADS LineCalc → ADS MLIN → ADS Momentum → HFSS</div>
+<p>Each step uses the same target structure, but each model represents the microstrip differently. The goal of this comparison is not to make every curve identical. Instead, the goal is to understand how the results change as the model moves from a closed-form estimate to a circuit-level transmission-line model, then to planar EM and full 3D EM simulation.</p>
+<p>The final physical dimensions used for the simulations were W = 3.11 mm and L = 50 mm, with the baseline substrate definition ε<sub>r</sub> = 4.3, h = 1.6 mm, t = 35 µm, and tanδ = 0.02.</p>
+<p>The analytical Python estimate and ADS LineCalc synthesis agreed closely. The Python calculation estimated a width of approximately W ≈ 3.1 mm, while ADS LineCalc returned W = 3.11047 mm. This agreement gave confidence that the selected width was a reasonable starting point before moving into schematic and EM simulations.</p>
+<h3>Modeling-level comparison</h3>
+<table>
+<thead><tr><th>Method</th><th>Role in the workflow</th><th>Geometry representation</th><th>Main output</th></tr></thead>
+<tbody>
+<tr><td>Analytical/Python estimate</td><td>First-order width estimate</td><td>Closed-form microstrip equations</td><td>W ≈ 3.1 mm</td></tr>
+<tr><td>ADS LineCalc</td><td>ADS synthesis check</td><td>Microstrip synthesis model</td><td>W = 3.11047 mm</td></tr>
+<tr><td>ADS MLIN</td><td>Schematic baseline</td><td>Parameterized transmission-line element</td><td>Low S<sub>11</sub>, lossy S<sub>21</sub>, phase delay</td></tr>
+<tr><td>ADS Momentum</td><td>Planar EM validation</td><td>Drawn metal layout on substrate stackup</td><td>Layout-dependent EM result</td></tr>
+<tr><td>HFSS</td><td>3D full-wave validation</td><td>Explicit 3D geometry</td><td>Independent 3D EM result</td></tr>
+</tbody>
+</table>
+<p>This comparison shows the progression from fast analytical and schematic models toward more physical EM simulations.</p>
+<h3>S<sub>11</sub> comparison</h3>
+<p>The S<sub>11</sub> comparison shows the clearest difference between the schematic and EM models.</p>
+<p>The ADS MLIN result gives the most ideal-looking match. This is expected because MLIN is a schematic transmission-line element connected directly to ideal 50 Ω terminations. It models the microstrip behavior from the substrate and line parameters, but it does not include the same physical port discontinuities, finite layout details, or boundary effects that appear in the EM solvers.</p>
+<p>ADS Momentum and HFSS both show higher residual reflection, but still maintain a good match overall. This is also expected. Momentum simulates a drawn planar layout, while HFSS simulates explicit 3D geometry with lumped ports, finite substrate and ground plane dimensions, an air box, radiation boundary, and adaptive meshing.</p>
+<p>The important conclusion is that all three simulations agree on the main point: the W = 3.11 mm trace is a reasonable 50 Ω microstrip for the selected stackup. The differences in the exact return-loss curve are not a contradiction; they show the additional physical details introduced by the EM models.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-16.png" rel="noopener" target="_blank"><img alt="S11 magnitude comparison between ADS MLIN, ADS Momentum, and HFSS" decoding="async" height="485" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-16.webp" width="887"/></a>
+<figcaption><strong>Figure 16:</strong> S11 magnitude comparison between ADS MLIN, ADS Momentum, and HFSS. The schematic MLIN model gives the most ideal match, while the EM solvers show higher residual reflection due to physical layout, port definition, and solver-specific modeling effects.</figcaption>
+</figure>
+<p>All models show a usable 50 Ω match, but the EM simulations reveal non-ideal effects that are not visible in the schematic transmission-line model.</p>
+<h3>S<sub>21</sub> magnitude comparison</h3>
+<p>The S<sub>21</sub> magnitude comparison shows better agreement in overall trend.</p>
+<p>All three models show the same basic behavior: the line is close to 0 dB at low frequency, then becomes increasingly lossy as frequency increases. This is the expected behavior for a 50 mm FR-4 microstrip line, where dielectric and conductor losses become more significant at higher frequency.</p>
+<p>The ADS MLIN result is the least lossy by 6 GHz, while the Momentum result is the most lossy. The HFSS result lands between the two EM/circuit-level results. This ordering is reasonable because each solver uses a different modeling approach and different assumptions for the conductor, dielectric, ports, boundaries, and mesh.</p>
+<p>At 6 GHz, the final results are approximately in the same practical range: MLIN ≈ -1.0 dB, Momentum ≈ -1.4 dB, and HFSS ≈ -1.15 dB. The exact values are not identical, but the agreement in trend is strong. The result supports the main expectation: the physical line is well matched, but FR-4 loss becomes significant over 50 mm as frequency approaches several GHz.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-17.png" rel="noopener" target="_blank"><img alt="S21 magnitude comparison between ADS MLIN, ADS Momentum, and HFSS" decoding="async" height="489" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-17.webp" width="886"/></a>
+<figcaption><strong>Figure 17:</strong> S21 magnitude comparison between ADS MLIN, ADS Momentum, and HFSS. All three models show increasing insertion loss with frequency, with the EM simulations producing slightly different loss values due to their different physical and solver assumptions.</figcaption>
+</figure>
+<p>The three models agree on the main behavior: the 50 mm FR-4 microstrip becomes increasingly lossy as frequency increases.</p>
+<h3>S<sub>21</sub> phase comparison</h3>
+<p>The S<sub>21</sub> phase comparison confirms that all three models represent the same finite-length transmission line.</p>
+<p>In each result, the phase changes approximately linearly with frequency and wraps at ±180°. This is the expected response of a fixed physical length. As frequency increases, the line becomes electrically longer, so the phase delay increases. Once the displayed phase crosses the plot boundary, it wraps back around.</p>
+<p>The ADS MLIN and Momentum phase curves are very close, while HFSS shows a slight phase offset. This difference can come from solver-specific effective permittivity, port reference planes, lumped-port implementation, finite substrate dimensions, or mesh and boundary setup. The important point is that all three curves show the same finite-line behavior.</p>
+<p>The phase plot was also useful as a sanity check during the EM setup. A line accidentally drawn at micron scale instead of millimeter scale would show very little phase shift across the same frequency range. The multiple phase wraps confirm that the simulations represent the intended 50 mm line.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/microstrip-line-em-validation/figure-18.png" rel="noopener" target="_blank"><img alt="S21 phase comparison between ADS MLIN, ADS Momentum, and HFSS" decoding="async" height="488" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-18.webp" width="886"/></a>
+<figcaption><strong>Figure 18:</strong> S21 phase comparison between ADS MLIN, ADS Momentum, and HFSS. All three models show the expected phase delay and ±180° wrapping of a finite-length transmission line.</figcaption>
+</figure>
+<p>The phase comparison confirms that all three models represent the intended 50 mm electrical path, with small solver-dependent phase differences.</p>
+<h3>Why the models differ</h3>
+<p>The differences between the curves come from the assumptions and physical details included at each modeling level.</p>
+<p>The analytical equations are first-order approximations. They are useful for estimating the trace width, but they do not simulate finite layout geometry, ports, losses in detail, boundaries, or meshing.</p>
+<p>ADS LineCalc improves on the hand estimate by using ADS transmission-line synthesis models, but it is still a design/synthesis tool rather than a full physical EM simulation.</p>
+<p>ADS MLIN is a schematic-level microstrip model. It includes substrate-dependent transmission-line behavior, but the line is still represented as a circuit element connected to ideal ports.</p>
+<p>ADS Momentum solves the drawn planar layout. It includes the actual metal shape, substrate stackup, conductor and dielectric definitions, port setup, current distribution, and edge/fringing effects in a planar EM formulation.</p>
+<p>HFSS solves the structure as explicit 3D geometry. It includes the substrate block, copper trace, finite ground plane, air region, radiation boundary, lumped ports, and adaptive 3D meshing.</p>
+<p>So the modeling progression can be summarized as:</p>
+<div class="equation">fast and idealized → more physical and solver-dependent</div>
+<p>or:</p>
+<div class="equation">closed-form or circuit model → planar EM → 3D EM</div>
+<p>The point is not that one result is “correct” and the others are “wrong.” Each model answers the problem at a different level of abstraction.</p>
+<h2 class="text-secondary text-uppercase" id="summary">8. Summary and Key Takeaways</h2>
+<p>This project started with a simple design target: create a nominal 50 Ω microstrip line on a basic FR-4 PCB stackup and compare how different modeling approaches represent the same structure.</p>
+<p>The workflow moved through several levels of abstraction:</p>
+<div class="equation">Analytical estimate → ADS LineCalc → ADS MLIN → ADS Momentum → HFSS</div>
+<p>The analytical calculation and Python sweep gave the first estimate for the trace width, producing a value close to W ≈ 3.1 mm. ADS LineCalc then synthesized a very similar result, W = 3.11047 mm, confirming that the first-order equations were good enough to get the design into the right range.</p>
+<p>The ADS MLIN schematic simulation provided the first circuit-level baseline. It showed the expected behavior of a well-matched lossy transmission line: low S<sub>11</sub>, increasing insertion loss with frequency, and a phase response corresponding to the 50 mm physical length.</p>
+<p>The Momentum simulation moved the design from a schematic component into a physical planar EM layout. This introduced practical EM setup details that are not visible in the schematic model, such as layer mapping, substrate definition, port setup, and layout units. One important practical lesson was that the ADS layout technology used micron-based units, so the 50 mm line had to be drawn as L = 50000 µm, rather than simply entering 50 into the layout.</p>
+<p>Finally, the HFSS model rebuilt the same line as explicit 3D geometry. The substrate, trace, ground plane, air box, and lumped ports were all modeled directly. The HFSS result agreed with the overall behavior seen in ADS: the line remained well matched, insertion loss increased with frequency, and the phase response confirmed the expected delay of a finite-length transmission line.</p>
+<p>The main takeaway is that the different tools agreed on the overall RF behavior, but not necessarily on every detail of the curves. This is expected. Each modeling level includes different assumptions:</p>
+<table>
+<thead><tr><th>Model</th><th>Main strength</th></tr></thead>
+<tbody>
+<tr><td>Analytical equations</td><td>Fast first estimate</td></tr>
+<tr><td>ADS LineCalc</td><td>Practical synthesis of line dimensions</td></tr>
+<tr><td>ADS MLIN</td><td>Clean schematic-level baseline</td></tr>
+<tr><td>ADS Momentum</td><td>Planar EM validation of drawn layout</td></tr>
+<tr><td>HFSS</td><td>Full 3D EM validation</td></tr>
+</tbody>
+</table>
+<p>The schematic model is fast and clean, but more idealized. The EM solvers are more physically representative, but also more sensitive to setup details such as ports, boundaries, meshing, materials, and units.</p>
+<p>For this article, the goal was not to prove that every solver produces identical plots. The goal was to follow a simple microstrip design from theory to physical EM validation and understand what each modeling level contributes.</p>
+<p>In that sense, this project is a useful bridge between textbook transmission-line equations and practical RF PCB simulation. It shows that closed-form models and schematic simulations are excellent starting points, but EM simulation becomes important when the physical layout, ports, stackup, and solver assumptions start to matter.</p>
+<a class="btn btn-primary btn-xl mt-4" href="../index.html#portfolio">Back to Portfolio</a>
+</div>
+</div>
+</div>
+</main>
+<footer class="footer text-center">
+<div class="container"><div class="row justify-content-center"><div class="col-lg-4 mb-5 mb-lg-0">
+<h4 class="text-uppercase mb-4">Socials</h4>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
+<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com"><i class="fas fa-fw fa-envelope"></i></a>
+</div></div></div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/scripts.js"></script>
+</body>
+</html>

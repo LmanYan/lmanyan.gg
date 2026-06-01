@@ -54,6 +54,16 @@ window.addEventListener('DOMContentLoaded', event => {
     // Portfolio project data. Add new projects here and create the matching page in /projects.
     const projects = [
         {
+            title: "Microstrip Line EM Validation",
+            date: "June 1, 2026",
+            image: "assets/img/projects/microstrip-line-em-validation/figure-16.webp",
+            imageAlt: "S11 magnitude comparison between ADS MLIN, ADS Momentum, and HFSS",
+            imageWidth: 887,
+            imageHeight: 485,
+            description: "A microstrip EM validation project comparing analytical equations, ADS LineCalc, ADS MLIN, ADS Momentum, and Ansys HFSS for a 50 Ω FR-4 microstrip line.",
+            link: "projects/microstrip-line-em-validation.html"
+        },
+        {
             title: "Transmission Line Playground",
             date: "May 14, 2026",
             image: "assets/img/projects/transmission-line-playground/figure-31.webp",
@@ -76,7 +86,7 @@ window.addEventListener('DOMContentLoaded', event => {
         portfolioPosts.innerHTML = projects.map(project => `
             <article class="portfolio-post-card">
                 <a class="portfolio-post-image-link" href="${project.link}">
-                    <img class="portfolio-post-image" src="${project.image}" alt="${project.imageAlt}" />
+                    <img class="portfolio-post-image" src="${project.image}" alt="${project.imageAlt}" loading="lazy" decoding="async" ${project.imageWidth ? `width="${project.imageWidth}"` : ""} ${project.imageHeight ? `height="${project.imageHeight}"` : ""} />
                 </a>
                 <div class="portfolio-post-content">
                     <h3 class="portfolio-post-title"><a href="${project.link}">${project.title}</a></h3>
