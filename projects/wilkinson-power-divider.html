@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<meta content="A 3 GHz two-way equal-split Wilkinson power divider designed from theory, simulated in ADS, converted to microstrip, and validated with Momentum EM/circuit co-simulation." name="description"/>
+<meta content="Yaniv Lieberman" name="author"/>
+<title>Wilkinson Power Divider | Yaniv Lieberman</title>
+<link href="../assets/favicon.ico" rel="icon" type="image/x-icon"/>
+<script crossorigin="anonymous" src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
+<link href="../css/styles.css" rel="stylesheet"/>
+<script>
+            window.MathJax = {
+                tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+                svg: { fontCache: 'global' }
+            };
+        </script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body id="page-top">
+<nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
+<div class="container">
+<a class="navbar-brand" href="../index.html#page-top">YANIV LIEBERMAN</a>
+<button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <i class="fas fa-bars"></i></button>
+<div class="collapse navbar-collapse" id="navbarResponsive"><ul class="navbar-nav ms-auto">
+<li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#about">About</a></li>
+<li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#portfolio">Portfolio</a></li>
+<li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#contact">Contact</a></li>
+</ul></div>
+</div>
+</nav>
+<header class="project-masthead bg-primary text-white text-center">
+<div class="container d-flex align-items-center flex-column">
+<p class="project-kicker text-uppercase mb-3">RF Design · ADS · Momentum EM</p>
+<h1 class="project-heading text-uppercase mb-0">Wilkinson Power Divider</h1>
+<div class="divider-custom divider-light"><div class="divider-custom-line"></div><div class="divider-custom-icon"><i class="fa-solid fa-satellite-dish"></i></div><div class="divider-custom-line"></div></div>
+<p class="project-subheading font-weight-light mb-0">A 3 GHz equal-split divider from theory to microstrip EM validation.</p>
+</div>
+</header>
+<main class="page-section project-page">
+<div class="container">
+<div class="row justify-content-center">
+<div class="col-lg-9">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-21.png" rel="noopener" target="_blank"><img alt="Momentum layout port definition for the Wilkinson power divider" class="project-hero-image mb-4" decoding="async" fetchpriority="high" height="679" loading="eager" src="../assets/img/projects/wilkinson-power-divider/figure-21.webp" width="1090"/></a>
+
+<p class="project-date">June 15, 2026</p>
+<div class="project-toc">
+<h3 class="mt-0 text-secondary text-uppercase">Project Sections</h3>
+<ol class="mb-0">
+<li><a href="#intro">Introduction</a></li>
+<li><a href="#goals">Design goals and specifications</a></li>
+<li><a href="#theory">Wilkinson divider theory</a></li>
+<li><a href="#ideal">Ideal ADS simulation</a></li>
+<li><a href="#resistor-sweep">Isolation resistor sweep</a></li>
+<li><a href="#microstrip">Microstrip implementation</a></li>
+<li><a href="#momentum">Layout implementation and Momentum EM simulation</a></li>
+<li><a href="#comparison">Comparison and discussion</a></li>
+<li><a href="#summary">Summary and engineering takeaways</a></li>
+</ol>
+</div>
+
+<h2 class="text-secondary text-uppercase" id="intro">1. Introduction</h2>
+<p>Power dividers are fundamental building blocks in RF and microwave systems. They are used whenever an RF signal needs to be distributed between multiple paths, such as antenna arrays, receiver front ends, local oscillator distribution networks, measurement setups, and phased-array architectures. A simple resistive splitter can divide power, but it introduces extra loss and does not provide good isolation between output ports. The Wilkinson power divider solves these issues by combining transmission-line impedance transformation with a carefully placed isolation resistor.</p>
+<p>In this project, I designed and analyzed a two-way equal-split Wilkinson power divider. The goal was to start from the theoretical RF design, verify the ideal behavior in ADS, convert the circuit into a physical microstrip implementation, and then evaluate the layout using Momentum EM simulation.</p>
+<p>The target design is a three-port network with a 50 Ω system impedance. Ideally, power entering Port 1 is split equally between Ports 2 and 3, resulting in approximately \(-3\ \text{dB}\) transmission to each output. At the center frequency, the input should be well matched, the two outputs should have equal amplitude and phase, and the isolation between the output ports should be high.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-1.png" rel="noopener" target="_blank"><img alt="Conceptual diagram of a two-way equal-split power divider" decoding="async" height="462" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-1.webp" width="881"/></a>
+<figcaption><strong>Figure 1:</strong> Conceptual view of a two-way equal-split power divider. Ideally, the input power is divided equally between Ports 2 and 3.</figcaption>
+</figure>
+
+
+<h2 class="text-secondary text-uppercase" id="goals">2. Design Goals and Specifications</h2>
+<p>The design target is a two-way equal-split Wilkinson power divider operating in a 50 Ω RF system. The divider is designed around a single center frequency where the quarter-wave transmission-line sections provide the required impedance transformation and the isolation resistor improves output-port isolation.</p>
+<p>For this implementation, the center frequency is <strong>3 GHz</strong>. This frequency is high enough for microstrip layout effects to matter, while still allowing practical PCB dimensions on a generic FR-4 stackup.</p>
+<table class="table table-bordered">
+<thead><tr><th>Parameter</th><th>Target</th></tr></thead>
+<tbody>
+<tr><td>Center frequency</td><td>3 GHz</td></tr>
+<tr><td>System impedance</td><td>50 Ω</td></tr>
+<tr><td>Number of ports</td><td>3</td></tr>
+<tr><td>Split ratio</td><td>Equal split</td></tr>
+<tr><td>Target transmission</td><td>Approximately \(-3\ \text{dB}\) from Port 1 to each output</td></tr>
+<tr><td>Input match</td><td>Low \(S_{11}\) near the center frequency</td></tr>
+<tr><td>Output match</td><td>Low \(S_{22}\) and \(S_{33}\) near the center frequency</td></tr>
+<tr><td>Output isolation</td><td>Low \(S_{23}\) near the center frequency</td></tr>
+<tr><td>Output phase balance</td><td>\(S_{21}\) and \(S_{31}\) approximately equal in phase</td></tr>
+<tr><td>Implementation</td><td>Microstrip</td></tr>
+<tr><td>Simulation tools</td><td>ADS and Momentum</td></tr>
+</tbody>
+</table>
+<p>The workflow was:</p>
+<ol>
+<li>Define the 50 Ω system and center frequency.</li>
+<li>Derive the required branch impedance and isolation resistor.</li>
+<li>Simulate the ideal Wilkinson divider in ADS.</li>
+<li>Convert the ideal design into a microstrip implementation.</li>
+<li>Simulate the physical layout using Momentum.</li>
+<li>Sweep the isolation resistor and transmission-line dimensions.</li>
+<li>Compare the ideal, microstrip, and EM simulation results.</li>
+</ol>
+
+<h2 class="text-secondary text-uppercase" id="theory">3. Wilkinson Divider Theory and Component Values</h2>
+<p>A two-way Wilkinson power divider is built from two quarter-wave transmission-line sections and an isolation resistor between the output ports. For an equal-split divider, all ports are designed for the same system impedance, usually 50 Ω.</p>
+<p>At the center frequency, Ports 2 and 3 are each terminated with 50 Ω. From the input side, each branch must transform its 50 Ω load into 100 Ω. When the two transformed 100 Ω impedances are placed in parallel, the input sees 50 Ω:</p>
+<div class="equation">\[100\ \Omega \parallel 100\ \Omega = 50\ \Omega\]</div>
+<p>A quarter-wave transmission line transforms a load impedance according to:</p>
+<div class="equation">\[Z_{\text{in}} = \frac{Z_t^2}{Z_L}\]</div>
+<p>For each Wilkinson branch, the desired transformed impedance is 100 Ω and the load is 50 Ω:</p>
+<div class="equation">\[100 = \frac{Z_t^2}{50}\]</div>
+<div class="equation">\[Z_t = \sqrt{100\cdot50}=\sqrt{2}Z_0=70.7\ \Omega\]</div>
+<p>The isolation resistor for an equal-split Wilkinson divider is:</p>
+<div class="equation">\[R = 2Z_0 = 100\ \Omega\]</div>
+<p>During ideal equal-mode operation, the voltages at Ports 2 and 3 are equal in amplitude and phase, so no voltage difference appears across the isolation resistor. Ideally, no current flows through the resistor during normal splitting. When the outputs are unbalanced or a signal is incident at one output port, the resistor dissipates imbalance energy and improves isolation between Ports 2 and 3.</p>
+<table class="table table-bordered">
+<thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>System impedance, \(Z_0\)</td><td>50 Ω</td></tr>
+<tr><td>Branch electrical length</td><td>90° at 3 GHz</td></tr>
+<tr><td>Branch characteristic impedance</td><td>70.7 Ω</td></tr>
+<tr><td>Isolation resistor</td><td>100 Ω</td></tr>
+</tbody>
+</table>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-2.png" rel="noopener" target="_blank"><img alt="Ideal Wilkinson power divider topology" decoding="async" height="354" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-2.webp" width="704"/></a>
+<figcaption><strong>Figure 2:</strong> Ideal two-way equal-split Wilkinson power divider topology. Each output branch is implemented as a quarter-wave transmission line with characteristic impedance \(\sqrt{2}Z_0\), and the resistor between the output ports has a value of \(2Z_0\).</figcaption>
+</figure>
+
+
+<h2 class="text-secondary text-uppercase" id="ideal">4. Ideal ADS Simulation</h2>
+<p>After deriving the ideal values, the first simulation step was to build the circuit using ideal transmission-line elements in ADS. This provides a clean theoretical baseline before introducing physical microstrip dimensions, layout discontinuities, conductor loss, dielectric loss, and EM effects.</p>
+<p>The ADS model uses three 50 Ω ports. Port 1 is the input port, while Ports 2 and 3 are the output ports. The two divider branches are ideal quarter-wave transmission lines with characteristic impedance \(\sqrt{2}Z_0\), and a \(2Z_0\) resistor is placed between the output ports.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-3.png" rel="noopener" target="_blank"><img alt="Ideal ADS schematic of the Wilkinson divider" decoding="async" height="397" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-3.webp" width="1028"/></a>
+<figcaption><strong>Figure 3:</strong> Ideal ADS schematic of the two-way Wilkinson power divider using three 50 Ω ports, two 90° TLIN branches, and a 100 Ω isolation resistor.</figcaption>
+</figure>
+
+<p>The main S-parameters used to evaluate the divider are \(S_{11}\) for input return loss, \(S_{21}\) and \(S_{31}\) for the power split, \(S_{22}\) and \(S_{33}\) for output return loss, \(S_{23}\) for isolation, and the phase difference between \(S_{21}\) and \(S_{31}\) for output phase balance.</p>
+<h3>Return loss</h3>
+<p>The return-loss results show a strong match at the 3 GHz design frequency. \(S_{11}\) reaches a deep minimum at the center frequency, while \(S_{22}\) and \(S_{33}\) also show deep nulls. Because the divider is ideal and symmetric, the output-port return-loss curves overlap.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-4.png" rel="noopener" target="_blank"><img alt="Ideal simulation return loss results" decoding="async" height="543" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-4.webp" width="844"/></a>
+<figcaption><strong>Figure 4:</strong> Ideal simulation return loss results showing \(S_{11}\), \(S_{22}\), and \(S_{33}\).</figcaption>
+</figure>
+
+<h3>Power split</h3>
+<p>The transmission plot shows that \(S_{21}\) and \(S_{31}\) overlap, confirming that the divider is symmetric and that both output paths receive equal power. At the design frequency, both traces are approximately \(-3\ \text{dB}\), corresponding to the expected equal split.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-5.png" rel="noopener" target="_blank"><img alt="Ideal simulation insertion loss results" decoding="async" height="556" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-5.webp" width="844"/></a>
+<figcaption><strong>Figure 5:</strong> Ideal simulation insertion loss results showing \(S_{21}\) and \(S_{31}\).</figcaption>
+</figure>
+
+<h3>Output isolation</h3>
+<p>The output isolation plot shows a deep minimum at 3 GHz. This confirms that the \(2Z_0\) resistor provides strong isolation between the two output ports in the ideal Wilkinson divider.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-6.png" rel="noopener" target="_blank"><img alt="Ideal simulation output isolation" decoding="async" height="573" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-6.webp" width="844"/></a>
+<figcaption><strong>Figure 6:</strong> Ideal simulation output isolation result showing \(S_{23}\).</figcaption>
+</figure>
+
+<h3>Output phase balance</h3>
+<p>The phase plot shows that the phases of \(S_{21}\) and \(S_{31}\) track each other across the sweep. The phase difference remains approximately zero, confirming that the two branches are phase balanced.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-7.png" rel="noopener" target="_blank"><img alt="Ideal simulation output phase response" decoding="async" height="536" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-7.webp" width="843"/></a>
+<figcaption><strong>Figure 7:</strong> Ideal simulation output phase response showing the phase of \(S_{21}\), the phase of \(S_{31}\), and their phase difference.</figcaption>
+</figure>
+
+<p>Overall, the ideal ADS simulation verifies the expected Wilkinson divider behavior: equal split, strong matching, high isolation, and near-zero phase imbalance at the design frequency.</p>
+
+<h2 class="text-secondary text-uppercase" id="resistor-sweep">5. Isolation Resistor Sweep</h2>
+<p>After verifying the ideal response, the isolation resistor was swept to show its role in the divider. In the ideal design, the resistor value is \(R = 2Z_0\), or 100 Ω for a 50 Ω system.</p>
+<p>The isolation resistor does not create the basic equal power split. In normal equal-mode operation the two output nodes have equal voltage and phase, so ideally no current flows through the resistor. Instead, the resistor mainly improves output isolation and absorbs imbalance energy when the output ports are not perfectly matched.</p>
+<p>To study this effect, the resistor was defined as \(R_{\text{iso}}\) and swept from 50 Ω to 150 Ω in 25 Ω steps while the S-parameter simulation swept from 1 GHz to 6 GHz.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-8.png" rel="noopener" target="_blank"><img alt="ADS schematic used for the isolation resistor sweep" decoding="async" height="796" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-8.webp" width="997"/></a>
+<figcaption><strong>Figure 8:</strong> ADS schematic used for the isolation resistor sweep. The resistor is defined as \(R_{\text{iso}}\), and a parameter sweep simulates multiple resistor values.</figcaption>
+</figure>
+
+<h3>Effect on output isolation</h3>
+<p>The \(S_{23}\) sweep shows that the 100 Ω resistor provides the deepest isolation null at the 3 GHz design frequency. Reducing or increasing the resistor away from 100 Ω makes the isolation worse and the null shallower.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-9.png" rel="noopener" target="_blank"><img alt="Output isolation for different resistor values" decoding="async" height="586" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-9.webp" width="903"/></a>
+<figcaption><strong>Figure 9:</strong> Output isolation \(S_{23}\) for different isolation resistor values. The 100 Ω case gives the strongest isolation near 3 GHz.</figcaption>
+</figure>
+
+<h3>Effect on power split</h3>
+<p>The \(S_{21}\) result remains close to the expected \(-3\ \text{dB}\) value for all resistor values in the sweep. Compared with the large change in \(S_{23}\), the effect on insertion loss is small. This demonstrates that the power split is mainly set by the two symmetric quarter-wave branches.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-10.png" rel="noopener" target="_blank"><img alt="Transmission for different resistor values" decoding="async" height="576" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-10.webp" width="901"/></a>
+<figcaption><strong>Figure 10:</strong> Transmission \(S_{21}\) for different isolation resistor values.</figcaption>
+</figure>
+
+<h3>Effect on input match</h3>
+<p>The \(S_{11}\) sweep remains strongly centered around the 3 GHz design frequency. The curves are very similar across the resistor sweep, indicating that input match is mainly determined by the quarter-wave transformer branches rather than the exact resistor value.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-11.png" rel="noopener" target="_blank"><img alt="Input return loss for different resistor values" decoding="async" height="578" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-11.webp" width="903"/></a>
+<figcaption><strong>Figure 11:</strong> Input return loss \(S_{11}\) for different isolation resistor values.</figcaption>
+</figure>
+
+<p>The resistor sweep confirms the expected Wilkinson behavior: the \(2Z_0\) resistor is critical for output-port isolation, but not the main mechanism responsible for the equal split.</p>
+
+<h2 class="text-secondary text-uppercase" id="microstrip">6. Microstrip Implementation</h2>
+<p>After verifying the ideal transmission-line design, the next step was to convert it into a physical microstrip implementation. Unlike ideal TLIN elements, microstrip lines require physical dimensions such as trace width, trace length, substrate height, dielectric constant, copper thickness, and loss tangent.</p>
+<p>The implementation uses a two-layer RF PCB structure: top-layer copper traces over an FR-4 dielectric substrate, with a continuous ground plane on the bottom layer.</p>
+<table class="table table-bordered">
+<thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Dielectric constant, \(\varepsilon_r\)</td><td>4.3</td></tr>
+<tr><td>Substrate height, h</td><td>1.6 mm</td></tr>
+<tr><td>Copper thickness, t</td><td>0.035 mm</td></tr>
+<tr><td>Loss tangent, \(\tan\\delta\)</td><td>0.02</td></tr>
+<tr><td>Copper conductivity</td><td>\(5.8\times10^7\ \text{S/m}\)</td></tr>
+</tbody>
+</table>
+<p>ADS LineCalc was used to synthesize the physical dimensions for the selected stackup. The 50 Ω feed line was synthesized first, followed by the 70.7 Ω Wilkinson branch.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-12.png" rel="noopener" target="_blank"><img alt="ADS LineCalc synthesis for the 50 ohm feed line" decoding="async" height="530" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-12.webp" width="844"/></a>
+<figcaption><strong>Figure 12:</strong> ADS LineCalc synthesis for the 50 Ω microstrip feed line. The synthesized width was \(W_{50}\) = 3.11 mm.</figcaption>
+</figure>
+
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-13.png" rel="noopener" target="_blank"><img alt="ADS LineCalc synthesis for the 70.7 ohm Wilkinson branch" decoding="async" height="532" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-13.webp" width="848"/></a>
+<figcaption><strong>Figure 13:</strong> ADS LineCalc synthesis for the 70.7 Ω quarter-wave Wilkinson branch. The synthesized branch dimensions were \(W_{70.7}\) = 1.63 mm and \(L_{70.7,90^\circ}\) = 14.23 mm.</figcaption>
+</figure>
+
+<table class="table table-bordered">
+<thead><tr><th>Line type</th><th>Target impedance</th><th>Width</th><th>Length used</th></tr></thead>
+<tbody>
+<tr><td>Input/output feed line</td><td>50 Ω</td><td>3.11 mm</td><td>5 mm</td></tr>
+<tr><td>Wilkinson branch</td><td>70.7 Ω</td><td>1.63 mm</td><td>14.23 mm</td></tr>
+<tr><td>Isolation resistor</td><td>100 Ω</td><td>-</td><td>Between output nodes</td></tr>
+</tbody>
+</table>
+<h3>MLIN schematic model</h3>
+<p>The ideal TLIN components were replaced with ADS MLIN components using the same FR-4 substrate definition. The 50 Ω input and output feed lines use 3.11 mm width and 5 mm length. The two Wilkinson branches use 1.63 mm width and 14.23 mm length, with a 100 Ω resistor between the two output nodes.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-14.png" rel="noopener" target="_blank"><img alt="ADS microstrip schematic implementation" decoding="async" height="663" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-14.webp" width="1107"/></a>
+<figcaption><strong>Figure 14:</strong> ADS microstrip schematic implementation using MLIN elements.</figcaption>
+</figure>
+
+<h3>Microstrip schematic results</h3>
+<p>The return-loss plot shows that the divider remains well matched near 3 GHz. Compared with the ideal TLIN simulation, the nulls are no longer infinitely deep because the MLIN model includes substrate and conductor behavior.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-15.png" rel="noopener" target="_blank"><img alt="Microstrip schematic return loss results" decoding="async" height="432" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-15.webp" width="652"/></a>
+<figcaption><strong>Figure 15:</strong> Microstrip schematic return-loss results showing \(S_{11}\), \(S_{22}\), and \(S_{33}\).</figcaption>
+</figure>
+
+<p>The transmission plot shows that \(S_{21}\) and \(S_{31}\) overlap, confirming equal amplitude split. At the design frequency, the insertion loss is slightly below the ideal \(-3\ \text{dB}\) value because the microstrip model includes conductor and dielectric losses.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-16.png" rel="noopener" target="_blank"><img alt="Microstrip schematic transmission results" decoding="async" height="414" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-16.webp" width="650"/></a>
+<figcaption><strong>Figure 16:</strong> Microstrip schematic transmission results showing \(S_{21}\) and \(S_{31}\).</figcaption>
+</figure>
+
+<p>The output isolation remains centered near 3 GHz and shows a strong isolation minimum. This confirms that the 100 Ω isolation resistor still provides the intended isolation when the ideal lines are replaced with physical microstrip elements.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-17.png" rel="noopener" target="_blank"><img alt="Microstrip schematic output isolation result" decoding="async" height="408" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-17.webp" width="615"/></a>
+<figcaption><strong>Figure 17:</strong> Microstrip schematic output isolation result showing \(S_{23}\).</figcaption>
+</figure>
+
+<p>The phase result shows that the two output paths remain phase balanced. The phase wrapping is a normal result of plotting phase across a wide frequency sweep.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-18.png" rel="noopener" target="_blank"><img alt="Microstrip schematic output phase response" decoding="async" height="420" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-18.webp" width="665"/></a>
+<figcaption><strong>Figure 18:</strong> Microstrip schematic output phase response showing the phase of \(S_{21}\), the phase of \(S_{31}\), and their phase difference.</figcaption>
+</figure>
+
+
+<h2 class="text-secondary text-uppercase" id="momentum">7. Layout Implementation and Momentum EM Simulation</h2>
+<p>After validating the divider with MLIN elements, the next step was to evaluate it as a physical layout using Momentum EM simulation. The physical layout introduces effects that the schematic model does not fully capture, such as junction discontinuities, curved traces, resistor pad geometry, trace coupling, and port transitions.</p>
+<p>The layout geometry was created in Fusion 360 and imported into ADS for Momentum simulation. Fusion made it easier to control the curved branch geometry, pad placement, and layout symmetry before exporting the copper profile.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-19.png" rel="noopener" target="_blank"><img alt="Fusion 360 layout draft of the Wilkinson divider" decoding="async" height="521" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-19.webp" width="689"/></a>
+<figcaption><strong>Figure 19:</strong> Fusion 360 layout draft of the microstrip Wilkinson power divider. The layout uses symmetric curved 70.7 Ω quarter-wave branches, 50 Ω input/output feed lines, and a central 0603 resistor footprint.</figcaption>
+</figure>
+
+<p>The cleaned copper geometry was imported into ADS layout and assigned to the top conductor layer. The substrate used the same two-layer microstrip structure as the schematic model: top copper over FR-4 dielectric with a continuous bottom ground plane.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-20.png" rel="noopener" target="_blank"><img alt="Imported Wilkinson divider copper geometry in ADS layout" decoding="async" height="663" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-20.webp" width="1001"/></a>
+<figcaption><strong>Figure 20:</strong> Imported Wilkinson divider copper geometry in ADS layout, assigned to the top conductor layer for Momentum simulation.</figcaption>
+</figure>
+
+<p>Momentum ports were added to the imported layout. Ports 1-3 define the external RF input and output feed lines. Two additional internal ports, Ports 4 and 5, were placed at the resistor pads so the isolation resistor could be connected later in the ADS circuit co-simulation testbench.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-21.png" rel="noopener" target="_blank"><img alt="Momentum port definition for the imported layout" decoding="async" height="679" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-21.webp" width="1090"/></a>
+<figcaption><strong>Figure 21:</strong> Momentum port definition for the imported layout. Ports 1-3 define the RF ports, while Ports 4 and 5 are placed at the resistor pads for EM/circuit co-simulation.</figcaption>
+</figure>
+
+<p>The resistor itself was not modeled as a copper object in Momentum. Instead, the copper layout and resistor pads were simulated as a 5-port EM structure. The resulting Momentum component was then placed into an ADS schematic testbench, where a 100 Ω resistor was connected between internal ports 4 and 5.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-22.png" rel="noopener" target="_blank"><img alt="ADS EM circuit co-simulation testbench" decoding="async" height="829" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-22.webp" width="1328"/></a>
+<figcaption><strong>Figure 22:</strong> ADS EM/circuit co-simulation testbench. The Momentum layout component is connected to 50 Ω terminations at Ports 1-3, while a 100 Ω resistor is connected between internal ports 4 and 5.</figcaption>
+</figure>
+
+<table class="table table-bordered">
+<thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Simulation type</td><td>Momentum EM + ADS circuit co-simulation</td></tr>
+<tr><td>Frequency range</td><td>1 GHz to 6 GHz</td></tr>
+<tr><td>Substrate</td><td>FR-4</td></tr>
+<tr><td>Top conductor</td><td>Copper, 0.035 mm</td></tr>
+<tr><td>Dielectric height</td><td>1.6 mm</td></tr>
+<tr><td>External port impedance</td><td>50 Ω</td></tr>
+<tr><td>Isolation resistor</td><td>100 Ω</td></tr>
+<tr><td>Resistor connection</td><td>Between internal ports 4 and 5</td></tr>
+</tbody>
+</table>
+<h3>Return loss</h3>
+<p>The Momentum return-loss results show that the physical layout remains well matched around the design frequency. \(S_{11}\) reaches approximately \(-22\ \text{dB}\) near 3 GHz. \(S_{22}\) and \(S_{33}\) overlap closely, confirming that the physical layout maintains good symmetry between the output paths.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-23.png" rel="noopener" target="_blank"><img alt="Momentum EM co-simulation return loss results" decoding="async" height="494" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-23.webp" width="772"/></a>
+<figcaption><strong>Figure 23:</strong> Momentum EM/circuit co-simulation return-loss results showing \(S_{11}\), \(S_{22}\), and \(S_{33}\).</figcaption>
+</figure>
+
+<h3>Power split</h3>
+<p>The transmission results show that \(S_{21}\) and \(S_{31}\) remain closely matched across the sweep. Around the 3 GHz design frequency, both outputs are approximately \(-3.5\ \text{dB}\) to \(-3.6\ \text{dB}\). This is slightly lower than the ideal \(-3\ \text{dB}\) equal split, but the extra loss is expected due to FR-4 dielectric loss, conductor loss, and layout discontinuities.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-24.png" rel="noopener" target="_blank"><img alt="Momentum EM co-simulation transmission results" decoding="async" height="480" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-24.webp" width="765"/></a>
+<figcaption><strong>Figure 24:</strong> Momentum EM/circuit co-simulation transmission results showing \(S_{21}\) and \(S_{31}\).</figcaption>
+</figure>
+
+<h3>Output isolation</h3>
+<p>The output isolation result shows a deep isolation minimum near the design frequency, reaching approximately \(-55\ \text{dB}\) around 3.1 GHz. This confirms that the 100 Ω resistor connected between the internal resistor pad ports is providing the intended Wilkinson output isolation.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-25.png" rel="noopener" target="_blank"><img alt="Momentum EM co-simulation output isolation result" decoding="async" height="462" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-25.webp" width="734"/></a>
+<figcaption><strong>Figure 25:</strong> Momentum EM/circuit co-simulation output isolation result showing \(S_{23}\).</figcaption>
+</figure>
+
+<h3>Output phase balance</h3>
+<p>The phase results show that \(S_{21}\) and \(S_{31}\) track closely. The phase difference remains approximately zero, confirming that the two output paths are phase balanced.</p>
+
+<figure class="project-figure">
+<a href="../assets/img/projects/wilkinson-power-divider/figure-26.png" rel="noopener" target="_blank"><img alt="Momentum EM co-simulation output phase response" decoding="async" height="467" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-26.webp" width="752"/></a>
+<figcaption><strong>Figure 26:</strong> Momentum EM/circuit co-simulation output phase response showing the phase of \(S_{21}\), the phase of \(S_{31}\), and their phase difference.</figcaption>
+</figure>
+
+
+<h2 class="text-secondary text-uppercase" id="comparison">8. Comparison and Discussion</h2>
+<p>The divider was simulated at three levels of abstraction: an ideal transmission-line model, a microstrip schematic model, and a Momentum EM/circuit co-simulation. Each stage added more physical detail to the design and therefore produced a more realistic result.</p>
+<p>The ideal TLIN simulation represents the theoretical Wilkinson divider. It produced nearly perfect matching and isolation at the design frequency. The MLIN schematic simulation replaced the ideal lines with physical microstrip elements based on the selected FR-4 substrate, adding conductor loss, dielectric loss, and dispersion. Finally, the Momentum simulation evaluated the actual copper geometry, including curved branches, junctions, output transitions, resistor pads, and electromagnetic coupling.</p>
+<table class="table table-bordered">
+<thead><tr><th>Result</th><th>Ideal TLIN</th><th>MLIN schematic</th><th>Momentum EM/circuit</th></tr></thead>
+<tbody>
+<tr><td>Input match, \(S_{11}\)</td><td>Very deep null at 3 GHz</td><td>Deep null near 3 GHz</td><td>About \(-22\ \text{dB}\) near 3 GHz</td></tr>
+<tr><td>Transmission, \(S_{21}\)/\(S_{31}\)</td><td>About \(-3\ \text{dB}\)</td><td>Slightly below \(-3\ \text{dB}\)</td><td>About \(-3.5\ \text{dB}\) to \(-3.6\ \text{dB}\)</td></tr>
+<tr><td>Output isolation, \(S_{23}\)</td><td>Very deep null</td><td>Strong null near 3 GHz</td><td>About \(-55\ \text{dB}\) near 3.1 GHz</td></tr>
+<tr><td>Output balance</td><td>Ideal overlap</td><td>Very close overlap</td><td>Very close overlap</td></tr>
+<tr><td>Phase balance</td><td>Approximately 0° difference</td><td>Approximately 0° difference</td><td>Approximately 0° difference</td></tr>
+</tbody>
+</table>
+<p>The comparison shows that the divider behavior is preserved across all three stages. The most noticeable difference is the increase in insertion loss in the Momentum result. This is expected because the EM/circuit co-simulation includes realistic FR-4 dielectric loss, conductor loss, and layout discontinuities.</p>
+<p>The Momentum result also shows that the physical layout shifts and shapes the response compared to the ideal schematic model. The curved branches, resistor pads, and transitions are not ideal transmission-line elements, so they affect the exact matching and isolation behavior. However, the final result still shows the key Wilkinson properties: matched operation near the design frequency, equal output split, high output isolation, and good phase balance.</p>
+
+<h2 class="text-secondary text-uppercase" id="summary">9. Summary and Engineering Takeaways</h2>
+<p>This project demonstrated the complete design and simulation flow for a two-way equal-split Wilkinson power divider. The design started from the theoretical component values: two quarter-wave branches with characteristic impedance \(\sqrt{2}Z_0\) and a \(2Z_0\) isolation resistor between the output ports. For a 50 Ω system, this resulted in 70.7 Ω quarter-wave branches and a 100 Ω isolation resistor.</p>
+<p>The ideal ADS simulation verified the expected Wilkinson behavior at the 3 GHz design frequency. A resistor sweep then showed that the isolation resistor mainly affects output isolation rather than the basic power split. The best isolation occurred when the resistor was set to \(2Z_0\), while the transmission response remained close to the expected equal-split value.</p>
+<p>The design was then converted into a microstrip implementation using a generic FR-4 substrate. ADS LineCalc synthesized the 50 Ω feed lines and 70.7 Ω quarter-wave branches. The MLIN schematic simulation showed that the divider behavior was preserved after replacing ideal transmission lines with physical microstrip elements, while also introducing realistic conductor and dielectric loss.</p>
+<p>Finally, the physical layout was imported into ADS Momentum and simulated using EM/circuit co-simulation. The layout included curved quarter-wave branches, physical junctions, output transitions, and resistor pads. The Momentum results showed good input matching near the design frequency, balanced output transmission of approximately \(-3.5\ \text{dB}\) to \(-3.6\ \text{dB}\), strong output isolation near 3.1 GHz, and near-zero phase imbalance between the output paths.</p>
+<p>Overall, the project shows how the same RF circuit can be evaluated at multiple levels of abstraction. The ideal simulation verifies the theory, the microstrip schematic checks the physical transmission-line dimensions, and the Momentum simulation validates the actual layout geometry. The final result preserves the key Wilkinson divider behavior while also showing the practical effects introduced by PCB layout and substrate loss.</p>
+
+<a class="btn btn-primary btn-xl mt-4" href="../index.html#portfolio">Back to Portfolio</a>
+</div>
+</div>
+</div>
+</main>
+<footer class="footer text-center">
+<div class="container"><div class="row justify-content-center"><div class="col-lg-4 mb-5 mb-lg-0">
+<h4 class="text-uppercase mb-4">Socials</h4>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
+<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com"><i class="fas fa-fw fa-envelope"></i></a>
+</div></div></div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/scripts.js"></script>
+</body>
+</html>

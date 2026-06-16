@@ -54,6 +54,16 @@ window.addEventListener('DOMContentLoaded', event => {
     // Portfolio project data. Add new projects here and create the matching page in /projects.
     const projects = [
         {
+            title: "Wilkinson Power Divider",
+            date: "June 15, 2026",
+            image: "assets/img/projects/wilkinson-power-divider/figure-21.webp",
+            imageAlt: "Momentum layout port definition for a 3 GHz Wilkinson power divider",
+            imageWidth: 1090,
+            imageHeight: 679,
+            description: "A 3 GHz two-way equal-split Wilkinson power divider designed from theory, simulated in ADS, converted to microstrip, and validated with Momentum EM/circuit co-simulation.",
+            link: "projects/wilkinson-power-divider.html"
+        },
+        {
             title: "Microstrip Line EM Validation",
             date: "June 1, 2026",
             image: "assets/img/projects/microstrip-line-em-validation/figure-16.webp",

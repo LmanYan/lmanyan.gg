@@ -11414,3 +11414,42 @@ html {
     line-height: 2.2rem;
   }
 }
+
+/* Project article helpers */
+.project-toc {
+  margin: 1.5rem 0 2.5rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.85rem;
+  background: #f8f9fa;
+  border: 1px solid rgba(44, 62, 80, 0.12);
+}
+
+.project-figure {
+  margin: 2rem 0;
+}
+
+.project-figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.35rem 1rem rgba(44, 62, 80, 0.10);
+}
+
+.project-figure figcaption {
+  margin-top: 0.75rem;
+  color: #6c757d;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.equation {
+  margin: 1rem 0;
+  padding: 0.85rem 1rem;
+  border-left: 0.3rem solid #1A81BC;
+  background: #f8f9fa;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+  overflow-x: auto;
+}
