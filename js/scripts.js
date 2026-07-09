@@ -54,6 +54,18 @@ window.addEventListener('DOMContentLoaded', event => {
     // Portfolio project data. Add new projects here and create the matching page in /projects.
     const projects = [
         {
+            title: "Branch-Line Coupler",
+            date: "July 8, 2026",
+            image: "assets/img/projects/branch-line-coupler/figure-19-thumb.webp",
+            imageAlt: "Initial HFSS branch-line coupler implementation over FR-4",
+            imageWidth: 560,
+            imageHeight: 316,
+            imageSrcset: "assets/img/projects/branch-line-coupler/figure-19-thumb.webp 560w, assets/img/projects/branch-line-coupler/figure-19.webp 665w",
+            imageSizes: "(max-width: 767px) calc(100vw - 4rem), 280px",
+            description: "A 3 GHz microstrip 90° branch-line hybrid coupler designed in ADS, converted to microstrip, tuned in HFSS, and evaluated for match, isolation, amplitude balance, phase balance, and usable bandwidth.",
+            link: "projects/branch-line-coupler.html"
+        },
+        {
             title: "Wilkinson Power Divider",
             date: "June 15, 2026",
             image: "assets/img/projects/wilkinson-power-divider/figure-21.webp",
@@ -96,7 +108,7 @@ window.addEventListener('DOMContentLoaded', event => {
         portfolioPosts.innerHTML = projects.map(project => `
             <article class="portfolio-post-card">
                 <a class="portfolio-post-image-link" href="${project.link}">
-                    <img class="portfolio-post-image" src="${project.image}" alt="${project.imageAlt}" loading="lazy" decoding="async" ${project.imageWidth ? `width="${project.imageWidth}"` : ""} ${project.imageHeight ? `height="${project.imageHeight}"` : ""} />
+                    <img class="portfolio-post-image" src="${project.image}" alt="${project.imageAlt}" loading="lazy" decoding="async" ${project.imageSrcset ? `srcset="${project.imageSrcset}"` : ""} ${project.imageSizes ? `sizes="${project.imageSizes}"` : ""} ${project.imageWidth ? `width="${project.imageWidth}"` : ""} ${project.imageHeight ? `height="${project.imageHeight}"` : ""} />
                 </a>
                 <div class="portfolio-post-content">
                     <h3 class="portfolio-post-title"><a href="${project.link}">${project.title}</a></h3>
@@ -106,5 +118,39 @@ window.addEventListener('DOMContentLoaded', event => {
             </article>
         `).join('');
     }
+
+
+    // Copy display-equation LaTeX source for project writeups.
+    document.querySelectorAll('.copy-equation').forEach(button => {
+        button.addEventListener('click', async () => {
+            const latex = button.dataset.latex || button.closest('.equation')?.dataset.latex || '';
+            if (!latex) return;
+            const originalLabel = button.textContent;
+            const setCopied = () => {
+                button.textContent = 'Copied';
+                window.setTimeout(() => { button.textContent = originalLabel; }, 1400);
+            };
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(latex);
+                    setCopied();
+                } else {
+                    const temp = document.createElement('textarea');
+                    temp.value = latex;
+                    temp.setAttribute('readonly', '');
+                    temp.style.position = 'absolute';
+                    temp.style.left = '-9999px';
+                    document.body.appendChild(temp);
+                    temp.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(temp);
+                    setCopied();
+                }
+            } catch (error) {
+                button.textContent = 'Copy failed';
+                window.setTimeout(() => { button.textContent = originalLabel; }, 1400);
+            }
+        });
+    });
 
 });

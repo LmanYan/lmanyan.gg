@@ -11453,3 +11453,49 @@ html {
   font-weight: 700;
   overflow-x: auto;
 }
+
+
+/* Copyable equation blocks */
+.equation-copyable {
+  position: relative;
+  padding-top: 2.25rem;
+}
+
+.copy-equation {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.6rem;
+  border: 1px solid rgba(26, 129, 188, 0.35);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #1A81BC;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+}
+
+.copy-equation:hover,
+.copy-equation:focus {
+  background: #1A81BC;
+  color: #ffffff;
+}
+
+.project-figure img,
+.project-hero-image,
+.portfolio-post-image {
+  content-visibility: auto;
+}
+
+
+/* Faster project figure rendering: keep off-screen figures out of layout/paint work. */
+.project-figure {
+  content-visibility: auto;
+  contain-intrinsic-size: 700px;
+}
+.project-figure picture,
+.project-hero-image {
+  display: block;
+}
