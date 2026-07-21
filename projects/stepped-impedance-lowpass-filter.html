@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<meta content="A fifth-order 3 GHz Chebyshev stepped-impedance microstrip low-pass filter developed from prototype synthesis through ADS, Momentum, independent HFSS validation, and multi-parameter electromagnetic optimization." name="description"/>
+<meta content="Yaniv Lieberman" name="author"/>
+<title>Stepped-Impedance Low-Pass Filter | Yaniv Lieberman</title>
+<link href="../assets/favicon.ico" rel="icon" type="image/x-icon"/>
+<script crossorigin="anonymous" src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
+<link href="../css/styles.css" rel="stylesheet"/>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},chtml:{scale:1}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<link as="image" href="../assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-hero-640.webp" imagesizes="(max-width: 991px) calc(100vw - 3rem), 850px" imagesrcset="../assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-hero-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-hero-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-hero-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-hero-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-hero.webp 886w" rel="preload"/>
+</head>
+<body id="page-top">
+<nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav"><div class="container">
+<a class="navbar-brand" href="../index.html#page-top">YANIV LIEBERMAN</a>
+<button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <i class="fas fa-bars"></i></button>
+<div class="collapse navbar-collapse" id="navbarResponsive"><ul class="navbar-nav ms-auto">
+<li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#about">About</a></li>
+<li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#portfolio">Portfolio</a></li>
+<li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#contact">Contact</a></li>
+</ul></div></div></nav>
+<header class="project-masthead bg-primary text-white text-center"><div class="container d-flex align-items-center flex-column">
+<p class="project-kicker text-uppercase mb-3">RF Filter Design · ADS · Momentum · HFSS</p>
+<h1 class="project-heading text-uppercase mb-0">Stepped-Impedance Low-Pass Filter</h1>
+<div class="divider-custom divider-light"><div class="divider-custom-line"></div><div class="divider-custom-icon"><i class="fa-solid fa-satellite-dish"></i></div><div class="divider-custom-line"></div></div>
+<p class="project-subheading font-weight-light mb-0">A 3 GHz Chebyshev prototype translated into FR-4 microstrip, independently validated in two full-wave solvers, and electromagnetically optimized.</p>
+</div></header>
+<main class="page-section project-page"><div class="container"><div class="row justify-content-center"><div class="col-lg-9">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-18.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-hero-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-hero-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-hero-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-hero-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-hero.webp 886w" type="image/webp"/>
+<img alt="ADS Momentum layout of the stepped-impedance low-pass filter" class="project-hero-image project-hero-image-contain mb-4" decoding="async" fetchpriority="high" height="479" loading="eager" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-18.png" width="886"/>
+</picture></a>
+<p class="project-date">July 22, 2026</p>
+<div aria-label="Project highlights" class="project-summary-grid">
+<div class="project-summary-card"><span class="project-summary-label">Response</span><strong>5th-order Chebyshev Type I</strong><span>0.1 dB ripple, 3 GHz passband edge</span></div>
+<div class="project-summary-card"><span class="project-summary-label">Implementation</span><strong>120 Ω / 20 Ω microstrip</strong><span>Five symmetric stepped-width sections</span></div>
+<div class="project-summary-card"><span class="project-summary-label">Validation</span><strong>ADS · Momentum · HFSS</strong><span>Independent full-wave cross-check</span></div>
+<div class="project-summary-card"><span class="project-summary-label">Final result</span><strong>−0.758 dB at 3 GHz</strong><span>−3 dB at 3.386 GHz</span></div>
+</div>
+<div class="project-toc">
+<h3 class="mt-0 text-secondary text-uppercase">Project Sections</h3>
+<ol class="mb-0">
+<li><a href="#overview">Overview and design targets</a></li>
+<li><a href="#prototype">Chebyshev prototype synthesis</a></li>
+<li><a href="#lumped">Lumped-element ADS reference</a></li>
+<li><a href="#transformation">Stepped-impedance transformation</a></li>
+<li><a href="#ideal-lines">Ideal transmission-line model</a></li>
+<li><a href="#microstrip">FR-4 microstrip synthesis</a></li>
+<li><a href="#momentum">Momentum full-wave model</a></li>
+<li><a href="#hfss">HFSS cross-validation</a></li>
+<li><a href="#optimization">Electromagnetic optimization</a></li>
+<li><a href="#final-comparison">Final result versus lumped reference</a></li>
+<li><a href="#limitations">Limitations and next steps</a></li>
+<li><a href="#conclusion">Conclusions</a></li>
+</ol>
+</div>
+<h2 class="text-secondary text-uppercase" id="overview">1. Overview and Design Targets</h2>
+<p>At microwave frequencies, discrete inductors and capacitors are increasingly influenced by package parasitics, self-resonance, and layout-dependent behavior. A stepped-impedance low-pass filter replaces those components with alternating high- and low-characteristic-impedance transmission-line sections. Electrically short high-impedance sections act mainly as series inductors, while low-impedance sections act mainly as shunt capacitors.</p>
+<p>This project follows the complete design path from a normalized Chebyshev prototype to a physical FR-4 microstrip layout. The circuit is evaluated progressively using an ideal lumped model, ideal transmission lines, ADS MLIN elements, ADS Momentum, and an independent Ansys HFSS reconstruction. The first physical layout departed substantially from the circuit-level prediction, so the final stage uses staged HFSS parameter sweeps to recover the intended transition frequencies.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-1.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-1-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-1-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-1-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-1-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-1-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-1-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-1.webp 2200w" type="image/webp"/>
+<img alt="Workflow from Chebyshev synthesis through ADS, Momentum, HFSS, and optimization" decoding="async" height="420" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-1.png" width="2200"/>
+</picture></a>
+<figcaption><strong>Figure 1:</strong> Complete workflow from normalized Chebyshev synthesis through independent full-wave validation and electromagnetic length optimization.</figcaption>
+</figure>
+<table class="table table-bordered">
+<thead><tr><th>Parameter</th><th>Selected value</th></tr></thead><tbody>
+<tr><td>Filter response</td><td>Chebyshev Type I</td></tr>
+<tr><td>Order</td><td>5</td></tr>
+<tr><td>Passband ripple</td><td>0.1 dB</td></tr>
+<tr><td>Passband-edge frequency</td><td>3 GHz</td></tr>
+<tr><td>Reference impedance</td><td>50 Ω</td></tr>
+<tr><td>Implementation</td><td>Stepped-impedance microstrip on FR-4</td></tr>
+</tbody></table>
+<p>The 3 GHz specification is the Chebyshev <em>passband edge</em>, where the ideal response reaches −0.1 dB. It is not the conventional −3 dB frequency. The −3 dB and −20 dB crossings are extracted separately and used as the primary transition-region comparison metrics.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-2.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-2-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-2-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-2-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-2-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-2.webp 889w" type="image/webp"/>
+<img alt="Butterworth and Chebyshev low-pass response comparison" decoding="async" height="540" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-2.png" width="889"/>
+</picture></a>
+<figcaption><strong>Figure 2:</strong> Comparison of fifth-order Butterworth and 0.1 dB Chebyshev Type-I responses. The Chebyshev response accepts controlled passband ripple in exchange for a sharper transition.</figcaption>
+</figure>
+<h2 class="text-secondary text-uppercase" id="prototype">2. Chebyshev Prototype Synthesis</h2>
+<p>In an application-driven design, the minimum order is determined from the allowed passband ripple, required stopband attenuation, and normalized stopband frequency:</p>
+<div class="equation equation-copyable" data-latex="\[\Omega_s=\frac{f_s}{f_p},\qquad N\geq\frac{\cosh^{-1}\!\left(\sqrt{\frac{10^{A_s/10}-1}{10^{A_p/10}-1}}\right)}{\cosh^{-1}(\Omega_s)}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\Omega_s=\frac{f_s}{f_p},\qquad N\geq\frac{\cosh^{-1}\!\left(\sqrt{\frac{10^{A_s/10}-1}{10^{A_p/10}-1}}\right)}{\cosh^{-1}(\Omega_s)}\]" type="button">Copy LaTeX</button>\[\Omega_s=\frac{f_s}{f_p},\qquad N\geq\frac{\cosh^{-1}\!\left(\sqrt{\frac{10^{A_s/10}-1}{10^{A_p/10}-1}}\right)}{\cosh^{-1}(\Omega_s)}\]</div>
+<p>No unique stopband specification was imposed in this exploratory project, so a fifth-order network was selected directly as a useful compromise between response sharpness and physical complexity.</p>
+<p>For a 0.1 dB Chebyshev Type-I response, the ripple factor is:</p>
+<div class="equation equation-copyable" data-latex="\[\epsilon=\sqrt{10^{A_p/10}-1}=0.153\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\epsilon=\sqrt{10^{A_p/10}-1}=0.153\]" type="button">Copy LaTeX</button>\[\epsilon=\sqrt{10^{A_p/10}-1}=0.153\]</div>
+<p>The normalized coefficients are obtained from the standard Chebyshev Type-I low-pass prototype recursion. For the selected order \(N=5\), first calculate:</p>
+<div class="equation equation-copyable" data-latex="\[x=\frac{\operatorname{asinh}(1/\epsilon)}{N},\qquad \gamma=\sinh(x)\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[x=\frac{\operatorname{asinh}(1/\epsilon)}{N},\qquad \gamma=\sinh(x)\]" type="button">Copy LaTeX</button>\[x=\frac{\operatorname{asinh}(1/\epsilon)}{N},\qquad \gamma=\sinh(x)\]</div>
+<div class="equation equation-copyable" data-latex="\[a_k=\sin\!\left(\frac{(2k-1)\pi}{2N}\right),\qquad b_k=\gamma^2+\sin^2\!\left(\frac{k\pi}{N}\right)\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[a_k=\sin\!\left(\frac{(2k-1)\pi}{2N}\right),\qquad b_k=\gamma^2+\sin^2\!\left(\frac{k\pi}{N}\right)\]" type="button">Copy LaTeX</button>\[a_k=\sin\!\left(\frac{(2k-1)\pi}{2N}\right),\qquad b_k=\gamma^2+\sin^2\!\left(\frac{k\pi}{N}\right)\]</div>
+<div class="equation equation-copyable" data-latex="\[g_0=1,\qquad g_1=\frac{2a_1}{\gamma},\qquad g_k=\frac{4a_{k-1}a_k}{b_{k-1}g_{k-1}},\quad k=2,\ldots,N\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[g_0=1,\qquad g_1=\frac{2a_1}{\gamma},\qquad g_k=\frac{4a_{k-1}a_k}{b_{k-1}g_{k-1}},\quad k=2,\ldots,N\]" type="button">Copy LaTeX</button>\[g_0=1,\qquad g_1=\frac{2a_1}{\gamma},\qquad g_k=\frac{4a_{k-1}a_k}{b_{k-1}g_{k-1}},\quad k=2,\ldots,N\]</div>
+<div class="equation equation-copyable" data-latex="\[g_{N+1}=1\qquad\text{for the odd-order prototype used here}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[g_{N+1}=1\qquad\text{for the odd-order prototype used here}\]" type="button">Copy LaTeX</button>\[g_{N+1}=1\qquad\text{for the odd-order prototype used here}\]</div>
+<p>The recursive prototype calculation gives the normalized coefficients:</p>
+<table class="table table-bordered"><thead><tr><th>Coefficient</th><th>Value</th><th>Role</th></tr></thead><tbody>
+<tr><td>\(g_0\)</td><td>1</td><td>Source termination</td></tr>
+<tr><td>\(g_1\)</td><td>1.147</td><td>Series inductor</td></tr>
+<tr><td>\(g_2\)</td><td>1.371</td><td>Shunt capacitor</td></tr>
+<tr><td>\(g_3\)</td><td>1.975</td><td>Series inductor</td></tr>
+<tr><td>\(g_4\)</td><td>1.371</td><td>Shunt capacitor</td></tr>
+<tr><td>\(g_5\)</td><td>1.147</td><td>Series inductor</td></tr>
+<tr><td>\(g_6\)</td><td>1</td><td>Load termination</td></tr>
+</tbody></table>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-3.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-3-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-3-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-3-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-3-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-3.webp 887w" type="image/webp"/>
+<img alt="Normalized fifth-order Chebyshev low-pass ladder" decoding="async" height="342" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-3.png" width="887"/>
+</picture></a>
+<figcaption><strong>Figure 3:</strong> Normalized fifth-order Chebyshev Type-I low-pass ladder. Odd-numbered coefficients map to series inductors; even-numbered coefficients map to shunt capacitors.</figcaption>
+</figure>
+<p>The prototype is normalized to a 1 Ω termination and a 1 rad/s passband edge. At the normalized passband edge, a series-inductor coefficient represents reactance \(X_L=g_k\), while a shunt-capacitor coefficient represents susceptance \(B_C=g_k\). Restoring the target impedance \(Z_0\) and angular passband-edge frequency \(\omega_p\) gives:</p>
+<div class="equation equation-copyable" data-latex="\[L_k=\frac{Z_0g_k}{\omega_p},\qquad C_k=\frac{g_k}{Z_0\omega_p},\qquad \omega_p=2\pi f_p\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[L_k=\frac{Z_0g_k}{\omega_p},\qquad C_k=\frac{g_k}{Z_0\omega_p},\qquad \omega_p=2\pi f_p\]" type="button">Copy LaTeX</button>\[L_k=\frac{Z_0g_k}{\omega_p},\qquad C_k=\frac{g_k}{Z_0\omega_p},\qquad \omega_p=2\pi f_p\]</div>
+<table class="table table-bordered"><thead><tr><th>Element</th><th>Prototype coefficient</th><th>Scaled value</th></tr></thead><tbody>
+<tr><td>\(L_1\)</td><td>\(g_1\)</td><td>3.042 nH</td></tr>
+<tr><td>\(C_2\)</td><td>\(g_2\)</td><td>1.455 pF</td></tr>
+<tr><td>\(L_3\)</td><td>\(g_3\)</td><td>5.239 nH</td></tr>
+<tr><td>\(C_4\)</td><td>\(g_4\)</td><td>1.455 pF</td></tr>
+<tr><td>\(L_5\)</td><td>\(g_5\)</td><td>3.042 nH</td></tr>
+</tbody></table>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-4.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-4-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-4-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-4-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-4-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-4-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-4.webp 1217w" type="image/webp"/>
+<img alt="ADS lumped-element Chebyshev low-pass schematic" decoding="async" height="226" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-4.png" width="1217"/>
+</picture></a>
+<figcaption><strong>Figure 4:</strong> ADS implementation of the scaled fifth-order, 0.1 dB-ripple Chebyshev Type-I lumped prototype.</figcaption>
+</figure>
+<h2 class="text-secondary text-uppercase" id="lumped">3. Lumped-Element ADS Reference</h2>
+<p>The ideal LC ladder establishes the theoretical response that every distributed and full-wave model is compared against. It contains no component loss, package parasitics, substrate effects, or electromagnetic coupling.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-5.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-5-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-5-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-5-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-5-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-5-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-5.webp 1114w" type="image/webp"/>
+<img alt="Ideal lumped-element low-pass S-parameter response" decoding="async" height="713" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-5.png" width="1114"/>
+</picture></a>
+<figcaption><strong>Figure 5:</strong> Ideal lumped-element S-parameter response. Markers identify the passband edge and the −3 dB, −20 dB, and −40 dB reference points.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-6.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-6-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-6-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-6-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-6-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-6.webp 881w" type="image/webp"/>
+<img alt="Enlarged Chebyshev passband ripple response" decoding="async" height="550" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-6.png" width="881"/>
+</picture></a>
+<figcaption><strong>Figure 6:</strong> Enlarged lumped-element passband showing the 0.1 dB equal-ripple behavior.</figcaption>
+</figure>
+<table class="table table-bordered"><thead><tr><th>Reference metric</th><th>Lumped result</th></tr></thead><tbody>
+<tr><td>\(S_{21}(3\text{ GHz})\)</td><td>−0.1 dB</td></tr>
+<tr><td>−3 dB crossing</td><td>3.405 GHz</td></tr>
+<tr><td>−20 dB crossing</td><td>4.54 GHz</td></tr>
+<tr><td>−40 dB crossing</td><td>6.665 GHz</td></tr>
+<tr><td>Ideal transition width, −3 to −20 dB</td><td>1.135 GHz</td></tr>
+</tbody></table>
+<p>For the ideal lumped-element response, 6.665 GHz is the frequency at which transmission first reaches approximately −40 dB. The later distributed and full-wave responses do not reach −40 dB within the 0.01–8 GHz simulation range. Accordingly, those models are compared using the fixed-frequency value \(S_{21}(6.665\text{ GHz})\), rather than a nonexistent −40 dB crossing.</p>
+<h2 class="text-secondary text-uppercase" id="transformation">4. Stepped-Impedance Transformation</h2>
+<p>The LC sequence \(L_1-C_2-L_3-C_4-L_5\) is transformed into a continuous \(Z_H-Z_L-Z_H-Z_L-Z_H\) line. For electrically short sections, the ABCD matrix separates approximately into dominant series and shunt terms:</p>
+<div class="equation equation-copyable" data-latex="\[\theta_{L,k}\approx g_k\frac{Z_0}{Z_H},\qquad \theta_{C,k}\approx g_k\frac{Z_L}{Z_0}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\theta_{L,k}\approx g_k\frac{Z_0}{Z_H},\qquad \theta_{C,k}\approx g_k\frac{Z_L}{Z_0}\]" type="button">Copy LaTeX</button>\[\theta_{L,k}\approx g_k\frac{Z_0}{Z_H},\qquad \theta_{C,k}\approx g_k\frac{Z_L}{Z_0}\]</div>
+<p>A larger impedance ratio improves the inductive/capacitive separation but produces increasingly extreme microstrip widths. The selected compromise was:</p>
+<div class="equation equation-copyable" data-latex="\[Z_H=120\ \Omega,\qquad Z_L=20\ \Omega,\qquad \frac{Z_H}{Z_L}=6\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[Z_H=120\ \Omega,\qquad Z_L=20\ \Omega,\qquad \frac{Z_H}{Z_L}=6\]" type="button">Copy LaTeX</button>\[Z_H=120\ \Omega,\qquad Z_L=20\ \Omega,\qquad \frac{Z_H}{Z_L}=6\]</div>
+<table class="table table-bordered"><thead><tr><th>Section</th><th>Impedance</th><th>Electrical length at 3 GHz</th></tr></thead><tbody>
+<tr><td>Outer high-impedance sections</td><td>120 Ω</td><td>27.38°</td></tr>
+<tr><td>Low-impedance sections</td><td>20 Ω</td><td>31.43°</td></tr>
+<tr><td>Center high-impedance section</td><td>120 Ω</td><td>47.15°</td></tr>
+</tbody></table>
+<p>The 47.15° center section is not especially short, so deviation from the ideal LC response is expected even before physical discontinuities are introduced.</p>
+<figure class="project-figure">
+<svg aria-labelledby="filter-topology-title filter-topology-desc" class="filter-topology-diagram" role="img" viewBox="0 0 1140 190">
+<title id="filter-topology-title">Stepped-impedance line sequence</title>
+<desc id="filter-topology-desc">A 50 ohm source followed by alternating 120 ohm and 20 ohm transmission-line sections, ending in a 50 ohm load.</desc>
+<line stroke="currentColor" stroke-width="4" x1="30" x2="1070" y1="95" y2="95"></line>
+<g class="topology-node"><rect height="70" rx="10" width="110" x="30" y="60"></rect><text x="85" y="88">Source</text><text x="85" y="112">50 Ω</text></g>
+<g class="topology-node topology-high"><rect height="70" rx="10" width="125" x="165" y="60"></rect><text x="227.5" y="88">120 Ω</text><text x="227.5" y="112">27.38°</text></g>
+<g class="topology-node topology-low"><rect height="100" rx="10" width="145" x="315" y="45"></rect><text x="387.5" y="88">20 Ω</text><text x="387.5" y="112">31.43°</text></g>
+<g class="topology-node topology-high"><rect height="70" rx="10" width="125" x="485" y="60"></rect><text x="547.5" y="88">120 Ω</text><text x="547.5" y="112">47.15°</text></g>
+<g class="topology-node topology-low"><rect height="100" rx="10" width="145" x="635" y="45"></rect><text x="707.5" y="88">20 Ω</text><text x="707.5" y="112">31.43°</text></g>
+<g class="topology-node topology-high"><rect height="70" rx="10" width="125" x="805" y="60"></rect><text x="867.5" y="88">120 Ω</text><text x="867.5" y="112">27.38°</text></g>
+<g class="topology-node"><rect height="70" rx="10" width="110" x="960" y="60"></rect><text x="1015" y="88">Load</text><text x="1015" y="112">50 Ω</text></g></svg>
+<figcaption><strong>Figure 7:</strong> Ideal stepped-impedance transformation of the fifth-order lumped prototype.</figcaption>
+</figure>
+<h2 class="text-secondary text-uppercase" id="ideal-lines">5. Ideal Transmission-Line Model</h2>
+<p>The calculated sections were first implemented using ideal, lossless ADS TLIN elements. This isolates the distributed approximation from substrate loss, conductor loss, dispersion, and physical width-step parasitics.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-8.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-8-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-8-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-8-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-8-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-8-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-8-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-8.webp 1297w" type="image/webp"/>
+<img alt="ADS ideal stepped-impedance transmission-line schematic" decoding="async" height="561" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-8.png" width="1297"/>
+</picture></a>
+<figcaption><strong>Figure 8:</strong> ADS ideal stepped-impedance transmission-line model using 120 Ω and 20 Ω sections.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-9.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-9-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-9-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-9-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-9-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-9.webp 959w" type="image/webp"/>
+<img alt="Ideal stepped-impedance transmission-line S-parameter response" decoding="async" height="619" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-9.png" width="959"/>
+</picture></a>
+<figcaption><strong>Figure 9:</strong> Full-range response of the ideal stepped-impedance line model.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-10.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-10-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-10-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-10-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-10.webp 746w" type="image/webp"/>
+<img alt="Ideal stepped-impedance transmission-line passband" decoding="async" height="483" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-10.png" width="746"/>
+</picture></a>
+<figcaption><strong>Figure 10:</strong> Enlarged passband of the ideal distributed model.</figcaption>
+</figure>
+<table class="table table-bordered"><thead><tr><th>Metric</th><th>Lumped LC</th><th>Ideal TLIN</th></tr></thead><tbody>
+<tr><td>\(S_{21}(3\text{ GHz})\)</td><td>−0.1 dB</td><td>−0.983 dB</td></tr>
+<tr><td>−3 dB crossing</td><td>3.405 GHz</td><td>3.235 GHz</td></tr>
+<tr><td>−20 dB crossing</td><td>4.54 GHz</td><td>4.785 GHz</td></tr>
+<tr><td>Transition width</td><td>1.135 GHz</td><td>1.55 GHz</td></tr>
+</tbody></table>
+<p>The ideal line model already broadens the transition and reduces the 3 GHz transmission. Those changes arise from the finite electrical lengths and from the fact that each line contains both series and shunt contributions.</p>
+<h2 class="text-secondary text-uppercase" id="microstrip">6. FR-4 Microstrip Synthesis and MLIN Model</h2>
+<p>The ideal sections were converted to physical microstrip using ADS LineCalc and the representative substrate definition \(h=1.6\ \text{mm}\), \(\varepsilon_r=4.3\), copper thickness \(t=0.035\ \text{mm}\) (\(35\ \mu\text{m}\)), and \(\tan\delta=0.02\).</p>
+<div class="project-figure-grid"><figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-12.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-12-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-12-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-12-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-12-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-12.webp 858w" type="image/webp"/>
+<img alt="ADS LineCalc physical line dimensions" decoding="async" height="538" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-12.png" width="858"/>
+</picture></a>
+<figcaption><strong>Figure 11:</strong> LineCalc synthesis of the 120 Ω outer high-impedance sections 1 and 5: \(W=0.385\ \text{mm}\), \(L=4.52\ \text{mm}\), and \(\theta=27.38^\circ\) at 3 GHz.</figcaption>
+</figure><figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-13.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-13-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-13-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-13-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-13-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-13.webp 858w" type="image/webp"/>
+<img alt="ADS LineCalc wide microstrip result" decoding="async" height="538" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-13.png" width="858"/>
+</picture></a>
+<figcaption><strong>Figure 12:</strong> LineCalc synthesis of the 20 Ω low-impedance sections 2 and 4: \(W=11.386\ \text{mm}\), \(L=4.52\ \text{mm}\), and \(\theta=31.43^\circ\) at 3 GHz.</figcaption>
+</figure><figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-14.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-14-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-14-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-14-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-14-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-14.webp 858w" type="image/webp"/>
+<img alt="ADS LineCalc final microstrip result" decoding="async" height="538" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-14.png" width="858"/>
+</picture></a>
+<figcaption><strong>Figure 13:</strong> LineCalc synthesis of the 120 Ω center high-impedance section 3: \(W=0.385\ \text{mm}\), \(L=7.783\ \text{mm}\), and \(\theta=47.15^\circ\) at 3 GHz.</figcaption>
+</figure></div>
+<table class="table table-bordered"><thead><tr><th>Line type</th><th>Width</th><th>Physical length</th></tr></thead><tbody>
+<tr><td>120 Ω outer sections</td><td>0.385 mm</td><td>4.52 mm</td></tr>
+<tr><td>20 Ω sections</td><td>11.386 mm</td><td>4.52 mm</td></tr>
+<tr><td>120 Ω center section</td><td>0.385 mm</td><td>7.783 mm</td></tr>
+</tbody></table>
+<p>The width ratio is approximately 29.56:1, producing four severe discontinuities between the narrow and wide sections.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-15.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-15-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-15-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-15-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-15-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-15-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-15.webp 1210w" type="image/webp"/>
+<img alt="ADS MLIN stepped-impedance filter schematic" decoding="async" height="416" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-15.png" width="1210"/>
+</picture></a>
+<figcaption><strong>Figure 14:</strong> ADS MLIN implementation using the LineCalc-derived physical dimensions.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-16.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-16-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-16-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-16-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-16-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-16-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-16.webp 1103w" type="image/webp"/>
+<img alt="ADS MLIN full-range filter response" decoding="async" height="679" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-16.png" width="1103"/>
+</picture></a>
+<figcaption><strong>Figure 15:</strong> Full-range S-parameter response of the LineCalc-derived MLIN model.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-17.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-17-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-17-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-17-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-17-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-17.webp 905w" type="image/webp"/>
+<img alt="ADS MLIN passband response" decoding="async" height="532" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-17.png" width="905"/>
+</picture></a>
+<figcaption><strong>Figure 16:</strong> Enlarged MLIN passband response.</figcaption>
+</figure>
+<table class="table table-bordered"><thead><tr><th>Metric</th><th>Ideal TLIN</th><th>MLIN</th></tr></thead><tbody>
+<tr><td>\(S_{21}(3\text{ GHz})\)</td><td>−0.983 dB</td><td>−1.649 dB</td></tr>
+<tr><td>−3 dB crossing</td><td>3.235 GHz</td><td>3.175 GHz</td></tr>
+<tr><td>−20 dB crossing</td><td>4.785 GHz</td><td>4.755 GHz</td></tr>
+</tbody></table>
+<p>The circuit-level microstrip model adds the expected dielectric and conductor loss, while its transition frequencies remain close to the ideal TLIN model. It still treats each section as a uniform line connected through idealized junctions.</p>
+<h2 class="text-secondary text-uppercase" id="momentum">7. ADS Momentum Full-Wave Model</h2>
+<p>The complete stepped-width geometry was then solved as one planar electromagnetic structure in ADS Momentum. The ports were placed directly at the two outer 120 Ω section ends, without additional 50 Ω access lines, so the EM reference plane remained at the filter boundaries.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-18.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-18-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-18-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-18-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-18-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-18.webp 886w" type="image/webp"/>
+<img alt="ADS Momentum stepped-impedance microstrip layout" decoding="async" height="479" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-18.png" width="886"/>
+</picture></a>
+<figcaption><strong>Figure 17:</strong> Physical stepped-impedance layout used for the Momentum simulation. This same figure is used as the project hero and portfolio preview image.</figcaption>
+</figure>
+<div class="project-figure-grid"><figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-19a.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-19a-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-19a-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-19a-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-19a-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-19a-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-19a-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-19a.webp 1865w" type="image/webp"/>
+<img alt="ADS Momentum FR-4 material definition" decoding="async" height="706" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-19a.png" width="1865"/>
+</picture></a>
+<figcaption><strong>Figure 18a:</strong> Momentum material definition for the representative FR-4 model.</figcaption>
+</figure><figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-19b.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-19b-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-19b-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-19b-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-19b-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-19b-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-19b-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-19b.webp 1538w" type="image/webp"/>
+<img alt="ADS Momentum substrate stackup" decoding="async" height="857" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-19b.png" width="1538"/>
+</picture></a>
+<figcaption><strong>Figure 18b:</strong> Momentum substrate stackup with top copper, 1.6 mm FR-4, and ground plane.</figcaption>
+</figure></div>
+<p>A mesh-convergence check increased the global density to 100 cells per wavelength. The response did not change meaningfully, supporting the conclusion that the large frequency shift was physical rather than a meshing artifact.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-20.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-20-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-20-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-20-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-20-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-20.webp 937w" type="image/webp"/>
+<img alt="ADS Momentum first-pass S-parameter response" decoding="async" height="558" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-20.png" width="937"/>
+</picture></a>
+<figcaption><strong>Figure 19:</strong> Momentum-simulated full-range response of the first physical layout. Because the response does not reach −40 dB within the sweep, the marker at 6.665 GHz reports a fixed-frequency stopband value rather than a −40 dB crossing.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-21.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-21-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-21-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-21-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-21.webp 799w" type="image/webp"/>
+<img alt="ADS Momentum enlarged passband response" decoding="async" height="548" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-21.png" width="799"/>
+</picture></a>
+<figcaption><strong>Figure 20:</strong> Enlarged Momentum passband showing where the response first exceeds the original −0.1 dB passband-loss limit.</figcaption>
+</figure>
+<table class="table table-bordered"><thead><tr><th>Metric</th><th>MLIN</th><th>Momentum</th></tr></thead><tbody>
+<tr><td>\(S_{21}(3\text{ GHz})\)</td><td>−1.649 dB</td><td>−8.177 dB</td></tr>
+<tr><td>−3 dB crossing</td><td>3.175 GHz</td><td>2.606 GHz</td></tr>
+<tr><td>−20 dB crossing</td><td>4.755 GHz</td><td>3.963 GHz</td></tr>
+<tr><td>Fixed-frequency stopband marker, \(S_{21}(6.665\text{ GHz})\)</td><td>approximately −29.4 dB</td><td>−32.176 dB</td></tr>
+</tbody></table>
+<p>Momentum revealed the dominant practical issue: the abrupt impedance steps add substantial electromagnetic loading and make the structure electrically longer than the isolated-line synthesis predicts. The first-pass physical response shifted sharply downward and became strongly mismatched around the intended 3 GHz passband edge.</p>
+<h2 class="text-secondary text-uppercase" id="hfss">8. Independent HFSS Cross-Validation</h2>
+<p>Before tuning the dimensions, the same physical geometry was rebuilt independently in Ansys HFSS. The model used parameterized section coordinates, compact trace-to-ground lumped ports, a finite ground and substrate, a surrounding radiation region, and a causal Djordjevic-Sarkar FR-4 definition referenced to 1 GHz.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-22.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-22-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-22-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-22-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-22-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-22-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-22-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-22.webp 2800w" type="image/webp"/>
+<img alt="HFSS parameterized filter and material setup" decoding="async" height="1800" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-22.png" width="2800"/>
+</picture></a>
+<figcaption><strong>Figure 21:</strong> HFSS model setup: project variables, causal FR-4 definition, material assignment, and scalar Optimetrics calculations.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-23.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-23-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-23-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-23-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-23-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-23-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-23-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-23.webp 1609w" type="image/webp"/>
+<img alt="Baseline HFSS response before optimization" decoding="async" height="597" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-23.png" width="1609"/>
+</picture></a>
+<figcaption><strong>Figure 22:</strong> Baseline HFSS response of the original Momentum geometry. The 6.665 GHz marker is a fixed-frequency stopband comparison because neither full-wave response reaches −40 dB within the sweep.</figcaption>
+</figure>
+<table class="table table-bordered"><thead><tr><th>Metric</th><th>Momentum</th><th>HFSS baseline</th><th>Difference</th></tr></thead><tbody>
+<tr><td>\(S_{21}(3\text{ GHz})\)</td><td>−8.177 dB</td><td>−8.247 dB</td><td>−0.07 dB</td></tr>
+<tr><td>−3 dB crossing</td><td>2.606 GHz</td><td>2.67 GHz</td><td>+64 MHz</td></tr>
+<tr><td>−20 dB crossing</td><td>3.963 GHz</td><td>3.89 GHz</td><td>−73 MHz</td></tr>
+<tr><td>Fixed-frequency stopband marker, \(S_{21}(6.665\text{ GHz})\)</td><td>−32.176 dB</td><td>−30.602 dB</td><td>+1.574 dB</td></tr>
+</tbody></table>
+<p>The close agreement between two independently constructed full-wave models confirmed that the severe downward shift was a real property of the geometry rather than a Momentum-specific artifact.</p>
+<h2 class="text-secondary text-uppercase" id="optimization">9. Electromagnetic Length Optimization</h2>
+<p>The HFSS geometry was parameterized using a common length factor and three symmetric section-family factors:</p>
+<div class="equation equation-copyable" data-latex="\[L_{HO}=L_{HO,0}k_{all}k_{HO},\qquad L_L=L_{L,0}k_{all}k_L,\qquad L_{HC}=L_{HC,0}k_{all}k_{HC}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[L_{HO}=L_{HO,0}k_{all}k_{HO},\qquad L_L=L_{L,0}k_{all}k_L,\qquad L_{HC}=L_{HC,0}k_{all}k_{HC}\]" type="button">Copy LaTeX</button>\[L_{HO}=L_{HO,0}k_{all}k_{HO},\qquad L_L=L_{L,0}k_{all}k_L,\qquad L_{HC}=L_{HC,0}k_{all}k_{HC}\]</div>
+<p>Four scalar quantities were extracted for every Optimetrics variation: \(S_{11}(3\text{ GHz})\), \(S_{21}(3\text{ GHz})\), the first −3 dB crossing, and the first −20 dB crossing. The optimization proceeded from broad frequency alignment to one-variable sensitivity studies and finally two coupled multi-parameter sweeps.</p>
+<h3>9.1 Global scale sweep</h3>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-24.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-24-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-24-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-24-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-24-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-24-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-24-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-24.webp 1607w" type="image/webp"/>
+<img alt="HFSS global filter length sweep" decoding="async" height="596" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-24.png" width="1607"/>
+</picture></a>
+<figcaption><strong>Figure 23:</strong> HFSS transmission responses for the global length-scale sweep.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-25.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-25-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-25-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-25-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-25-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-25-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-25-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-25.webp 2800w" type="image/webp"/>
+<img alt="HFSS global sweep metric plots" decoding="async" height="1700" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-25.png" width="2800"/>
+</picture></a>
+<figcaption><strong>Figure 24:</strong> Extracted global-sweep metrics: 3 GHz return loss and insertion loss, plus −3 dB and −20 dB crossing frequencies.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-26.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-26-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-26-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-26-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-26-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-26-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-26-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-26.webp 1609w" type="image/webp"/>
+<img alt="HFSS response after common length scaling" decoding="async" height="596" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-26.png" width="1609"/>
+</picture></a>
+<figcaption><strong>Figure 25:</strong> Response after selecting the common scale \(k_{all}=0.725\). Overall frequency placement is recovered, but the transition remains wider than the lumped reference.</figcaption>
+</figure>
+<p>The initial −3 dB frequency of 2.67 GHz suggested an inverse-length estimate near 0.78. The sweep identified \(k_{all}=0.725\) as the best practical global starting point: the −3 dB crossing moved to approximately 3.38 GHz and the 3 GHz insertion loss improved from about −8.25 dB to −0.67 dB.</p>
+<h3>9.2 Individual section sensitivity</h3>
+<p>With \(k_{all}=0.725\), each section family was swept separately to identify its primary effect.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-27.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-27-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-27-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-27-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-27-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-27-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-27-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-27.webp 1607w" type="image/webp"/>
+<img alt="HFSS low-impedance section length sweep" decoding="async" height="597" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-27.png" width="1607"/>
+</picture></a>
+<figcaption><strong>Figure 26:</strong> Transmission responses for the low-impedance-section sweep.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-28.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-28-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-28-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-28-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-28-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-28-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-28-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-28.webp 2800w" type="image/webp"/>
+<img alt="Low-impedance length sweep metrics" decoding="async" height="1700" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-28.png" width="2800"/>
+</picture></a>
+<figcaption><strong>Figure 27:</strong> Sensitivity of 3 GHz S-parameters and attenuation crossings to \(k_L\).</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-29.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-29-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-29-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-29-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-29-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-29-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-29-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-29.webp 1609w" type="image/webp"/>
+<img alt="HFSS response after low-impedance section tuning" decoding="async" height="595" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-29.png" width="1609"/>
+</picture></a>
+<figcaption><strong>Figure 28:</strong> Response after selecting \(k_L=0.975\) during the sequential study.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-30.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-30-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-30-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-30-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-30-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-30-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-30-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-30.webp 1605w" type="image/webp"/>
+<img alt="HFSS center high-impedance length sweep" decoding="async" height="599" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-30.png" width="1605"/>
+</picture></a>
+<figcaption><strong>Figure 29:</strong> Transmission responses for the center high-impedance-section sweep.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-31.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-31-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-31-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-31-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-31-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-31-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-31-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-31.webp 2800w" type="image/webp"/>
+<img alt="Center high-impedance length sweep metrics" decoding="async" height="1700" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-31.png" width="2800"/>
+</picture></a>
+<figcaption><strong>Figure 30:</strong> Sensitivity of the 3 GHz S-parameters and attenuation crossings to \(k_{HC}\).</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-32.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-32-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-32-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-32-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-32-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-32-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-32-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-32.webp 1605w" type="image/webp"/>
+<img alt="HFSS outer high-impedance length sweep" decoding="async" height="600" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-32.png" width="1605"/>
+</picture></a>
+<figcaption><strong>Figure 31:</strong> Transmission responses for the outer high-impedance-section sweep.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-33.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-33-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-33-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-33-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-33-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-33-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-33-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-33.webp 2800w" type="image/webp"/>
+<img alt="Outer high-impedance length sweep metrics" decoding="async" height="1700" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-33.png" width="2800"/>
+</picture></a>
+<figcaption><strong>Figure 32:</strong> Sensitivity of the 3 GHz S-parameters and attenuation crossings to \(k_{HO}\).</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-34.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-34-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-34-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-34-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-34-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-34-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-34-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-34.webp 1615w" type="image/webp"/>
+<img alt="Best sequential HFSS tuned response" decoding="async" height="600" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-34.png" width="1615"/>
+</picture></a>
+<figcaption><strong>Figure 33:</strong> Best sequentially tuned response before coupled optimization.</figcaption>
+</figure>
+<table class="table table-bordered"><thead><tr><th>Variable</th><th>Main observed effect</th></tr></thead><tbody>
+<tr><td>\(k_L\)</td><td>Moves both transition crossings and strongly influences 3 GHz matching.</td></tr>
+<tr><td>\(k_{HC}\)</td><td>Primarily shifts the overall response and has a pronounced matching optimum near unity.</td></tr>
+<tr><td>\(k_{HO}\)</td><td>Changes the −20 dB crossing more than the −3 dB crossing, helping narrow the transition.</td></tr>
+</tbody></table>
+<h3>9.3 Coupled multi-parameter sweeps</h3>
+<p>One-at-a-time sweeps could not simultaneously match the two transition crossings while preserving good 3 GHz transmission and return loss. Two 27-point Cartesian sweeps were therefore used to expose interactions among the section families.</p>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-35.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-35-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-35-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-35-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-35-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-35-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-35-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-35.webp 1398w" type="image/webp"/>
+<img alt="First coupled HFSS optimization sweep" decoding="async" height="932" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-35.png" width="1398"/>
+</picture></a>
+<figcaption><strong>Figure 34:</strong> First coupled sweep in the −3 dB/−20 dB crossing-frequency plane. Labels are Optimetrics variation numbers; color represents \(S_{21}\) at 3 GHz.</figcaption>
+</figure>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-36.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-36-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-36-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-36-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-36-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-36-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-36-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-36.webp 1401w" type="image/webp"/>
+<img alt="Refined coupled HFSS optimization sweep" decoding="async" height="933" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-36.png" width="1401"/>
+</picture></a>
+<figcaption><strong>Figure 35:</strong> Refined coupled sweep around the most promising region. Variation 16 was selected as the best practical compromise.</figcaption>
+</figure>
+<p>The final selection was Variation 16:</p>
+<table class="table table-bordered"><thead><tr><th>Scale factor</th><th>Selected value</th></tr></thead><tbody>
+<tr><td>\(k_{all}\)</td><td>0.725</td></tr>
+<tr><td>\(k_L\)</td><td>1.05</td></tr>
+<tr><td>\(k_{HC}\)</td><td>0.9</td></tr>
+<tr><td>\(k_{HO}\)</td><td>1.2</td></tr>
+</tbody></table>
+<table class="table table-bordered"><thead><tr><th>Physical section</th><th>Final length</th></tr></thead><tbody>
+<tr><td>Outer 120 Ω section 1</td><td>3.932 mm</td></tr>
+<tr><td>20 Ω section 2</td><td>3.441 mm</td></tr>
+<tr><td>Center 120 Ω section 3</td><td>5.078 mm</td></tr>
+<tr><td>20 Ω section 4</td><td>3.441 mm</td></tr>
+<tr><td>Outer 120 Ω section 5</td><td>3.932 mm</td></tr>
+<tr><td>Total stepped length</td><td>19.825 mm</td></tr>
+</tbody></table>
+<figure class="project-figure">
+<a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-37.png" rel="noopener" target="_blank"><picture>
+<source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-37-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-37-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-37-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-37-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-37-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-37-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-37.webp 1609w" type="image/webp"/>
+<img alt="Final optimized HFSS stepped-impedance low-pass filter response" decoding="async" height="601" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/stepped-impedance-lowpass-filter/figure-37.png" width="1609"/>
+</picture></a>
+<figcaption><strong>Figure 36:</strong> Final optimized HFSS response for Variation 16. Plot markers are rounded to the frequency grid; the comparison table uses the Optimetrics XAtYVal crossing results.</figcaption>
+</figure>
+<h2 class="text-secondary text-uppercase" id="final-comparison">10. Final Result Versus the Lumped Reference</h2>
+<p>The lumped model reaches −40 dB at 6.665 GHz. Since the original Momentum and optimized HFSS responses do not reach −40 dB within the simulated band, the final table uses \(S_{21}(6.665\text{ GHz})\) as a common fixed-frequency stopband comparison.</p>
+<table class="table table-bordered comparison-table"><thead><tr><th>Metric</th><th>Lumped LC target</th><th>Original Momentum</th><th>Optimized HFSS</th><th>Final error versus lumped</th></tr></thead><tbody>
+<tr><td>\(S_{21}(3\text{ GHz})\)</td><td>−0.1 dB</td><td>−8.177 dB</td><td>−0.758 dB</td><td>−0.658 dB</td></tr>
+<tr><td>\(S_{11}(3\text{ GHz})\)</td><td>approximately −16.43 dB worst-case ripple</td><td>strongly mismatched</td><td>−17.52 dB</td><td>Meets the practical −15 dB criterion</td></tr>
+<tr><td>−3 dB crossing</td><td>3.405 GHz</td><td>2.606 GHz</td><td>3.386 GHz</td><td>−19.31 MHz (−0.57%)</td></tr>
+<tr><td>−20 dB crossing</td><td>4.54 GHz</td><td>3.963 GHz</td><td>4.586 GHz</td><td>+46.29 MHz (+1.02%)</td></tr>
+<tr><td>Transition width</td><td>1.135 GHz</td><td>1.357 GHz</td><td>1.201 GHz</td><td>+65.6 MHz (+5.78%)</td></tr>
+<tr><td>Fixed-frequency stopband comparison, \(S_{21}(6.665\text{ GHz})\)</td><td>−40.036 dB</td><td>approximately −32.18 dB</td><td>−34.512 dB</td><td>5.52 dB less attenuation</td></tr>
+</tbody></table>
+<p>The final geometry does not reproduce the ideal lossless Chebyshev response exactly. The FR-4 implementation retains approximately 0.66 dB of additional insertion loss at 3 GHz and a slightly wider transition. However, the optimization recovered the principal frequency behavior extremely well: both transition crossings are within about 1% of the lumped targets, and the 3 GHz return loss is better than −17 dB.</p>
+<p>Relative to the original physical layout, the improvement is substantial. The 3 GHz transmission increased by approximately 7.42 dB, the −3 dB crossing moved upward by about 780 MHz, and the −20 dB crossing moved upward by about 623 MHz.</p>
+<div class="project-callout"><strong>Engineering result:</strong> independent full-wave validation showed that the first-pass LineCalc geometry was electromagnetically over-length. Symmetric length compensation recovered the intended transition frequencies without changing the selected 120 Ω/20 Ω impedance pair.</div>
+<h2 class="text-secondary text-uppercase" id="limitations">11. Limitations and Next Steps</h2>
+<ul>
+<li>The short-line stepped-impedance transformation remains approximate, especially for the original 47.15° center section.</li>
+<li>The 29.56:1 width ratio creates strong discontinuity capacitance and a physically wide layout.</li>
+<li>The FR-4 material values are representative rather than tied to a characterized laminate lot; the actual \(\varepsilon_r\), loss tangent, and copper roughness will vary.</li>
+<li>The compact lumped-port HFSS model was selected to match the filter-boundary reference planes. A wave-port sensitivity run would provide an additional port-formulation check.</li>
+<li>The optimized geometry has been validated in HFSS but has not yet been re-simulated in Momentum. Repeating the final geometry in Momentum is the most important remaining cross-solver verification step.</li>
+</ul>
+<p>Further improvements could explore less extreme impedance ratios, tapered width transitions, a lower-loss microwave substrate, fabrication-tolerance sweeps, and direct Momentum-based optimization.</p>
+<h2 class="text-secondary text-uppercase" id="conclusion">12. Conclusions</h2>
+<p>This project demonstrates a complete microwave-filter workflow: normalized Chebyshev synthesis, lumped-element validation, stepped-impedance conversion, ideal distributed simulation, physical microstrip synthesis, planar EM analysis, independent 3D full-wave verification, and staged geometry optimization.</p>
+<p>The ideal circuit established clear reference values, while the TLIN and MLIN stages exposed the limitations of the short-line approximation and material loss. Momentum then revealed the largest practical effect: the complete stepped geometry was substantially more electrically loaded than the circuit model predicted. HFSS reproduced that result closely, establishing confidence in the diagnosis, and the parameterized model made it possible to recover the intended transition behavior.</p>
+<p>The selected optimized design achieves \(S_{21}(3\text{ GHz})=-0.758\text{ dB}\), \(S_{11}(3\text{ GHz})=-17.52\text{ dB}\), a −3 dB crossing at 3.386 GHz, and a −20 dB crossing at 4.586 GHz. The final result is a strong simulation-level design and a clear demonstration of why full-wave electromagnetic validation is essential when classical transmission-line synthesis is translated into an abrupt physical microwave layout.</p>
+<a class="btn btn-primary btn-xl mt-4" href="../index.html#portfolio">Back to Portfolio</a>
+</div></div></div></main>
+<footer class="footer text-center"><div class="container"><div class="row justify-content-center"><div class="col-lg-4 mb-5 mb-lg-0">
+<h4 class="text-uppercase mb-4">Socials</h4>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
+<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com"><i class="fas fa-fw fa-envelope"></i></a>
+</div></div></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/scripts.js"></script>
+</body></html>

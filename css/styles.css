@@ -11499,3 +11499,128 @@ html {
 .project-hero-image {
   display: block;
 }
+
+/* Stepped-impedance filter project enhancements */
+.project-hero-image-contain {
+  object-fit: contain;
+  background: #050505;
+}
+
+.project-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0 0 2rem;
+}
+
+.project-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(44, 62, 80, 0.14);
+  border-radius: 0.75rem;
+  background: #f8f9fa;
+}
+
+.project-summary-card strong {
+  color: #2c3e50;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.05rem;
+}
+
+.project-summary-card span:last-child {
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+.project-summary-label {
+  color: #1A81BC;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.project-figure-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+  margin: 1.5rem 0;
+}
+
+.project-figure-grid .project-figure {
+  margin: 0;
+}
+
+.project-callout {
+  margin: 1.75rem 0;
+  padding: 1.15rem 1.25rem;
+  border-left: 0.35rem solid #1A81BC;
+  border-radius: 0.35rem;
+  background: #eef7fc;
+}
+
+.project-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.comparison-table {
+  font-size: 0.94rem;
+}
+
+@media (max-width: 767.98px) {
+  .project-summary-grid,
+  .project-figure-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-table {
+    font-size: 0.86rem;
+  }
+}
+
+.filter-topology-diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: #2c3e50;
+  background: #f8f9fa;
+  border: 1px solid rgba(44, 62, 80, 0.12);
+  border-radius: 0.75rem;
+}
+
+.filter-topology-diagram .topology-node rect {
+  fill: #ffffff;
+  stroke: #2c3e50;
+  stroke-width: 3;
+}
+
+.filter-topology-diagram .topology-high rect {
+  fill: #eef7fc;
+  stroke: #1A81BC;
+}
+
+.filter-topology-diagram .topology-low rect {
+  fill: #f5f0fb;
+  stroke: #6f42c1;
+}
+
+.filter-topology-diagram text {
+  fill: #2c3e50;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.comparison-table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}

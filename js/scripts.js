@@ -54,6 +54,16 @@ window.addEventListener('DOMContentLoaded', event => {
     // Portfolio project data. Add new projects here and create the matching page in /projects.
     const projects = [
         {
+            title: "Stepped-Impedance Low-Pass Filter",
+            date: "July 22, 2026",
+            image: "assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-preview.webp",
+            imageAlt: "ADS Momentum layout of the stepped-impedance low-pass filter",
+            imageWidth: 560,
+            imageHeight: 303,
+            description: "A fifth-order 3 GHz Chebyshev low-pass filter developed from lumped synthesis through ADS TLIN/MLIN, Momentum and HFSS cross-validation, and multi-parameter EM optimization.",
+            link: "projects/stepped-impedance-lowpass-filter.html"
+        },
+        {
             title: "Branch-Line Coupler",
             date: "July 8, 2026",
             image: "assets/img/projects/branch-line-coupler/figure-19-thumb.webp",
