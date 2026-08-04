@@ -54,6 +54,16 @@ window.addEventListener('DOMContentLoaded', event => {
     // Portfolio project data. Add new projects here and create the matching page in /projects.
     const projects = [
         {
+            title: "Coupled-Line Bandpass Filter",
+            date: "August 5, 2026",
+            image: "assets/img/projects/coupled-line-bandpass-filter/hfss-structure-preview.webp",
+            imageAlt: "Parameterized HFSS structure of the three-resonator coupled-line bandpass filter",
+            imageWidth: 560,
+            imageHeight: 315,
+            description: "A third-order 3 GHz Butterworth coupled-resonator bandpass filter developed through ADS extraction, Momentum validation, and topology-specific HFSS optimization.",
+            link: "projects/coupled-line-bandpass-filter.html"
+        },
+        {
             title: "Stepped-Impedance Low-Pass Filter",
             date: "July 22, 2026",
             image: "assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-preview.webp",
