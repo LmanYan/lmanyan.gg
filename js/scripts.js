@@ -54,6 +54,16 @@ window.addEventListener('DOMContentLoaded', event => {
     // Portfolio project data. Add new projects here and create the matching page in /projects.
     const projects = [
         {
+            title: "Hairpin Bandpass Filter",
+            date: "August 20, 2026",
+            image: "assets/img/projects/hairpin-bandpass-filter/hfss-hairpin-preview.webp",
+            imageAlt: "Parameterized HFSS model of the three-resonator hairpin bandpass filter",
+            imageWidth: 560,
+            imageHeight: 247,
+            description: "A third-order 3 GHz Chebyshev hairpin bandpass filter synthesized in ADS, tuned in Momentum on RO4350B, and independently validated in HFSS.",
+            link: "projects/hairpin-bandpass-filter.html"
+        },
+        {
             title: "Coupled-Line Bandpass Filter",
             date: "August 5, 2026",
             image: "assets/img/projects/coupled-line-bandpass-filter/hfss-structure-preview.webp",
