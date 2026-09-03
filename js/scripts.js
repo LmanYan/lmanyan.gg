@@ -54,6 +54,16 @@ window.addEventListener('DOMContentLoaded', event => {
     // Portfolio project data. Add new projects here and create the matching page in /projects.
     const projects = [
         {
+            title: "Rectangular Patch Antenna",
+            date: "September 3, 2026",
+            image: "assets/img/projects/rectangular-patch-antenna/hero-preview.webp",
+            imageAlt: "HFSS rectangular patch antenna with its 3 GHz realized-gain radiation pattern",
+            imageWidth: 560,
+            imageHeight: 315,
+            description: "A 3 GHz inset-fed rectangular microstrip patch antenna designed analytically and refined in HFSS, with impedance, near-field, and far-field characterization.",
+            link: "projects/rectangular-patch-antenna.html"
+        },
+        {
             title: "Hairpin Bandpass Filter",
             date: "August 20, 2026",
             image: "assets/img/projects/hairpin-bandpass-filter/hfss-hairpin-preview.webp",

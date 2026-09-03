@@ -11624,3 +11624,6 @@ html {
   width: 100%;
   overflow-x: auto;
 }
+
+/* Light-background contained hero for antenna/radiation screenshots. */
+.project-hero-image-light { background: #ffffff; object-fit: contain; }
