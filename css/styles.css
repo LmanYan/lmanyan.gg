@@ -11625,5 +11625,23 @@ html {
   overflow-x: auto;
 }
 
+.antenna-integration-page .comparison-table {
+  display: table;
+  width: auto;
+  max-width: 100%;
+  margin: 1.5rem auto;
+  overflow: visible;
+}
+
+.antenna-integration-page .comparison-table th,
+.antenna-integration-page .comparison-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.antenna-integration-page .project-figure figcaption {
+  text-align: center;
+}
+
 /* Light-background contained hero for antenna/radiation screenshots. */
 .project-hero-image-light { background: #ffffff; object-fit: contain; }

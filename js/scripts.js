@@ -54,6 +54,16 @@ window.addEventListener('DOMContentLoaded', event => {
     // Portfolio project data. Add new projects here and create the matching page in /projects.
     const projects = [
         {
+            title: "Antenna Integration",
+            date: "September 17, 2026",
+            image: "assets/img/projects/antenna-integration/figure-6-2.webp",
+            imageAlt: "Complete antenna assembly with SMA connector and domed radome",
+            imageWidth: 772,
+            imageHeight: 574,
+            description: "A 3 GHz patch antenna integration study covering finite PCB dimensions, a physical SMA launch, radome loading, and the full mechanical assembly in HFSS.",
+            link: "projects/antenna-integration.html"
+        },
+        {
             title: "Rectangular Patch Antenna",
             date: "September 3, 2026",
             image: "assets/img/projects/rectangular-patch-antenna/hero-preview.webp",
