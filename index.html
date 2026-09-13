@@ -4,16 +4,12 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<meta content="" name="description"/>
-<meta content="" name="author"/>
+<meta content="Yaniv Lieberman's RF engineering portfolio: antenna integration, microwave circuits, embedded systems, and hardware validation projects." name="description"/>
+<meta content="Yaniv Lieberman" name="author"/>
 <title>Yaniv Lieberman | RF Engineer &amp; Hardware Integration</title>
 <!-- Favicon-->
 <link href="assets/favicon.ico" rel="icon" type="image/x-icon"/>
 <!-- Font Awesome icons (free version)-->
-<script crossorigin="anonymous" src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
-<!-- Google fonts-->
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
-<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
 <link href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.css" rel="stylesheet"/>
 <!-- Core theme CSS (includes Bootstrap)-->
 <link href="css/styles.css" rel="stylesheet"/>
@@ -25,7 +21,7 @@
 <a class="navbar-brand" href="#page-top">YANIV LIEBERMAN</a>
 <button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">
                     Menu
-                    <i class="fas fa-bars"></i>
+                    <span class="menu-bars" aria-hidden="true"></span>
 </button>
 <div class="collapse navbar-collapse" id="navbarResponsive">
 <ul class="navbar-nav ms-auto">
@@ -40,17 +36,19 @@
 <header class="masthead bg-primary text-white text-center">
 <div class="container d-flex align-items-center flex-column">
 <!-- Masthead Avatar Image-->
-<img alt="..." class="masthead-avatar mb-5" src="assets/img/profile-circle-264x280.png"/>
+<img alt="Portrait of Yaniv Lieberman" class="masthead-avatar mb-4" src="assets/img/profile-circle-264x280.webp" width="264" height="280" fetchpriority="high" decoding="async"/>
 <!-- Masthead Heading-->
-<h1 class="masthead-heading text-uppercase mb-0">Yaniv Lieberman</h1>
+<p class="hero-eyebrow">RF Engineering Portfolio</p>
+<h1 class="masthead-heading mb-0">Yaniv Lieberman</h1>
 <!-- Icon Divider-->
 <div class="divider-custom divider-light">
 <div class="divider-custom-line"></div>
-<div class="divider-custom-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+<div class="divider-custom-icon"><span class="divider-mark" aria-hidden="true"></span></div>
 <div class="divider-custom-line"></div>
 </div>
 <!-- Masthead Subheading-->
-<p class="masthead-subheading font-weight-light mb-0">RF - System - HW</p>
+<p class="masthead-subheading mb-0">RF systems, hardware integration, and measured performance.</p>
+<div class="hero-actions"><a class="btn btn-primary" href="#portfolio">Explore projects <span aria-hidden="true">↗</span></a><a class="hero-text-link" href="#contact">Get in touch <span aria-hidden="true">→</span></a></div>
 </div>
 </header>
 <!-- About Section-->
@@ -58,7 +56,7 @@
 <div class="container">
 <div class="row align-items-start">
 <div class="col-lg-6 mb-4">
-<h4 class="text-uppercase mb-3">About Me</h4>
+<h2 class="section-label mb-3">About me</h2>
 <p class="lead">
                             I'm Yaniv Lieberman, an Electrical Engineer focused on RF systems
                             and hardware integration. I work at the intersection of theory
@@ -66,7 +64,7 @@
                         </p>
 </div>
 <div class="col-lg-6 mb-4">
-<h4 class="text-uppercase mb-3">Focus</h4>
+<h2 class="section-label mb-3">What I focus on</h2>
 <p class="lead">
                             My experience includes RF measurements, embedded systems, and
                             automated testing. I'm particularly interested in RF characterization,
@@ -79,34 +77,37 @@
 <!-- Portfolio Section-->
 <section class="page-section portfolio" id="portfolio">
 <div class="container">
-<h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Portfolio</h2>
+<h2 class="page-section-heading text-center text-secondary mb-0">Selected work</h2>
 <div class="divider-custom">
 <div class="divider-custom-line"></div>
-<div class="divider-custom-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+<div class="divider-custom-icon"><span class="divider-mark" aria-hidden="true"></span></div>
 <div class="divider-custom-line"></div>
 </div>
 <div class="portfolio-feed-shell">
 <div class="portfolio-feed-header">
 <p class="lead mb-0">Selected RF, embedded, and hardware-integration projects.</p>
 </div>
-<div aria-label="Portfolio project posts" class="portfolio-feed" id="portfolio-posts">
-<noscript>
+<h3 class="portfolio-showcase-heading" id="latest-project-heading">Latest Project</h3>
+<section class="portfolio-featured" aria-labelledby="latest-project-heading">
 <article class="portfolio-post-card">
 <a class="portfolio-post-image-link" href="projects/antenna-integration.html">
 <img alt="Complete antenna assembly with SMA connector and domed radome" class="portfolio-post-image" decoding="async" height="574" loading="lazy" src="assets/img/projects/antenna-integration/figure-6-2.webp" width="772"/>
 </a>
 <div class="portfolio-post-content">
-<h3 class="portfolio-post-title"><a href="projects/antenna-integration.html">Antenna Integration</a></h3>
+<h4 class="portfolio-post-title"><a href="projects/antenna-integration.html">Antenna Integration</a></h4>
 <p class="portfolio-post-date">September 17, 2026</p>
 <p class="portfolio-post-description">A 3 GHz patch antenna integration study covering finite PCB dimensions, a physical SMA launch, radome loading, and the full mechanical assembly in HFSS.</p>
 </div>
 </article>
+</section>
+<div class="portfolio-previous-header"><h3 class="portfolio-showcase-heading" id="previous-works-heading">Previous Works</h3><span class="portfolio-scroll-hint" aria-hidden="true">Scroll to explore ↓</span></div>
+<div class="portfolio-feed" id="portfolio-posts" role="region" aria-labelledby="previous-works-heading" tabindex="0">
 <article class="portfolio-post-card">
 <a class="portfolio-post-image-link" href="projects/rectangular-patch-antenna.html">
 <img alt="HFSS rectangular patch antenna with its 3 GHz realized-gain radiation pattern" class="portfolio-post-image" decoding="async" height="315" loading="lazy" sizes="(max-width: 767px) calc(100vw - 4rem), 280px" src="assets/img/projects/rectangular-patch-antenna/hero-preview.webp" width="560"/>
 </a>
 <div class="portfolio-post-content">
-<h3 class="portfolio-post-title"><a href="projects/rectangular-patch-antenna.html">Rectangular Patch Antenna</a></h3>
+<h4 class="portfolio-post-title"><a href="projects/rectangular-patch-antenna.html">Rectangular Patch Antenna</a></h4>
 <p class="portfolio-post-date">September 3, 2026</p>
 <p class="portfolio-post-description">A 3 GHz inset-fed rectangular microstrip patch antenna designed analytically and refined in HFSS, with impedance, near-field, and far-field characterization.</p>
 </div>
@@ -116,7 +117,7 @@
 <img alt="Parameterized HFSS model of the three-resonator hairpin bandpass filter" class="portfolio-post-image" decoding="async" height="247" loading="lazy" sizes="(max-width: 767px) calc(100vw - 4rem), 280px" src="assets/img/projects/hairpin-bandpass-filter/hfss-hairpin-preview.webp" width="560"/>
 </a>
 <div class="portfolio-post-content">
-<h3 class="portfolio-post-title"><a href="projects/hairpin-bandpass-filter.html">Hairpin Bandpass Filter</a></h3>
+<h4 class="portfolio-post-title"><a href="projects/hairpin-bandpass-filter.html">Hairpin Bandpass Filter</a></h4>
 <p class="portfolio-post-date">August 20, 2026</p>
 <p class="portfolio-post-description">A third-order 3 GHz Chebyshev hairpin bandpass filter synthesized in ADS, tuned in Momentum on RO4350B, and independently validated in HFSS.</p>
 </div>
@@ -126,7 +127,7 @@
 <img alt="Parameterized HFSS structure of the three-resonator coupled-line bandpass filter" class="portfolio-post-image" decoding="async" height="315" loading="lazy" sizes="(max-width: 767px) calc(100vw - 4rem), 280px" src="assets/img/projects/coupled-line-bandpass-filter/hfss-structure-preview.webp" width="560"/>
 </a>
 <div class="portfolio-post-content">
-<h3 class="portfolio-post-title"><a href="projects/coupled-line-bandpass-filter.html">Coupled-Line Bandpass Filter</a></h3>
+<h4 class="portfolio-post-title"><a href="projects/coupled-line-bandpass-filter.html">Coupled-Line Bandpass Filter</a></h4>
 <p class="portfolio-post-date">August 5, 2026</p>
 <p class="portfolio-post-description">A third-order 3 GHz Butterworth coupled-resonator bandpass filter developed through ADS extraction, Momentum validation, and topology-specific HFSS optimization.</p>
 </div>
@@ -136,7 +137,7 @@
 <img alt="ADS Momentum layout of the stepped-impedance low-pass filter" class="portfolio-post-image" decoding="async" height="303" loading="lazy" sizes="(max-width: 767px) calc(100vw - 4rem), 280px" src="assets/img/projects/stepped-impedance-lowpass-filter/momentum-layout-preview.webp" width="560"/>
 </a>
 <div class="portfolio-post-content">
-<h3 class="portfolio-post-title"><a href="projects/stepped-impedance-lowpass-filter.html">Stepped-Impedance Low-Pass Filter</a></h3>
+<h4 class="portfolio-post-title"><a href="projects/stepped-impedance-lowpass-filter.html">Stepped-Impedance Low-Pass Filter</a></h4>
 <p class="portfolio-post-date">July 22, 2026</p>
 <p class="portfolio-post-description">A fifth-order 3 GHz Chebyshev low-pass filter developed from lumped synthesis through ADS TLIN/MLIN, Momentum and HFSS cross-validation, and multi-parameter EM optimization.</p>
 </div>
@@ -146,7 +147,7 @@
 <img alt="Initial HFSS branch-line coupler implementation over FR-4" class="portfolio-post-image" decoding="async" height="316" loading="lazy" sizes="(max-width: 767px) calc(100vw - 4rem), 280px" src="assets/img/projects/branch-line-coupler/figure-19-thumb.webp" srcset="assets/img/projects/branch-line-coupler/figure-19-thumb.webp 560w, assets/img/projects/branch-line-coupler/figure-19.webp 665w" width="560"/>
 </a>
 <div class="portfolio-post-content">
-<h3 class="portfolio-post-title"><a href="projects/branch-line-coupler.html">Branch-Line Coupler</a></h3>
+<h4 class="portfolio-post-title"><a href="projects/branch-line-coupler.html">Branch-Line Coupler</a></h4>
 <p class="portfolio-post-date">July 8, 2026</p>
 <p class="portfolio-post-description">A 3 GHz microstrip 90° branch-line hybrid coupler designed in ADS, converted to microstrip, tuned in HFSS, and evaluated for match, isolation, amplitude balance, phase balance, and usable bandwidth.</p>
 </div>
@@ -156,7 +157,7 @@
 <img alt="Momentum layout port definition for a 3 GHz Wilkinson power divider" class="portfolio-post-image" decoding="async" height="679" loading="lazy" src="assets/img/projects/wilkinson-power-divider/figure-21.webp" width="1090"/>
 </a>
 <div class="portfolio-post-content">
-<h3 class="portfolio-post-title"><a href="projects/wilkinson-power-divider.html">Wilkinson Power Divider</a></h3>
+<h4 class="portfolio-post-title"><a href="projects/wilkinson-power-divider.html">Wilkinson Power Divider</a></h4>
 <p class="portfolio-post-date">June 15, 2026</p>
 <p class="portfolio-post-description">A 3 GHz two-way equal-split Wilkinson power divider designed from theory, simulated in ADS, converted to microstrip, and validated with Momentum EM/circuit co-simulation.</p>
 </div>
@@ -166,7 +167,7 @@
 <img alt="S11 magnitude comparison between ADS MLIN, ADS Momentum, and HFSS" class="portfolio-post-image" decoding="async" height="485" loading="lazy" src="assets/img/projects/microstrip-line-em-validation/figure-16.webp" width="887"/>
 </a>
 <div class="portfolio-post-content">
-<h3 class="portfolio-post-title"><a href="projects/microstrip-line-em-validation.html">Microstrip Line EM Validation</a></h3>
+<h4 class="portfolio-post-title"><a href="projects/microstrip-line-em-validation.html">Microstrip Line EM Validation</a></h4>
 <p class="portfolio-post-date">June 1, 2026</p>
 <p class="portfolio-post-description">A microstrip EM validation project comparing analytical equations, ADS LineCalc, ADS MLIN, ADS Momentum, and Ansys HFSS for a 50 Ω FR-4 microstrip line.</p>
 </div>
@@ -176,22 +177,21 @@
 <img alt="ADS comparison plot of transmission line matching techniques" class="portfolio-post-image" decoding="async" height="356" loading="lazy" src="assets/img/projects/transmission-line-playground/figure-31.webp" width="607"/>
 </a>
 <div class="portfolio-post-content">
-<h3 class="portfolio-post-title"><a href="projects/transmission-line-playground.html">Transmission Line Playground</a></h3>
+<h4 class="portfolio-post-title"><a href="projects/transmission-line-playground.html">Transmission Line Playground</a></h4>
 <p class="portfolio-post-date">May 14, 2026</p>
 <p class="portfolio-post-description">A Keysight ADS project exploring transmission line reflections, Smith charts, microstrip parameter sweeps, and classical impedance matching networks.</p>
 </div>
 </article>
 <article class="portfolio-post-card">
 <a class="portfolio-post-image-link" href="projects/uart-interface-stm32.html">
-<img alt="UART interface STM32 project preview" class="portfolio-post-image" src="assets/img/projects/uart-interface/figure-4.png"/>
+<img alt="UART interface STM32 project preview" class="portfolio-post-image" decoding="async" height="584" loading="lazy" src="assets/img/projects/uart-interface/figure-4.webp" width="353"/>
 </a>
 <div class="portfolio-post-content">
-<h3 class="portfolio-post-title"><a href="projects/uart-interface-stm32.html">UART Interface Extension for STM32</a></h3>
+<h4 class="portfolio-post-title"><a href="projects/uart-interface-stm32.html">UART Interface Extension for STM32</a></h4>
 <p class="portfolio-post-date">May 2026</p>
 <p class="portfolio-post-description">A UART-based command-line interface for real-time interaction with STM32 firmware, eliminating the need for repeated reflashing during development and debugging.</p>
 </div>
 </article>
-</noscript>
 </div>
 </div>
 </div>
@@ -200,23 +200,19 @@
 <section class="page-section" id="contact">
 <div class="container">
 <!-- Contact Section Heading-->
-<h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Contact Me</h2>
+<h2 class="page-section-heading text-center text-secondary mb-0">Let's connect</h2>
 <!-- Icon Divider-->
 <div class="divider-custom">
 <div class="divider-custom-line"></div>
-<div class="divider-custom-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+<div class="divider-custom-icon"><span class="divider-mark" aria-hidden="true"></span></div>
 <div class="divider-custom-line"></div>
 </div>
 <!-- Contact Section Form-->
 <div class="row justify-content-center">
 <div class="col-lg-8 col-xl-7">
 <!-- * * * * * * * * * * * * * * *-->
-<!-- * * SB Forms Contact Form * *-->
+<!-- Contact form powered by Web3Forms -->
 <!-- * * * * * * * * * * * * * * *-->
-<!-- This form is pre-integrated with SB Forms.-->
-<!-- To make this form functional, sign up at-->
-<!-- https://startbootstrap.com/solution/contact-forms-->
-<!-- to get an API token!-->
 <form id="contactForm">
 <input name="access_key" type="hidden" value="2aca55a7-9163-46de-8a88-298626084342"/>
 <input name="subject" type="hidden" value="New portfolio contact form submission"/>
@@ -267,9 +263,9 @@
 <!-- Footer Social Icons-->
 <div class="col-lg-4 mb-5 mb-lg-0">
 <h4 class="text-uppercase mb-4">Socials</h4>
-<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
-<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
-<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com"><i class="fas fa-fw fa-envelope"></i></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank" aria-label="Facebook profile"><span class="social-glyph" aria-hidden="true">f</span></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank" aria-label="LinkedIn profile"><span class="social-glyph social-glyph-in" aria-hidden="true">in</span></a>
+<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com" aria-label="Email Yaniv Lieberman"><span class="social-glyph" aria-hidden="true">@</span></a>
 </div>
 </div>
 </div>

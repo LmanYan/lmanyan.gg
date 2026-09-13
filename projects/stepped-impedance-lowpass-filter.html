@@ -8,9 +8,6 @@
 <meta content="Yaniv Lieberman" name="author"/>
 <title>Stepped-Impedance Low-Pass Filter | Yaniv Lieberman</title>
 <link href="../assets/favicon.ico" rel="icon" type="image/x-icon"/>
-<script crossorigin="anonymous" src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
-<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
 <link href="../css/styles.css" rel="stylesheet"/>
 <script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},chtml:{scale:1}};</script>
 <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
@@ -19,7 +16,7 @@
 <body id="page-top">
 <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav"><div class="container">
 <a class="navbar-brand" href="../index.html#page-top">YANIV LIEBERMAN</a>
-<button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <i class="fas fa-bars"></i></button>
+<button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <span class="menu-bars" aria-hidden="true"></span></button>
 <div class="collapse navbar-collapse" id="navbarResponsive"><ul class="navbar-nav ms-auto">
 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#about">About</a></li>
 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#portfolio">Portfolio</a></li>
@@ -28,7 +25,7 @@
 <header class="project-masthead bg-primary text-white text-center"><div class="container d-flex align-items-center flex-column">
 <p class="project-kicker text-uppercase mb-3">RF Filter Design · ADS · Momentum · HFSS</p>
 <h1 class="project-heading text-uppercase mb-0">Stepped-Impedance Low-Pass Filter</h1>
-<div class="divider-custom divider-light"><div class="divider-custom-line"></div><div class="divider-custom-icon"><i class="fa-solid fa-satellite-dish"></i></div><div class="divider-custom-line"></div></div>
+<div class="divider-custom divider-light"><div class="divider-custom-line"></div><div class="divider-custom-icon"><span class="divider-mark" aria-hidden="true"></span></div><div class="divider-custom-line"></div></div>
 <p class="project-subheading font-weight-light mb-0">A 3 GHz Chebyshev prototype translated into FR-4 microstrip, independently validated in two full-wave solvers, and electromagnetically optimized.</p>
 </div></header>
 <main class="page-section project-page"><div class="container"><div class="row justify-content-center"><div class="col-lg-9">
@@ -70,7 +67,7 @@
 </picture></a>
 <figcaption><strong>Figure 1:</strong> Complete workflow from normalized Chebyshev synthesis through independent full-wave validation and electromagnetic length optimization.</figcaption>
 </figure>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Parameter</th><th>Selected value</th></tr></thead><tbody>
 <tr><td>Filter response</td><td>Chebyshev Type I</td></tr>
 <tr><td>Order</td><td>5</td></tr>
@@ -78,7 +75,7 @@
 <tr><td>Passband-edge frequency</td><td>3 GHz</td></tr>
 <tr><td>Reference impedance</td><td>50 Ω</td></tr>
 <tr><td>Implementation</td><td>Stepped-impedance microstrip on FR-4</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p>The 3 GHz specification is the Chebyshev <em>passband edge</em>, where the ideal response reaches −0.1 dB. It is not the conventional −3 dB frequency. The −3 dB and −20 dB crossings are extracted separately and used as the primary transition-region comparison metrics.</p>
 <figure class="project-figure">
 <a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-2.png" rel="noopener" target="_blank"><picture>
@@ -99,7 +96,7 @@
 <div class="equation equation-copyable" data-latex="\[g_0=1,\qquad g_1=\frac{2a_1}{\gamma},\qquad g_k=\frac{4a_{k-1}a_k}{b_{k-1}g_{k-1}},\quad k=2,\ldots,N\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[g_0=1,\qquad g_1=\frac{2a_1}{\gamma},\qquad g_k=\frac{4a_{k-1}a_k}{b_{k-1}g_{k-1}},\quad k=2,\ldots,N\]" type="button">Copy LaTeX</button>\[g_0=1,\qquad g_1=\frac{2a_1}{\gamma},\qquad g_k=\frac{4a_{k-1}a_k}{b_{k-1}g_{k-1}},\quad k=2,\ldots,N\]</div>
 <div class="equation equation-copyable" data-latex="\[g_{N+1}=1\qquad\text{for the odd-order prototype used here}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[g_{N+1}=1\qquad\text{for the odd-order prototype used here}\]" type="button">Copy LaTeX</button>\[g_{N+1}=1\qquad\text{for the odd-order prototype used here}\]</div>
 <p>The recursive prototype calculation gives the normalized coefficients:</p>
-<table class="table table-bordered"><thead><tr><th>Coefficient</th><th>Value</th><th>Role</th></tr></thead><tbody>
+<div class="project-table-scroll"><table class="table table-bordered"><thead><tr><th>Coefficient</th><th>Value</th><th>Role</th></tr></thead><tbody>
 <tr><td>\(g_0\)</td><td>1</td><td>Source termination</td></tr>
 <tr><td>\(g_1\)</td><td>1.147</td><td>Series inductor</td></tr>
 <tr><td>\(g_2\)</td><td>1.371</td><td>Shunt capacitor</td></tr>
@@ -107,7 +104,7 @@
 <tr><td>\(g_4\)</td><td>1.371</td><td>Shunt capacitor</td></tr>
 <tr><td>\(g_5\)</td><td>1.147</td><td>Series inductor</td></tr>
 <tr><td>\(g_6\)</td><td>1</td><td>Load termination</td></tr>
-</tbody></table>
+</tbody></table></div>
 <figure class="project-figure">
 <a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-3.png" rel="noopener" target="_blank"><picture>
 <source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-3-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-3-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-3-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-3-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-3.webp 887w" type="image/webp"/>
@@ -117,13 +114,13 @@
 </figure>
 <p>The prototype is normalized to a 1 Ω termination and a 1 rad/s passband edge. At the normalized passband edge, a series-inductor coefficient represents reactance \(X_L=g_k\), while a shunt-capacitor coefficient represents susceptance \(B_C=g_k\). Restoring the target impedance \(Z_0\) and angular passband-edge frequency \(\omega_p\) gives:</p>
 <div class="equation equation-copyable" data-latex="\[L_k=\frac{Z_0g_k}{\omega_p},\qquad C_k=\frac{g_k}{Z_0\omega_p},\qquad \omega_p=2\pi f_p\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[L_k=\frac{Z_0g_k}{\omega_p},\qquad C_k=\frac{g_k}{Z_0\omega_p},\qquad \omega_p=2\pi f_p\]" type="button">Copy LaTeX</button>\[L_k=\frac{Z_0g_k}{\omega_p},\qquad C_k=\frac{g_k}{Z_0\omega_p},\qquad \omega_p=2\pi f_p\]</div>
-<table class="table table-bordered"><thead><tr><th>Element</th><th>Prototype coefficient</th><th>Scaled value</th></tr></thead><tbody>
+<div class="project-table-scroll"><table class="table table-bordered"><thead><tr><th>Element</th><th>Prototype coefficient</th><th>Scaled value</th></tr></thead><tbody>
 <tr><td>\(L_1\)</td><td>\(g_1\)</td><td>3.042 nH</td></tr>
 <tr><td>\(C_2\)</td><td>\(g_2\)</td><td>1.455 pF</td></tr>
 <tr><td>\(L_3\)</td><td>\(g_3\)</td><td>5.239 nH</td></tr>
 <tr><td>\(C_4\)</td><td>\(g_4\)</td><td>1.455 pF</td></tr>
 <tr><td>\(L_5\)</td><td>\(g_5\)</td><td>3.042 nH</td></tr>
-</tbody></table>
+</tbody></table></div>
 <figure class="project-figure">
 <a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-4.png" rel="noopener" target="_blank"><picture>
 <source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-4-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-4-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-4-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-4-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-4-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-4.webp 1217w" type="image/webp"/>
@@ -147,24 +144,24 @@
 </picture></a>
 <figcaption><strong>Figure 6:</strong> Enlarged lumped-element passband showing the 0.1 dB equal-ripple behavior.</figcaption>
 </figure>
-<table class="table table-bordered"><thead><tr><th>Reference metric</th><th>Lumped result</th></tr></thead><tbody>
+<div class="project-table-scroll"><table class="table table-bordered"><thead><tr><th>Reference metric</th><th>Lumped result</th></tr></thead><tbody>
 <tr><td>\(S_{21}(3\text{ GHz})\)</td><td>−0.1 dB</td></tr>
 <tr><td>−3 dB crossing</td><td>3.405 GHz</td></tr>
 <tr><td>−20 dB crossing</td><td>4.54 GHz</td></tr>
 <tr><td>−40 dB crossing</td><td>6.665 GHz</td></tr>
 <tr><td>Ideal transition width, −3 to −20 dB</td><td>1.135 GHz</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p>For the ideal lumped-element response, 6.665 GHz is the frequency at which transmission first reaches approximately −40 dB. The later distributed and full-wave responses do not reach −40 dB within the 0.01–8 GHz simulation range. Accordingly, those models are compared using the fixed-frequency value \(S_{21}(6.665\text{ GHz})\), rather than a nonexistent −40 dB crossing.</p>
 <h2 class="text-secondary text-uppercase" id="transformation">4. Stepped-Impedance Transformation</h2>
 <p>The LC sequence \(L_1-C_2-L_3-C_4-L_5\) is transformed into a continuous \(Z_H-Z_L-Z_H-Z_L-Z_H\) line. For electrically short sections, the ABCD matrix separates approximately into dominant series and shunt terms:</p>
 <div class="equation equation-copyable" data-latex="\[\theta_{L,k}\approx g_k\frac{Z_0}{Z_H},\qquad \theta_{C,k}\approx g_k\frac{Z_L}{Z_0}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\theta_{L,k}\approx g_k\frac{Z_0}{Z_H},\qquad \theta_{C,k}\approx g_k\frac{Z_L}{Z_0}\]" type="button">Copy LaTeX</button>\[\theta_{L,k}\approx g_k\frac{Z_0}{Z_H},\qquad \theta_{C,k}\approx g_k\frac{Z_L}{Z_0}\]</div>
 <p>A larger impedance ratio improves the inductive/capacitive separation but produces increasingly extreme microstrip widths. The selected compromise was:</p>
 <div class="equation equation-copyable" data-latex="\[Z_H=120\ \Omega,\qquad Z_L=20\ \Omega,\qquad \frac{Z_H}{Z_L}=6\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[Z_H=120\ \Omega,\qquad Z_L=20\ \Omega,\qquad \frac{Z_H}{Z_L}=6\]" type="button">Copy LaTeX</button>\[Z_H=120\ \Omega,\qquad Z_L=20\ \Omega,\qquad \frac{Z_H}{Z_L}=6\]</div>
-<table class="table table-bordered"><thead><tr><th>Section</th><th>Impedance</th><th>Electrical length at 3 GHz</th></tr></thead><tbody>
+<div class="project-table-scroll"><table class="table table-bordered"><thead><tr><th>Section</th><th>Impedance</th><th>Electrical length at 3 GHz</th></tr></thead><tbody>
 <tr><td>Outer high-impedance sections</td><td>120 Ω</td><td>27.38°</td></tr>
 <tr><td>Low-impedance sections</td><td>20 Ω</td><td>31.43°</td></tr>
 <tr><td>Center high-impedance section</td><td>120 Ω</td><td>47.15°</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p>The 47.15° center section is not especially short, so deviation from the ideal LC response is expected even before physical discontinuities are introduced.</p>
 <figure class="project-figure">
 <svg aria-labelledby="filter-topology-title filter-topology-desc" class="filter-topology-diagram" role="img" viewBox="0 0 1140 190">
@@ -203,12 +200,12 @@
 </picture></a>
 <figcaption><strong>Figure 10:</strong> Enlarged passband of the ideal distributed model.</figcaption>
 </figure>
-<table class="table table-bordered"><thead><tr><th>Metric</th><th>Lumped LC</th><th>Ideal TLIN</th></tr></thead><tbody>
+<div class="project-table-scroll"><table class="table table-bordered"><thead><tr><th>Metric</th><th>Lumped LC</th><th>Ideal TLIN</th></tr></thead><tbody>
 <tr><td>\(S_{21}(3\text{ GHz})\)</td><td>−0.1 dB</td><td>−0.983 dB</td></tr>
 <tr><td>−3 dB crossing</td><td>3.405 GHz</td><td>3.235 GHz</td></tr>
 <tr><td>−20 dB crossing</td><td>4.54 GHz</td><td>4.785 GHz</td></tr>
 <tr><td>Transition width</td><td>1.135 GHz</td><td>1.55 GHz</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p>The ideal line model already broadens the transition and reduces the 3 GHz transmission. Those changes arise from the finite electrical lengths and from the fact that each line contains both series and shunt contributions.</p>
 <h2 class="text-secondary text-uppercase" id="microstrip">6. FR-4 Microstrip Synthesis and MLIN Model</h2>
 <p>The ideal sections were converted to physical microstrip using ADS LineCalc and the representative substrate definition \(h=1.6\ \text{mm}\), \(\varepsilon_r=4.3\), copper thickness \(t=0.035\ \text{mm}\) (\(35\ \mu\text{m}\)), and \(\tan\delta=0.02\).</p>
@@ -231,11 +228,11 @@
 </picture></a>
 <figcaption><strong>Figure 13:</strong> LineCalc synthesis of the 120 Ω center high-impedance section 3: \(W=0.385\ \text{mm}\), \(L=7.783\ \text{mm}\), and \(\theta=47.15^\circ\) at 3 GHz.</figcaption>
 </figure></div>
-<table class="table table-bordered"><thead><tr><th>Line type</th><th>Width</th><th>Physical length</th></tr></thead><tbody>
+<div class="project-table-scroll"><table class="table table-bordered"><thead><tr><th>Line type</th><th>Width</th><th>Physical length</th></tr></thead><tbody>
 <tr><td>120 Ω outer sections</td><td>0.385 mm</td><td>4.52 mm</td></tr>
 <tr><td>20 Ω sections</td><td>11.386 mm</td><td>4.52 mm</td></tr>
 <tr><td>120 Ω center section</td><td>0.385 mm</td><td>7.783 mm</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p>The width ratio is approximately 29.56:1, producing four severe discontinuities between the narrow and wide sections.</p>
 <figure class="project-figure">
 <a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-15.png" rel="noopener" target="_blank"><picture>
@@ -258,11 +255,11 @@
 </picture></a>
 <figcaption><strong>Figure 16:</strong> Enlarged MLIN passband response.</figcaption>
 </figure>
-<table class="table table-bordered"><thead><tr><th>Metric</th><th>Ideal TLIN</th><th>MLIN</th></tr></thead><tbody>
+<div class="project-table-scroll"><table class="table table-bordered"><thead><tr><th>Metric</th><th>Ideal TLIN</th><th>MLIN</th></tr></thead><tbody>
 <tr><td>\(S_{21}(3\text{ GHz})\)</td><td>−0.983 dB</td><td>−1.649 dB</td></tr>
 <tr><td>−3 dB crossing</td><td>3.235 GHz</td><td>3.175 GHz</td></tr>
 <tr><td>−20 dB crossing</td><td>4.785 GHz</td><td>4.755 GHz</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p>The circuit-level microstrip model adds the expected dielectric and conductor loss, while its transition frequencies remain close to the ideal TLIN model. It still treats each section as a uniform line connected through idealized junctions.</p>
 <h2 class="text-secondary text-uppercase" id="momentum">7. ADS Momentum Full-Wave Model</h2>
 <p>The complete stepped-width geometry was then solved as one planar electromagnetic structure in ADS Momentum. The ports were placed directly at the two outer 120 Ω section ends, without additional 50 Ω access lines, so the EM reference plane remained at the filter boundaries.</p>
@@ -301,12 +298,12 @@
 </picture></a>
 <figcaption><strong>Figure 20:</strong> Enlarged Momentum passband showing where the response first exceeds the original −0.1 dB passband-loss limit.</figcaption>
 </figure>
-<table class="table table-bordered"><thead><tr><th>Metric</th><th>MLIN</th><th>Momentum</th></tr></thead><tbody>
+<div class="project-table-scroll"><table class="table table-bordered"><thead><tr><th>Metric</th><th>MLIN</th><th>Momentum</th></tr></thead><tbody>
 <tr><td>\(S_{21}(3\text{ GHz})\)</td><td>−1.649 dB</td><td>−8.177 dB</td></tr>
 <tr><td>−3 dB crossing</td><td>3.175 GHz</td><td>2.606 GHz</td></tr>
 <tr><td>−20 dB crossing</td><td>4.755 GHz</td><td>3.963 GHz</td></tr>
 <tr><td>Fixed-frequency stopband marker, \(S_{21}(6.665\text{ GHz})\)</td><td>approximately −29.4 dB</td><td>−32.176 dB</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p>Momentum revealed the dominant practical issue: the abrupt impedance steps add substantial electromagnetic loading and make the structure electrically longer than the isolated-line synthesis predicts. The first-pass physical response shifted sharply downward and became strongly mismatched around the intended 3 GHz passband edge.</p>
 <h2 class="text-secondary text-uppercase" id="hfss">8. Independent HFSS Cross-Validation</h2>
 <p>Before tuning the dimensions, the same physical geometry was rebuilt independently in Ansys HFSS. The model used parameterized section coordinates, compact trace-to-ground lumped ports, a finite ground and substrate, a surrounding radiation region, and a causal Djordjevic-Sarkar FR-4 definition referenced to 1 GHz.</p>
@@ -324,12 +321,12 @@
 </picture></a>
 <figcaption><strong>Figure 22:</strong> Baseline HFSS response of the original Momentum geometry. The 6.665 GHz marker is a fixed-frequency stopband comparison because neither full-wave response reaches −40 dB within the sweep.</figcaption>
 </figure>
-<table class="table table-bordered"><thead><tr><th>Metric</th><th>Momentum</th><th>HFSS baseline</th><th>Difference</th></tr></thead><tbody>
+<div class="project-table-scroll"><table class="table table-bordered"><thead><tr><th>Metric</th><th>Momentum</th><th>HFSS baseline</th><th>Difference</th></tr></thead><tbody>
 <tr><td>\(S_{21}(3\text{ GHz})\)</td><td>−8.177 dB</td><td>−8.247 dB</td><td>−0.07 dB</td></tr>
 <tr><td>−3 dB crossing</td><td>2.606 GHz</td><td>2.67 GHz</td><td>+64 MHz</td></tr>
 <tr><td>−20 dB crossing</td><td>3.963 GHz</td><td>3.89 GHz</td><td>−73 MHz</td></tr>
 <tr><td>Fixed-frequency stopband marker, \(S_{21}(6.665\text{ GHz})\)</td><td>−32.176 dB</td><td>−30.602 dB</td><td>+1.574 dB</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p>The close agreement between two independently constructed full-wave models confirmed that the severe downward shift was a real property of the geometry rather than a Momentum-specific artifact.</p>
 <h2 class="text-secondary text-uppercase" id="optimization">9. Electromagnetic Length Optimization</h2>
 <p>The HFSS geometry was parameterized using a common length factor and three symmetric section-family factors:</p>
@@ -416,11 +413,11 @@
 </picture></a>
 <figcaption><strong>Figure 33:</strong> Best sequentially tuned response before coupled optimization.</figcaption>
 </figure>
-<table class="table table-bordered"><thead><tr><th>Variable</th><th>Main observed effect</th></tr></thead><tbody>
+<div class="project-table-scroll"><table class="table table-bordered"><thead><tr><th>Variable</th><th>Main observed effect</th></tr></thead><tbody>
 <tr><td>\(k_L\)</td><td>Moves both transition crossings and strongly influences 3 GHz matching.</td></tr>
 <tr><td>\(k_{HC}\)</td><td>Primarily shifts the overall response and has a pronounced matching optimum near unity.</td></tr>
 <tr><td>\(k_{HO}\)</td><td>Changes the −20 dB crossing more than the −3 dB crossing, helping narrow the transition.</td></tr>
-</tbody></table>
+</tbody></table></div>
 <h3>9.3 Coupled multi-parameter sweeps</h3>
 <p>One-at-a-time sweeps could not simultaneously match the two transition crossings while preserving good 3 GHz transmission and return loss. Two 27-point Cartesian sweeps were therefore used to expose interactions among the section families.</p>
 <figure class="project-figure">
@@ -438,20 +435,20 @@
 <figcaption><strong>Figure 35:</strong> Refined coupled sweep around the most promising region. Variation 16 was selected as the best practical compromise.</figcaption>
 </figure>
 <p>The final selection was Variation 16:</p>
-<table class="table table-bordered"><thead><tr><th>Scale factor</th><th>Selected value</th></tr></thead><tbody>
+<div class="project-table-scroll"><table class="table table-bordered"><thead><tr><th>Scale factor</th><th>Selected value</th></tr></thead><tbody>
 <tr><td>\(k_{all}\)</td><td>0.725</td></tr>
 <tr><td>\(k_L\)</td><td>1.05</td></tr>
 <tr><td>\(k_{HC}\)</td><td>0.9</td></tr>
 <tr><td>\(k_{HO}\)</td><td>1.2</td></tr>
-</tbody></table>
-<table class="table table-bordered"><thead><tr><th>Physical section</th><th>Final length</th></tr></thead><tbody>
+</tbody></table></div>
+<div class="project-table-scroll"><table class="table table-bordered"><thead><tr><th>Physical section</th><th>Final length</th></tr></thead><tbody>
 <tr><td>Outer 120 Ω section 1</td><td>3.932 mm</td></tr>
 <tr><td>20 Ω section 2</td><td>3.441 mm</td></tr>
 <tr><td>Center 120 Ω section 3</td><td>5.078 mm</td></tr>
 <tr><td>20 Ω section 4</td><td>3.441 mm</td></tr>
 <tr><td>Outer 120 Ω section 5</td><td>3.932 mm</td></tr>
 <tr><td>Total stepped length</td><td>19.825 mm</td></tr>
-</tbody></table>
+</tbody></table></div>
 <figure class="project-figure">
 <a href="../assets/img/projects/stepped-impedance-lowpass-filter/figure-37.png" rel="noopener" target="_blank"><picture>
 <source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/stepped-impedance-lowpass-filter/figure-37-320.webp 320w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-37-480.webp 480w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-37-640.webp 640w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-37-800.webp 800w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-37-960.webp 960w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-37-1280.webp 1280w, ../assets/img/projects/stepped-impedance-lowpass-filter/figure-37.webp 1609w" type="image/webp"/>
@@ -461,14 +458,14 @@
 </figure>
 <h2 class="text-secondary text-uppercase" id="final-comparison">10. Final Result Versus the Lumped Reference</h2>
 <p>The lumped model reaches −40 dB at 6.665 GHz. Since the original Momentum and optimized HFSS responses do not reach −40 dB within the simulated band, the final table uses \(S_{21}(6.665\text{ GHz})\) as a common fixed-frequency stopband comparison.</p>
-<table class="table table-bordered comparison-table"><thead><tr><th>Metric</th><th>Lumped LC target</th><th>Original Momentum</th><th>Optimized HFSS</th><th>Final error versus lumped</th></tr></thead><tbody>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table"><thead><tr><th>Metric</th><th>Lumped LC target</th><th>Original Momentum</th><th>Optimized HFSS</th><th>Final error versus lumped</th></tr></thead><tbody>
 <tr><td>\(S_{21}(3\text{ GHz})\)</td><td>−0.1 dB</td><td>−8.177 dB</td><td>−0.758 dB</td><td>−0.658 dB</td></tr>
 <tr><td>\(S_{11}(3\text{ GHz})\)</td><td>approximately −16.43 dB worst-case ripple</td><td>strongly mismatched</td><td>−17.52 dB</td><td>Meets the practical −15 dB criterion</td></tr>
 <tr><td>−3 dB crossing</td><td>3.405 GHz</td><td>2.606 GHz</td><td>3.386 GHz</td><td>−19.31 MHz (−0.57%)</td></tr>
 <tr><td>−20 dB crossing</td><td>4.54 GHz</td><td>3.963 GHz</td><td>4.586 GHz</td><td>+46.29 MHz (+1.02%)</td></tr>
 <tr><td>Transition width</td><td>1.135 GHz</td><td>1.357 GHz</td><td>1.201 GHz</td><td>+65.6 MHz (+5.78%)</td></tr>
 <tr><td>Fixed-frequency stopband comparison, \(S_{21}(6.665\text{ GHz})\)</td><td>−40.036 dB</td><td>approximately −32.18 dB</td><td>−34.512 dB</td><td>5.52 dB less attenuation</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p>The final geometry does not reproduce the ideal lossless Chebyshev response exactly. The FR-4 implementation retains approximately 0.66 dB of additional insertion loss at 3 GHz and a slightly wider transition. However, the optimization recovered the principal frequency behavior extremely well: both transition crossings are within about 1% of the lumped targets, and the 3 GHz return loss is better than −17 dB.</p>
 <p>Relative to the original physical layout, the improvement is substantial. The 3 GHz transmission increased by approximately 7.42 dB, the −3 dB crossing moved upward by about 780 MHz, and the −20 dB crossing moved upward by about 623 MHz.</p>
 <div class="project-callout"><strong>Engineering result:</strong> independent full-wave validation showed that the first-pass LineCalc geometry was electromagnetically over-length. Symmetric length compensation recovered the intended transition frequencies without changing the selected 120 Ω/20 Ω impedance pair.</div>
@@ -489,9 +486,9 @@
 </div></div></div></main>
 <footer class="footer text-center"><div class="container"><div class="row justify-content-center"><div class="col-lg-4 mb-5 mb-lg-0">
 <h4 class="text-uppercase mb-4">Socials</h4>
-<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
-<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
-<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com"><i class="fas fa-fw fa-envelope"></i></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank" aria-label="Facebook profile"><span class="social-glyph" aria-hidden="true">f</span></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank" aria-label="LinkedIn profile"><span class="social-glyph social-glyph-in" aria-hidden="true">in</span></a>
+<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com" aria-label="Email Yaniv Lieberman"><span class="social-glyph" aria-hidden="true">@</span></a>
 </div></div></div></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../js/scripts.js"></script>

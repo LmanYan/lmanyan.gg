@@ -7,9 +7,6 @@
         <meta name="author" content="Yaniv Lieberman" />
         <title>UART Interface Extension for STM32 | Yaniv Lieberman</title>
         <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-        <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
         <link href="../css/styles.css" rel="stylesheet" />
         <style>
             .project-page p { line-height: 1.75; }
@@ -17,7 +14,7 @@
             .project-page h3 { margin-top: 2.25rem; }
             .project-figure { margin: 2rem 0; text-align: center; }
             .project-figure img { max-width: 100%; height: auto; border-radius: 0.5rem; box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.12); }
-            .project-figure figcaption { margin-top: 0.75rem; font-size: 0.95rem; color: #6c757d; text-align: left; }
+            .project-figure figcaption { margin-top: 0.75rem; font-size: 0.95rem; color: #6c757d; }
             .project-page pre { background: #f8f9fa; border-left: 0.35rem solid #1A81BC; border-radius: 0.5rem; padding: 1rem; overflow-x: auto; margin: 1.25rem 0 2rem; }
             .project-page code { font-size: 0.95rem; }
             .project-page pre code { color: #212529; }
@@ -27,7 +24,7 @@
         <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
             <div class="container">
                 <a class="navbar-brand" href="../index.html#page-top">YANIV LIEBERMAN</a>
-                <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">Menu <i class="fas fa-bars"></i></button>
+                <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">Menu <span class="menu-bars" aria-hidden="true"></span></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#about">About</a></li>
@@ -48,7 +45,7 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-lg-9">
-                        <img class="project-hero-image mb-4" src="../assets/img/projects/uart-interface/figure-3.png" alt="System architecture diagram showing PC, CP2102 USB-to-UART bridge, and STM32 MCU" />
+                        <img class="project-hero-image mb-4" src="../assets/img/projects/uart-interface/figure-3.png" alt="System architecture diagram showing PC, CP2102 USB-to-UART bridge, and STM32 MCU" width="1439" height="169" decoding="async" loading="eager" fetchpriority="high" />
                         <p class="project-date">May 3, 2026</p>
 
                         <h2 class="text-secondary text-uppercase">Problem &amp; Motivation</h2>
@@ -63,7 +60,7 @@
                         <p>Universal Asynchronous Receiver Transmitter, or UART, is a simple and widely used communication protocol in embedded systems. It enables asynchronous serial communication between two devices using separate transmit (TX) and receive (RX) lines, along with a shared ground reference. Data is sent one bit at a time at a predefined baud rate, without the need for a shared clock signal.</p>
                         <p>In practice, UART is often used for debugging and device control due to its simplicity and low overhead. However, modern computers no longer expose native UART interfaces, which makes direct communication with microcontrollers less straightforward. This gap is commonly addressed using USB-to-UART converters, allowing UART-based systems to interface with standard USB ports.</p>
                         <figure class="project-figure">
-                            <img src="../assets/img/projects/uart-interface/figure-1.png" alt="UART frame timing diagram showing start bit, data bits, optional parity bit, and stop bit" />
+                            <img src="../assets/img/projects/uart-interface/figure-1.png" alt="UART frame timing diagram showing start bit, data bits, optional parity bit, and stop bit" width="650" height="411" decoding="async" loading="lazy" />
                             <figcaption><strong>Figure 1:</strong> UART frame structure showing start bit, data bits, optional parity, and stop bit. Data is sampled asynchronously at the center of each bit period. Source: Electric Imp developer documentation.</figcaption>
                         </figure>
 
@@ -73,21 +70,21 @@
                         <p>On the hardware side, the module used in this project exposes a minimal 5-pin interface consisting of TXD, RXD, GND, VCC, and optionally control signals. The TX and RX lines are connected directly to the corresponding UART pins on the STM32, forming a full-duplex communication channel. The module is powered either directly from the USB connection or through the target system, depending on the configuration.</p>
                         <p>Functionally, this creates a transparent bridge: data sent from a terminal on the host is converted by the CP2102 into UART frames and delivered to the MCU, while responses from the MCU are transmitted back over UART, converted into USB packets, and presented to the host as serial data. This abstraction allows the firmware to operate purely in terms of UART communication, without any need to handle USB protocol details.</p>
                         <figure class="project-figure">
-                            <img src="../assets/img/projects/uart-interface/figure-2.png" alt="Internal block diagram of the CP2102 USB-to-UART bridge" />
+                            <img src="../assets/img/projects/uart-interface/figure-2.png" alt="Internal block diagram of the CP2102 USB-to-UART bridge" width="893" height="458" decoding="async" loading="lazy" />
                             <figcaption><strong>Figure 2:</strong> Internal block diagram of the CP2102 USB-to-UART bridge, showing the USB transceiver, protocol controller, buffering, and UART interface. Source: Silicon Labs application note.</figcaption>
                         </figure>
 
                         <h2 class="text-secondary text-uppercase">System Architecture</h2>
                         <p>The system consists of three main components: the host machine, the USB-to-UART bridge, and the STM32 microcontroller. Communication flows from the host over USB, is translated into UART by the bridge, and is then processed by the MCU.</p>
                         <figure class="project-figure">
-                            <img src="../assets/img/projects/uart-interface/figure-3.png" alt="System architecture showing communication between host PC, CP2102 bridge, and STM32 MCU" />
+                            <img src="../assets/img/projects/uart-interface/figure-3.png" alt="System architecture showing communication between host PC, CP2102 bridge, and STM32 MCU" width="1439" height="169" decoding="async" loading="lazy" />
                             <figcaption><strong>Figure 3:</strong> System architecture showing communication between the host PC, CP2102 USB-to-UART bridge, and STM32 MCU. The bridge appears as a virtual COM port on the host, while UART TX and RX lines are cross-connected with a shared ground reference.</figcaption>
                         </figure>
                         <p>As shown in Figure 3, the host communicates with the CP2102 over USB, where it appears as a virtual COM port. The bridge converts this communication into UART signals, exposing TX and RX lines to the MCU.</p>
                         <p>The TX pin of the bridge is connected to the RX pin of the MCU, while the RX pin is connected to the TX pin, forming a full-duplex communication channel. Both devices share a common ground reference, and the CP2102 module and STM32 operate at compatible logic levels, allowing direct connection without level shifting.</p>
                         <p>The UART interface is configured at 115200 baud, 8 data bits, no parity, and 1 stop bit (8N1), matching the configuration used by the host terminal.</p>
                         <figure class="project-figure">
-                            <img src="../assets/img/projects/uart-interface/figure-4.png" alt="Physical setup showing CP2102 bridge connected to STM32 development board" />
+                            <img src="../assets/img/projects/uart-interface/figure-4.webp" alt="Physical setup showing CP2102 bridge connected to STM32 development board" width="353" height="584" decoding="async" loading="lazy" />
                             <figcaption><strong>Figure 4:</strong> Physical setup showing the CP2102 USB-to-UART bridge connected to the STM32 development board. TX and RX lines are cross-connected, and a common ground is shared between the devices.</figcaption>
                         </figure>
                         <p>This setup provides a transparent communication channel between the host and the firmware, forming the foundation for the command interface described in the following sections.</p>
@@ -252,24 +249,29 @@ static void process_command(char *cmd)
                         <h2 class="text-secondary text-uppercase">Results and Usage</h2>
                         <p>After implementing the UART command interface, I tested it using Tera Term connected to the CP2102 virtual COM port. Once the firmware boots, the STM32 prints a short startup message and presents a command prompt. From there, commands can be typed directly into the terminal and executed without recompiling or reflashing the firmware.</p>
                         <figure class="project-figure">
-                            <img src="../assets/img/projects/uart-interface/figure-5.png" alt="Tera Term showing STM32 UART CLI startup and help command entry" />
+                            <img src="../assets/img/projects/uart-interface/figure-5.png" alt="Tera Term showing STM32 UART CLI startup and help command entry" width="659" height="438" decoding="async" loading="lazy" />
+                            <figcaption><strong>Figure 5:</strong> UART CLI startup and help-command entry in Tera Term.</figcaption>
                         </figure>
                         <p>The <code>help</code> command prints the available commands and their expected syntax. This makes the interface easier to use during testing, since the command format is available directly from the terminal.</p>
                         <figure class="project-figure">
-                            <img src="../assets/img/projects/uart-interface/figure-6.png" alt="Tera Term output showing help command results" />
+                            <img src="../assets/img/projects/uart-interface/figure-6.png" alt="Tera Term output showing help command results" width="659" height="438" decoding="async" loading="lazy" />
+                            <figcaption><strong>Figure 6:</strong> Help-command output listing the available commands and syntax.</figcaption>
                         </figure>
                         <p>A simple <code>status</code> command was added as a basic sanity check to confirm that the command parser and response path were working correctly.</p>
                         <figure class="project-figure">
-                            <img src="../assets/img/projects/uart-interface/figure-7.png" alt="Tera Term output showing status command result" />
+                            <img src="../assets/img/projects/uart-interface/figure-7.png" alt="Tera Term output showing status command result" width="659" height="438" decoding="async" loading="lazy" />
+                            <figcaption><strong>Figure 7:</strong> Status-command response confirming the UART command path is working.</figcaption>
                         </figure>
                         <p>The register access commands provide a lower-level debugging mechanism. For example, the <code>read_reg</code> command can be used to inspect a memory-mapped peripheral register at runtime.</p>
                         <figure class="project-figure">
-                            <img src="../assets/img/projects/uart-interface/figure-8.png" alt="Tera Term output showing read_reg command result" />
+                            <img src="../assets/img/projects/uart-interface/figure-8.png" alt="Tera Term output showing read_reg command result" width="659" height="438" decoding="async" loading="lazy" />
+                            <figcaption><strong>Figure 8:</strong> Reading a memory-mapped register through the read_reg command.</figcaption>
                         </figure>
                         <p>For example, reading from address <code>0x40023800</code> accesses the RCC clock control register, while writing to <code>0x40020C14</code> modifies the output state of GPIOD pins, allowing direct control of onboard LEDs.</p>
                         <p>Similarly, the <code>write_reg</code> command can write a 32-bit value directly to a memory-mapped register.</p>
                         <figure class="project-figure">
-                            <img src="../assets/img/projects/uart-interface/figure-9.png" alt="Tera Term output showing write_reg command and register readback" />
+                            <img src="../assets/img/projects/uart-interface/figure-9.png" alt="Tera Term output showing write_reg command and register readback" width="659" height="438" decoding="async" loading="lazy" />
+                            <figcaption><strong>Figure 9:</strong> Writing a memory-mapped register with write_reg and confirming the result.</figcaption>
                         </figure>
                         <p>This demonstrated the main value of the interface: instead of changing the firmware, rebuilding the project, and reflashing the board for every small test, I could interact with the MCU directly from a terminal. Even this simple implementation made debugging and experimentation noticeably faster.</p>
 
@@ -288,9 +290,9 @@ static void process_command(char *cmd)
                 <div class="row justify-content-center">
                     <div class="col-lg-4 mb-5 mb-lg-0">
                         <h4 class="text-uppercase mb-4">Socials</h4>
-                        <a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" target="_blank" rel="noreferrer"><i class="fab fa-fw fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" target="_blank" rel="noreferrer"><i class="fab fa-fw fa-linkedin-in"></i></a>
-                        <a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com"><i class="fas fa-fw fa-envelope"></i></a>
+                        <a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" target="_blank" rel="noreferrer" aria-label="Facebook profile"><span class="social-glyph" aria-hidden="true">f</span></a>
+                        <a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" target="_blank" rel="noreferrer" aria-label="LinkedIn profile"><span class="social-glyph social-glyph-in" aria-hidden="true">in</span></a>
+                        <a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com" aria-label="Email Yaniv Lieberman"><span class="social-glyph" aria-hidden="true">@</span></a>
                     </div>
                 </div>
             </div>

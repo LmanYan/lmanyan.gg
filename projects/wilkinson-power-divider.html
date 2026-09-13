@@ -7,9 +7,6 @@
 <meta content="Yaniv Lieberman" name="author"/>
 <title>Wilkinson Power Divider | Yaniv Lieberman</title>
 <link href="../assets/favicon.ico" rel="icon" type="image/x-icon"/>
-<script crossorigin="anonymous" src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
-<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
 <link href="../css/styles.css" rel="stylesheet"/>
 <script>
             window.MathJax = {
@@ -23,7 +20,7 @@
 <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
 <div class="container">
 <a class="navbar-brand" href="../index.html#page-top">YANIV LIEBERMAN</a>
-<button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <i class="fas fa-bars"></i></button>
+<button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <span class="menu-bars" aria-hidden="true"></span></button>
 <div class="collapse navbar-collapse" id="navbarResponsive"><ul class="navbar-nav ms-auto">
 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#about">About</a></li>
 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#portfolio">Portfolio</a></li>
@@ -35,7 +32,7 @@
 <div class="container d-flex align-items-center flex-column">
 <p class="project-kicker text-uppercase mb-3">RF Design · ADS · Momentum EM</p>
 <h1 class="project-heading text-uppercase mb-0">Wilkinson Power Divider</h1>
-<div class="divider-custom divider-light"><div class="divider-custom-line"></div><div class="divider-custom-icon"><i class="fa-solid fa-satellite-dish"></i></div><div class="divider-custom-line"></div></div>
+<div class="divider-custom divider-light"><div class="divider-custom-line"></div><div class="divider-custom-icon"><span class="divider-mark" aria-hidden="true"></span></div><div class="divider-custom-line"></div></div>
 <p class="project-subheading font-weight-light mb-0">A 3 GHz equal-split divider from theory to microstrip EM validation.</p>
 </div>
 </header>
@@ -75,7 +72,7 @@
 <h2 class="text-secondary text-uppercase" id="goals">2. Design Goals and Specifications</h2>
 <p>The design target is a two-way equal-split Wilkinson power divider operating in a 50 Ω RF system. The divider is designed around a single center frequency where the quarter-wave transmission-line sections provide the required impedance transformation and the isolation resistor improves output-port isolation.</p>
 <p>For this implementation, the center frequency is <strong>3 GHz</strong>. This frequency is high enough for microstrip layout effects to matter, while still allowing practical PCB dimensions on a generic FR-4 stackup.</p>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Parameter</th><th>Target</th></tr></thead>
 <tbody>
 <tr><td>Center frequency</td><td>3 GHz</td></tr>
@@ -90,7 +87,7 @@
 <tr><td>Implementation</td><td>Microstrip</td></tr>
 <tr><td>Simulation tools</td><td>ADS and Momentum</td></tr>
 </tbody>
-</table>
+</table></div>
 <p>The workflow was:</p>
 <ol>
 <li>Define the 50 Ω system and center frequency.</li>
@@ -105,16 +102,16 @@
 <h2 class="text-secondary text-uppercase" id="theory">3. Wilkinson Divider Theory and Component Values</h2>
 <p>A two-way Wilkinson power divider is built from two quarter-wave transmission-line sections and an isolation resistor between the output ports. For an equal-split divider, all ports are designed for the same system impedance, usually 50 Ω.</p>
 <p>At the center frequency, Ports 2 and 3 are each terminated with 50 Ω. From the input side, each branch must transform its 50 Ω load into 100 Ω. When the two transformed 100 Ω impedances are placed in parallel, the input sees 50 Ω:</p>
-<div class="equation">\[100\ \Omega \parallel 100\ \Omega = 50\ \Omega\]</div>
+<div class="equation equation-copyable" data-latex="\[100\ \Omega \parallel 100\ \Omega = 50\ \Omega\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[100\ \Omega \parallel 100\ \Omega = 50\ \Omega\]" type="button">Copy LaTeX</button>\[100\ \Omega \parallel 100\ \Omega = 50\ \Omega\]</div>
 <p>A quarter-wave transmission line transforms a load impedance according to:</p>
-<div class="equation">\[Z_{\text{in}} = \frac{Z_t^2}{Z_L}\]</div>
+<div class="equation equation-copyable" data-latex="\[Z_{\text{in}} = \frac{Z_t^2}{Z_L}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[Z_{\text{in}} = \frac{Z_t^2}{Z_L}\]" type="button">Copy LaTeX</button>\[Z_{\text{in}} = \frac{Z_t^2}{Z_L}\]</div>
 <p>For each Wilkinson branch, the desired transformed impedance is 100 Ω and the load is 50 Ω:</p>
-<div class="equation">\[100 = \frac{Z_t^2}{50}\]</div>
-<div class="equation">\[Z_t = \sqrt{100\cdot50}=\sqrt{2}Z_0=70.7\ \Omega\]</div>
+<div class="equation equation-copyable" data-latex="\[100 = \frac{Z_t^2}{50}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[100 = \frac{Z_t^2}{50}\]" type="button">Copy LaTeX</button>\[100 = \frac{Z_t^2}{50}\]</div>
+<div class="equation equation-copyable" data-latex="\[Z_t = \sqrt{100\cdot50}=\sqrt{2}Z_0=70.7\ \Omega\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[Z_t = \sqrt{100\cdot50}=\sqrt{2}Z_0=70.7\ \Omega\]" type="button">Copy LaTeX</button>\[Z_t = \sqrt{100\cdot50}=\sqrt{2}Z_0=70.7\ \Omega\]</div>
 <p>The isolation resistor for an equal-split Wilkinson divider is:</p>
-<div class="equation">\[R = 2Z_0 = 100\ \Omega\]</div>
+<div class="equation equation-copyable" data-latex="\[R = 2Z_0 = 100\ \Omega\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[R = 2Z_0 = 100\ \Omega\]" type="button">Copy LaTeX</button>\[R = 2Z_0 = 100\ \Omega\]</div>
 <p>During ideal equal-mode operation, the voltages at Ports 2 and 3 are equal in amplitude and phase, so no voltage difference appears across the isolation resistor. Ideally, no current flows through the resistor during normal splitting. When the outputs are unbalanced or a signal is incident at one output port, the resistor dissipates imbalance energy and improves isolation between Ports 2 and 3.</p>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
 <tbody>
 <tr><td>System impedance, \(Z_0\)</td><td>50 Ω</td></tr>
@@ -122,7 +119,7 @@
 <tr><td>Branch characteristic impedance</td><td>70.7 Ω</td></tr>
 <tr><td>Isolation resistor</td><td>100 Ω</td></tr>
 </tbody>
-</table>
+</table></div>
 
 <figure class="project-figure">
 <a href="../assets/img/projects/wilkinson-power-divider/figure-2.png" rel="noopener" target="_blank"><img alt="Ideal Wilkinson power divider topology" decoding="async" height="354" loading="lazy" src="../assets/img/projects/wilkinson-power-divider/figure-2.webp" width="704"/></a>
@@ -213,7 +210,7 @@
 <h2 class="text-secondary text-uppercase" id="microstrip">6. Microstrip Implementation</h2>
 <p>After verifying the ideal transmission-line design, the next step was to convert it into a physical microstrip implementation. Unlike ideal TLIN elements, microstrip lines require physical dimensions such as trace width, trace length, substrate height, dielectric constant, copper thickness, and loss tangent.</p>
 <p>The implementation uses a two-layer RF PCB structure: top-layer copper traces over an FR-4 dielectric substrate, with a continuous ground plane on the bottom layer.</p>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
 <tbody>
 <tr><td>Dielectric constant, \(\varepsilon_r\)</td><td>4.3</td></tr>
@@ -222,7 +219,7 @@
 <tr><td>Loss tangent, \(\tan\\delta\)</td><td>0.02</td></tr>
 <tr><td>Copper conductivity</td><td>\(5.8\times10^7\ \text{S/m}\)</td></tr>
 </tbody>
-</table>
+</table></div>
 <p>ADS LineCalc was used to synthesize the physical dimensions for the selected stackup. The 50 Ω feed line was synthesized first, followed by the 70.7 Ω Wilkinson branch.</p>
 
 <figure class="project-figure">
@@ -236,14 +233,14 @@
 <figcaption><strong>Figure 13:</strong> ADS LineCalc synthesis for the 70.7 Ω quarter-wave Wilkinson branch. The synthesized branch dimensions were \(W_{70.7}\) = 1.63 mm and \(L_{70.7,90^\circ}\) = 14.23 mm.</figcaption>
 </figure>
 
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Line type</th><th>Target impedance</th><th>Width</th><th>Length used</th></tr></thead>
 <tbody>
 <tr><td>Input/output feed line</td><td>50 Ω</td><td>3.11 mm</td><td>5 mm</td></tr>
 <tr><td>Wilkinson branch</td><td>70.7 Ω</td><td>1.63 mm</td><td>14.23 mm</td></tr>
 <tr><td>Isolation resistor</td><td>100 Ω</td><td>-</td><td>Between output nodes</td></tr>
 </tbody>
-</table>
+</table></div>
 <h3>MLIN schematic model</h3>
 <p>The ideal TLIN components were replaced with ADS MLIN components using the same FR-4 substrate definition. The 50 Ω input and output feed lines use 3.11 mm width and 5 mm length. The two Wilkinson branches use 1.63 mm width and 14.23 mm length, with a 100 Ω resistor between the two output nodes.</p>
 
@@ -312,7 +309,7 @@
 <figcaption><strong>Figure 22:</strong> ADS EM/circuit co-simulation testbench. The Momentum layout component is connected to 50 Ω terminations at Ports 1-3, while a 100 Ω resistor is connected between internal ports 4 and 5.</figcaption>
 </figure>
 
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
 <tbody>
 <tr><td>Simulation type</td><td>Momentum EM + ADS circuit co-simulation</td></tr>
@@ -324,7 +321,7 @@
 <tr><td>Isolation resistor</td><td>100 Ω</td></tr>
 <tr><td>Resistor connection</td><td>Between internal ports 4 and 5</td></tr>
 </tbody>
-</table>
+</table></div>
 <h3>Return loss</h3>
 <p>The Momentum return-loss results show that the physical layout remains well matched around the design frequency. \(S_{11}\) reaches approximately \(-22\ \text{dB}\) near 3 GHz. \(S_{22}\) and \(S_{33}\) overlap closely, confirming that the physical layout maintains good symmetry between the output paths.</p>
 
@@ -361,7 +358,7 @@
 <h2 class="text-secondary text-uppercase" id="comparison">8. Comparison and Discussion</h2>
 <p>The divider was simulated at three levels of abstraction: an ideal transmission-line model, a microstrip schematic model, and a Momentum EM/circuit co-simulation. Each stage added more physical detail to the design and therefore produced a more realistic result.</p>
 <p>The ideal TLIN simulation represents the theoretical Wilkinson divider. It produced nearly perfect matching and isolation at the design frequency. The MLIN schematic simulation replaced the ideal lines with physical microstrip elements based on the selected FR-4 substrate, adding conductor loss, dielectric loss, and dispersion. Finally, the Momentum simulation evaluated the actual copper geometry, including curved branches, junctions, output transitions, resistor pads, and electromagnetic coupling.</p>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Result</th><th>Ideal TLIN</th><th>MLIN schematic</th><th>Momentum EM/circuit</th></tr></thead>
 <tbody>
 <tr><td>Input match, \(S_{11}\)</td><td>Very deep null at 3 GHz</td><td>Deep null near 3 GHz</td><td>About \(-22\ \text{dB}\) near 3 GHz</td></tr>
@@ -370,7 +367,7 @@
 <tr><td>Output balance</td><td>Ideal overlap</td><td>Very close overlap</td><td>Very close overlap</td></tr>
 <tr><td>Phase balance</td><td>Approximately 0° difference</td><td>Approximately 0° difference</td><td>Approximately 0° difference</td></tr>
 </tbody>
-</table>
+</table></div>
 <p>The comparison shows that the divider behavior is preserved across all three stages. The most noticeable difference is the increase in insertion loss in the Momentum result. This is expected because the EM/circuit co-simulation includes realistic FR-4 dielectric loss, conductor loss, and layout discontinuities.</p>
 <p>The Momentum result also shows that the physical layout shifts and shapes the response compared to the ideal schematic model. The curved branches, resistor pads, and transitions are not ideal transmission-line elements, so they affect the exact matching and isolation behavior. However, the final result still shows the key Wilkinson properties: matched operation near the design frequency, equal output split, high output isolation, and good phase balance.</p>
 
@@ -389,9 +386,9 @@
 <footer class="footer text-center">
 <div class="container"><div class="row justify-content-center"><div class="col-lg-4 mb-5 mb-lg-0">
 <h4 class="text-uppercase mb-4">Socials</h4>
-<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
-<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
-<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com"><i class="fas fa-fw fa-envelope"></i></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank" aria-label="Facebook profile"><span class="social-glyph" aria-hidden="true">f</span></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank" aria-label="LinkedIn profile"><span class="social-glyph social-glyph-in" aria-hidden="true">in</span></a>
+<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com" aria-label="Email Yaniv Lieberman"><span class="social-glyph" aria-hidden="true">@</span></a>
 </div></div></div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

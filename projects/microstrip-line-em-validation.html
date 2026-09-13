@@ -8,10 +8,9 @@
 <meta content="Yaniv Lieberman" name="author"/>
 <title>Microstrip Line EM Validation | Yaniv Lieberman</title>
 <link href="../assets/favicon.ico" rel="icon" type="image/x-icon"/>
-<script crossorigin="anonymous" src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
-<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
 <link href="../css/styles.css" rel="stylesheet"/>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},chtml:{scale:1}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <style>
 .project-page p { line-height: 1.75; }
 .project-page h2 { margin-top: 3rem; }
@@ -20,7 +19,7 @@
 .project-page li { margin-bottom: 0.45rem; }
 .project-figure { margin: 2rem 0; text-align: center; }
 .project-figure img { max-width: 100%; height: auto; border-radius: 0.5rem; box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.12); background: #fff; }
-.project-figure figcaption { margin-top: 0.75rem; font-size: 0.95rem; color: #6c757d; text-align: left; }
+.project-figure figcaption { margin-top: 0.75rem; font-size: 0.95rem; color: #6c757d; }
 .equation { background: #f8f9fa; border-left: 0.35rem solid #1A81BC; border-radius: 0.5rem; padding: 1rem; margin: 1.25rem 0 1.5rem; overflow-x: auto; font-family: Georgia, 'Times New Roman', serif; font-size: 1.08rem; text-align: center; }
 .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1.05; margin: 0 0.15em; }
 .frac .num { border-bottom: 1px solid currentColor; padding: 0 0.25em 0.08em; }
@@ -40,7 +39,7 @@
 <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
 <div class="container">
 <a class="navbar-brand" href="../index.html#page-top">YANIV LIEBERMAN</a>
-<button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <i class="fas fa-bars"></i></button>
+<button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <span class="menu-bars" aria-hidden="true"></span></button>
 <div class="collapse navbar-collapse" id="navbarResponsive">
 <ul class="navbar-nav ms-auto">
 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#about">About</a></li>
@@ -94,7 +93,7 @@
 <p>Before comparing analytical models and EM solvers, the first step is to define one physical microstrip structure that will be used consistently throughout the project.</p>
 <p>For this article, the design target is a nominal 50 Ω microstrip transmission line on a simple two-layer PCB stackup. The structure is intentionally kept simple: a copper trace on the top layer, a continuous ground plane on the bottom layer, and an FR-4 dielectric substrate between them.</p>
 <p>The goal is not to design a production-ready RF board, but to create a controlled test case that can be analyzed using several levels of modeling.</p>
-<table>
+<div class="project-table-scroll"><table>
 <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
 <tbody>
 <tr><td>Target impedance</td><td>50 Ω</td></tr>
@@ -107,7 +106,7 @@
 <tr><td>Line length</td><td>50 mm</td></tr>
 <tr><td>Frequency sweep</td><td>100 MHz to 6 GHz</td></tr>
 </tbody>
-</table>
+</table></div>
 <figure class="project-figure">
 <a href="../assets/img/projects/microstrip-line-em-validation/figure-1.png" rel="noopener" target="_blank"><img alt="Baseline 3D microstrip geometry with top copper trace, FR-4 substrate, and bottom ground plane" decoding="async" height="549" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-1.webp" width="976"/></a>
 <figcaption><strong>Figure 1:</strong> Baseline microstrip geometry used throughout this project: a top copper trace over an FR-4 substrate with a continuous bottom ground plane. The trace width W is selected to achieve approximately 50 Ω characteristic impedance.</figcaption>
@@ -115,19 +114,19 @@
 <p>A 50 mm line length is long enough to show meaningful phase delay across the frequency sweep, while still being simple to model in both ADS Momentum and HFSS. Since the purpose of this article is model validation rather than matching-network design, a fixed physical length is more useful than designing the line to be a specific fraction of a wavelength at one frequency.</p>
 <p>FR-4 is used here because it is common, inexpensive, and familiar from typical PCB fabrication. However, it is also not an ideal RF substrate. Its dielectric constant and loss tangent are not perfectly controlled, and both may vary with frequency, manufacturer, resin content, and glass weave. This makes it a useful example: simple enough for a first EM validation project, but realistic enough to show why physical modeling matters.</p>
 <p>The baseline geometry is therefore:</p>
-<div class="equation">Z<sub>0</sub> ≈ 50 Ω,   h = 1.6 mm,   t = 35 µm,   L = 50 mm</div>
+<div class="equation equation-copyable" data-latex="\[Z_0\approx50\,\Omega,\quad h=1.6\,\mathrm{mm},\quad t=35\,\mu\mathrm{m},\quad L=50\,\mathrm{mm}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[Z_0\approx50\,\Omega,\quad h=1.6\,\mathrm{mm},\quad t=35\,\mu\mathrm{m},\quad L=50\,\mathrm{mm}\]" type="button">Copy LaTeX</button>\[Z_0\approx50\,\Omega,\quad h=1.6\,\mathrm{mm},\quad t=35\,\mu\mathrm{m},\quad L=50\,\mathrm{mm}\]</div>
 <p>A copper thickness of t = 35 µm was used, corresponding to standard 1 oz PCB copper. The remaining unknown is the trace width, W, required to achieve approximately 50 Ω. That value is first estimated analytically, then calculated using ADS LineCalc, and finally validated using schematic and EM simulations.</p>
 <h2 class="text-secondary text-uppercase" id="analytical-estimate">3. Analytical Microstrip Estimate</h2>
 <p>Before using ADS LineCalc or an EM solver, I first estimated the required microstrip width using standard closed-form microstrip equations. This gives a useful reference point and helps verify that the software-generated dimensions are reasonable.</p>
 <p>For a microstrip line, the characteristic impedance is mainly controlled by the ratio between the trace width and substrate height:</p>
-<div class="equation"><span class="frac"><span class="num">W</span><span class="den">h</span></span></div>
+<div class="equation equation-copyable" data-latex="\[\frac{W}{h}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\frac{W}{h}\]" type="button">Copy LaTeX</button>\[\frac{W}{h}\]</div>
 <p>where W is the trace width and h is the substrate height. The dielectric constant also affects the result because the electromagnetic fields are partly inside the substrate and partly in air. For this reason, microstrip lines are usually described using an effective dielectric constant, ε<sub>eff</sub>, rather than only the substrate dielectric constant ε<sub>r</sub>.</p>
 <p>For the baseline stackup:</p>
-<div class="equation">ε<sub>r</sub> = 4.3,   h = 1.6 mm,   t = 35 µm,   Z<sub>0</sub> = 50 Ω</div>
-<p>Ignoring copper thickness for the first estimate, the effective dielectric constant for <span class="frac"><span class="num">W</span><span class="den">h</span></span> &gt; 1 can be approximated as:</p>
-<div class="equation">ε<sub>eff</sub> = <span class="frac"><span class="num">ε<sub>r</sub> + 1</span><span class="den">2</span></span> + <span class="frac"><span class="num">ε<sub>r</sub> - 1</span><span class="den">2</span></span> · <span class="frac"><span class="num">1</span><span class="den"><span class="sqrt"><span class="root-symbol">√</span><span class="radicand">1 + <span class="frac"><span class="num">12h</span><span class="den">W</span></span></span></span></span></span></div>
+<div class="equation equation-copyable" data-latex="\[\varepsilon_r=4.3,\quad h=1.6\,\mathrm{mm},\quad t=35\,\mu\mathrm{m},\quad Z_0=50\,\Omega\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\varepsilon_r=4.3,\quad h=1.6\,\mathrm{mm},\quad t=35\,\mu\mathrm{m},\quad Z_0=50\,\Omega\]" type="button">Copy LaTeX</button>\[\varepsilon_r=4.3,\quad h=1.6\,\mathrm{mm},\quad t=35\,\mu\mathrm{m},\quad Z_0=50\,\Omega\]</div>
+<p>Ignoring copper thickness for the first estimate, the effective dielectric constant for \(\frac{W}{h}\) &gt; 1 can be approximated as:</p>
+<div class="equation equation-copyable" data-latex="\[\varepsilon_{\mathrm{eff}}=\frac{\varepsilon_r+1}{2}+\frac{\varepsilon_r-1}{2}\cdot\frac{1}{\sqrt{1+12h/W}}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\varepsilon_{\mathrm{eff}}=\frac{\varepsilon_r+1}{2}+\frac{\varepsilon_r-1}{2}\cdot\frac{1}{\sqrt{1+12h/W}}\]" type="button">Copy LaTeX</button>\[\varepsilon_{\mathrm{eff}}=\frac{\varepsilon_r+1}{2}+\frac{\varepsilon_r-1}{2}\cdot\frac{1}{\sqrt{1+12h/W}}\]</div>
 <p>The corresponding characteristic impedance approximation is:</p>
-<div class="equation">Z<sub>0</sub> = <span class="frac"><span class="num">120π</span><span class="den"><span class="sqrt"><span class="root-symbol">√</span><span class="radicand">ε<sub>eff</sub></span></span> · [ <span class="frac"><span class="num">W</span><span class="den">h</span></span> + 1.393 + 0.667 ln(<span class="frac"><span class="num">W</span><span class="den">h</span></span> + 1.444) ]</span></span></div>
+<div class="equation equation-copyable" data-latex="\[Z_0=\frac{120\pi}{\sqrt{\varepsilon_{\mathrm{eff}}}\left[W/h+1.393+0.667\ln\left(W/h+1.444\right)\right]}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[Z_0=\frac{120\pi}{\sqrt{\varepsilon_{\mathrm{eff}}}\left[W/h+1.393+0.667\ln\left(W/h+1.444\right)\right]}\]" type="button">Copy LaTeX</button>\[Z_0=\frac{120\pi}{\sqrt{\varepsilon_{\mathrm{eff}}}\left[W/h+1.393+0.667\ln\left(W/h+1.444\right)\right]}\]</div>
 <p>While closed-form synthesis approximations exist for estimating the required microstrip width, I chose to solve the equations numerically using a short Python script. The script sweeps the trace width W, calculates the corresponding characteristic impedance Z<sub>0</sub>, and extracts the width closest to the 50 Ω target from the resulting curve.</p>
 <p>The code used for the sweep is shown below:</p>
 <pre class="project-code"><code>import numpy as np
@@ -223,7 +222,7 @@ plt.show()</code></pre>
 <p>Momentum uses a different modeling approach. Instead of simulating a symbolic microstrip component, the copper trace is drawn as an actual layout shape, the substrate stackup is defined in the Momentum substrate editor, and the solver calculates the electromagnetic behavior of that physical geometry.</p>
 <p>This means that Momentum can capture effects related to the actual planar structure, such as current distribution across the finite-width trace, fringing fields at the trace edges, conductor loss, dielectric loss, port discontinuities, and sensitivity to mesh and layout setup. For a simple straight microstrip line, the Momentum result should follow the same general behavior as the MLIN schematic result, but the two are not expected to be numerically identical.</p>
 <p>The simulated Momentum structure uses the same baseline dimensions:</p>
-<div class="equation">W = 3.11 mm,   L = 50 mm,   h = 1.6 mm,   t = 35 µm,   ε<sub>r</sub> = 4.3,   tanδ = 0.02</div>
+<div class="equation equation-copyable" data-latex="\[W=3.11\,\mathrm{mm},\quad L=50\,\mathrm{mm},\quad h=1.6\,\mathrm{mm},\quad t=35\,\mu\mathrm{m},\quad \varepsilon_r=4.3,\quad \tan\delta=0.02\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[W=3.11\,\mathrm{mm},\quad L=50\,\mathrm{mm},\quad h=1.6\,\mathrm{mm},\quad t=35\,\mu\mathrm{m},\quad \varepsilon_r=4.3,\quad \tan\delta=0.02\]" type="button">Copy LaTeX</button>\[W=3.11\,\mathrm{mm},\quad L=50\,\mathrm{mm},\quad h=1.6\,\mathrm{mm},\quad t=35\,\mu\mathrm{m},\quad \varepsilon_r=4.3,\quad \tan\delta=0.02\]</div>
 <p>A practical detail in this setup is that the ADS layout technology used for this Momentum layout is based on micron layout units. Therefore, the physical line dimensions were entered as L = 50000 µm and W = 3110 µm. These values correspond to the intended physical dimensions of L = 50 mm and W = 3.11 mm.</p>
 <p>This unit conversion is important. If the values 50 and 3.11 were entered directly into a micron-based layout, the resulting structure would be 50 µm long instead of 50 mm, producing a completely different EM result.</p>
 <figure class="project-figure">
@@ -237,7 +236,7 @@ plt.show()</code></pre>
 <figcaption><strong>Figure 8:</strong> Momentum substrate stackup used for the EM simulation. The top copper trace is placed over a 1.6 mm FR-4 substrate with εr = 4.3 and tanδ = 0.02, with a bottom ground plane used as the return reference.</figcaption>
 </figure>
 <p>The simulation was performed over the same frequency range used for the ADS schematic baseline:</p>
-<div class="equation">0.1 GHz ≤ f ≤ 6 GHz</div>
+<div class="equation equation-copyable" data-latex="\[0.1\,\mathrm{GHz}\leq f\leq6\,\mathrm{GHz}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[0.1\,\mathrm{GHz}\leq f\leq6\,\mathrm{GHz}\]" type="button">Copy LaTeX</button>\[0.1\,\mathrm{GHz}\leq f\leq6\,\mathrm{GHz}\]</div>
 <p>The expected result is a well-matched line with low S<sub>11</sub>, insertion loss that increases with frequency, and an approximately linear S<sub>21</sub> phase response with normal ±180° phase wrapping.</p>
 <figure class="project-figure">
 <a href="../assets/img/projects/microstrip-line-em-validation/figure-9.png" rel="noopener" target="_blank"><img alt="ADS Momentum S11 plot" decoding="async" height="384" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-9.webp" width="917"/></a>
@@ -254,10 +253,10 @@ plt.show()</code></pre>
 <p>After validating the physical layout in ADS Momentum, I recreated the same microstrip line in Ansys HFSS as a 3D full-wave EM model.</p>
 <p>This provides another level of validation beyond both the ADS schematic simulation and the Momentum planar EM simulation. In the ADS MLIN schematic, the microstrip is represented as a parameterized transmission-line element. In ADS Momentum, the line is drawn as a planar metal shape on a substrate stackup. In HFSS, the structure is built as explicit 3D geometry: the substrate, copper trace, bottom ground plane, surrounding air region, and excitation ports are all separate modeled objects.</p>
 <p>The same baseline dimensions were used:</p>
-<div class="equation">W = 3.11 mm,   L = 50 mm,   h = 1.6 mm,   t = 35 µm,   ε<sub>r</sub> = 4.3,   tanδ = 0.02</div>
+<div class="equation equation-copyable" data-latex="\[W=3.11\,\mathrm{mm},\quad L=50\,\mathrm{mm},\quad h=1.6\,\mathrm{mm},\quad t=35\,\mu\mathrm{m},\quad \varepsilon_r=4.3,\quad \tan\delta=0.02\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[W=3.11\,\mathrm{mm},\quad L=50\,\mathrm{mm},\quad h=1.6\,\mathrm{mm},\quad t=35\,\mu\mathrm{m},\quad \varepsilon_r=4.3,\quad \tan\delta=0.02\]" type="button">Copy LaTeX</button>\[W=3.11\,\mathrm{mm},\quad L=50\,\mathrm{mm},\quad h=1.6\,\mathrm{mm},\quad t=35\,\mu\mathrm{m},\quad \varepsilon_r=4.3,\quad \tan\delta=0.02\]</div>
 <p>The line was modeled with the x-axis as the propagation direction, the y-axis as the trace-width direction, and the z-axis as the vertical stackup direction. The FR-4 substrate was modeled as a 50 mm long, 20 mm wide, 1.6 mm thick dielectric block. The copper trace was placed on top of the substrate, and a copper ground plane was placed underneath it.</p>
 <p>The HFSS geometry used the following dimensions:</p>
-<table>
+<div class="project-table-scroll"><table>
 <thead><tr><th>Object</th><th>Position (X, Y, Z)</th><th>Size (XSize, YSize, ZSize)</th><th>Material</th></tr></thead>
 <tbody>
 <tr><td>FR-4 substrate</td><td>(0, -10, 0) mm</td><td>(50, 20, 1.6) mm</td><td>FR-4</td></tr>
@@ -265,7 +264,7 @@ plt.show()</code></pre>
 <tr><td>Top microstrip trace</td><td>(0, -1.555, 1.6) mm</td><td>(50, 3.11, 0.035) mm</td><td>Copper</td></tr>
 <tr><td>Air box</td><td>(-5, -20, -2.035) mm</td><td>(60, 40, 13.635) mm</td><td>Air</td></tr>
 </tbody>
-</table>
+</table></div>
 <p>The air box surrounds the structure and was assigned a radiation boundary. This allows the fields around the microstrip to exist in the simulation volume without forcing the structure into a closed conducting box.</p>
 <figure class="project-figure">
 <a href="../assets/img/projects/microstrip-line-em-validation/figure-11.png" rel="noopener" target="_blank"><img alt="HFSS 3D microstrip model" decoding="async" height="449" loading="lazy" src="../assets/img/projects/microstrip-line-em-validation/figure-11.webp" width="967"/></a>
@@ -274,13 +273,13 @@ plt.show()</code></pre>
 <h3>Port setup</h3>
 <p>For this HFSS model, I used lumped ports at both ends of the microstrip line. Each lumped port was drawn as a vertical sheet between the signal trace and the ground plane.</p>
 <p>This is different from a wave port, which usually requires a larger cross-sectional sheet that includes the surrounding field region. A lumped port is more compact and easier to visualize for this simple validation model. It represents a voltage excitation between two conductors: the microstrip trace and the ground reference.</p>
-<table>
+<div class="project-table-scroll"><table>
 <thead><tr><th>Port</th><th>Plane</th><th>Position</th><th>Size</th></tr></thead>
 <tbody>
 <tr><td>Port 1</td><td>YZ</td><td>x = 0 mm</td><td>3.11 mm × 1.6 mm</td></tr>
 <tr><td>Port 2</td><td>YZ</td><td>x = 50 mm</td><td>3.11 mm × 1.6 mm</td></tr>
 </tbody>
-</table>
+</table></div>
 <p>Each port sheet spans y = -1.555 mm to +1.555 mm and z = 0 mm to 1.6 mm. The integration line was defined from the signal trace to the ground plane. This tells HFSS that the port voltage is measured between the top trace and the ground reference, similar to how a coaxial connector or VNA port would excite a microstrip line.</p>
 <p>For Port 1, the integration line was defined from (0, 0, 1.6 mm) to (0, 0, 0). For Port 2, it was defined from (50 mm, 0, 1.6 mm) to (50 mm, 0, 0).</p>
 <figure class="project-figure">
@@ -289,7 +288,7 @@ plt.show()</code></pre>
 </figure>
 <h3>HFSS simulation setup</h3>
 <p>The HFSS simulation was configured as a driven modal solution. The adaptive solution frequency was set near the upper end of the band, and the final frequency sweep covered the same range used in the ADS simulations:</p>
-<div class="equation">0.1 GHz ≤ f ≤ 6 GHz</div>
+<div class="equation equation-copyable" data-latex="\[0.1\,\mathrm{GHz}\leq f\leq6\,\mathrm{GHz}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[0.1\,\mathrm{GHz}\leq f\leq6\,\mathrm{GHz}\]" type="button">Copy LaTeX</button>\[0.1\,\mathrm{GHz}\leq f\leq6\,\mathrm{GHz}\]</div>
 <p>The main extracted quantities were dB(S<sub>11</sub>), dB(S<sub>21</sub>), and phase(S<sub>21</sub>). This keeps the HFSS results directly comparable to the ADS MLIN and Momentum simulations.</p>
 <h3>HFSS S<sub>11</sub> result</h3>
 <p>The HFSS S<sub>11</sub> result shows that the 3D microstrip model remains well matched across the simulated frequency range. The return loss stays roughly between -21 dB and -45 dB.</p>
@@ -326,7 +325,7 @@ plt.show()</code></pre>
 <p>The final physical dimensions used for the simulations were W = 3.11 mm and L = 50 mm, with the baseline substrate definition ε<sub>r</sub> = 4.3, h = 1.6 mm, t = 35 µm, and tanδ = 0.02.</p>
 <p>The analytical Python estimate and ADS LineCalc synthesis agreed closely. The Python calculation estimated a width of approximately W ≈ 3.1 mm, while ADS LineCalc returned W = 3.11047 mm. This agreement gave confidence that the selected width was a reasonable starting point before moving into schematic and EM simulations.</p>
 <h3>Modeling-level comparison</h3>
-<table>
+<div class="project-table-scroll"><table>
 <thead><tr><th>Method</th><th>Role in the workflow</th><th>Geometry representation</th><th>Main output</th></tr></thead>
 <tbody>
 <tr><td>Analytical/Python estimate</td><td>First-order width estimate</td><td>Closed-form microstrip equations</td><td>W ≈ 3.1 mm</td></tr>
@@ -335,7 +334,7 @@ plt.show()</code></pre>
 <tr><td>ADS Momentum</td><td>Planar EM validation</td><td>Drawn metal layout on substrate stackup</td><td>Layout-dependent EM result</td></tr>
 <tr><td>HFSS</td><td>3D full-wave validation</td><td>Explicit 3D geometry</td><td>Independent 3D EM result</td></tr>
 </tbody>
-</table>
+</table></div>
 <p>This comparison shows the progression from fast analytical and schematic models toward more physical EM simulations.</p>
 <h3>S<sub>11</sub> comparison</h3>
 <p>The S<sub>11</sub> comparison shows the clearest difference between the schematic and EM models.</p>
@@ -388,7 +387,7 @@ plt.show()</code></pre>
 <p>The Momentum simulation moved the design from a schematic component into a physical planar EM layout. This introduced practical EM setup details that are not visible in the schematic model, such as layer mapping, substrate definition, port setup, and layout units. One important practical lesson was that the ADS layout technology used micron-based units, so the 50 mm line had to be drawn as L = 50000 µm, rather than simply entering 50 into the layout.</p>
 <p>Finally, the HFSS model rebuilt the same line as explicit 3D geometry. The substrate, trace, ground plane, air box, and lumped ports were all modeled directly. The HFSS result agreed with the overall behavior seen in ADS: the line remained well matched, insertion loss increased with frequency, and the phase response confirmed the expected delay of a finite-length transmission line.</p>
 <p>The main takeaway is that the different tools agreed on the overall RF behavior, but not necessarily on every detail of the curves. This is expected. Each modeling level includes different assumptions:</p>
-<table>
+<div class="project-table-scroll"><table>
 <thead><tr><th>Model</th><th>Main strength</th></tr></thead>
 <tbody>
 <tr><td>Analytical equations</td><td>Fast first estimate</td></tr>
@@ -397,7 +396,7 @@ plt.show()</code></pre>
 <tr><td>ADS Momentum</td><td>Planar EM validation of drawn layout</td></tr>
 <tr><td>HFSS</td><td>Full 3D EM validation</td></tr>
 </tbody>
-</table>
+</table></div>
 <p>The schematic model is fast and clean, but more idealized. The EM solvers are more physically representative, but also more sensitive to setup details such as ports, boundaries, meshing, materials, and units.</p>
 <p>For this article, the goal was not to prove that every solver produces identical plots. The goal was to follow a simple microstrip design from theory to physical EM validation and understand what each modeling level contributes.</p>
 <p>In that sense, this project is a useful bridge between textbook transmission-line equations and practical RF PCB simulation. It shows that closed-form models and schematic simulations are excellent starting points, but EM simulation becomes important when the physical layout, ports, stackup, and solver assumptions start to matter.</p>
@@ -409,9 +408,9 @@ plt.show()</code></pre>
 <footer class="footer text-center">
 <div class="container"><div class="row justify-content-center"><div class="col-lg-4 mb-5 mb-lg-0">
 <h4 class="text-uppercase mb-4">Socials</h4>
-<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
-<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
-<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com"><i class="fas fa-fw fa-envelope"></i></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank" aria-label="Facebook profile"><span class="social-glyph" aria-hidden="true">f</span></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank" aria-label="LinkedIn profile"><span class="social-glyph social-glyph-in" aria-hidden="true">in</span></a>
+<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com" aria-label="Email Yaniv Lieberman"><span class="social-glyph" aria-hidden="true">@</span></a>
 </div></div></div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

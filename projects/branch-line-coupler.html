@@ -8,9 +8,6 @@
 <meta content="Yaniv Lieberman" name="author"/>
 <title>Branch-Line Coupler | Yaniv Lieberman</title>
 <link href="../assets/favicon.ico" rel="icon" type="image/x-icon"/>
-<script crossorigin="anonymous" src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
-<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
 <link href="../css/styles.css" rel="stylesheet"/>
 <script>
             window.MathJax = {
@@ -24,7 +21,7 @@
 <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
 <div class="container">
 <a class="navbar-brand" href="../index.html#page-top">YANIV LIEBERMAN</a>
-<button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <i class="fas fa-bars"></i></button>
+<button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <span class="menu-bars" aria-hidden="true"></span></button>
 <div class="collapse navbar-collapse" id="navbarResponsive"><ul class="navbar-nav ms-auto">
 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#about">About</a></li>
 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#portfolio">Portfolio</a></li>
@@ -36,7 +33,7 @@
 <div class="container d-flex align-items-center flex-column">
 <p class="project-kicker text-uppercase mb-3">RF Design · ADS · HFSS EM</p>
 <h1 class="project-heading text-uppercase mb-0">Branch-Line Coupler</h1>
-<div class="divider-custom divider-light"><div class="divider-custom-line"></div><div class="divider-custom-icon"><i class="fa-solid fa-satellite-dish"></i></div><div class="divider-custom-line"></div></div>
+<div class="divider-custom divider-light"><div class="divider-custom-line"></div><div class="divider-custom-icon"><span class="divider-mark" aria-hidden="true"></span></div><div class="divider-custom-line"></div></div>
 <p class="project-subheading font-weight-light mb-0">A 3 GHz 90° hybrid coupler from ideal quadrature behavior to tuned full-wave EM validation.</p>
 </div>
 </header>
@@ -88,7 +85,7 @@
 <p>The branch-line coupler is inherently narrowband because the match, isolation, and phase conditions depend on all four branches remaining close to 90° electrical length.</p>
 <h2 class="text-secondary text-uppercase" id="goals">3. Design Goals and Specifications</h2>
 <p>The objective was to design a 3 GHz equal-split branch-line hybrid coupler for a 50 Ω microwave system. The physical implementation uses the same generic FR-4 stackup used in the earlier microstrip and Wilkinson-divider projects.</p>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Parameter</th><th>Design target</th></tr></thead>
 <tbody>
 <tr><td>Center frequency</td><td>3 GHz</td></tr>
@@ -101,7 +98,7 @@
 <tr><td>Implementation</td><td>Microstrip on FR-4</td></tr>
 <tr><td>Substrate parameters</td><td>\(\varepsilon_r=4.3\), \(h=1.6\ \text{mm}\), \(t=35\ \mu\text{m}\)</td></tr>
 </tbody>
-</table>
+</table></div>
 <p>Amplitude balance was evaluated as the magnitude difference between the two output paths:</p>
 <div class="equation equation-copyable" data-latex="\[\Delta A = \left|\text{dB}(S_{31})-\text{dB}(S_{21})\right|\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\Delta A = \left|\text{dB}(S_{31})-\text{dB}(S_{21})\right|\]" type="button">Copy LaTeX</button>\[\Delta A = \left|\text{dB}(S_{31})-\text{dB}(S_{21})\right|\]</div>
 <p>Phase balance was evaluated relative to the ideal quadrature condition:</p>
@@ -128,7 +125,7 @@
 <figcaption><strong>Figure 5:</strong> Phase difference between the through and coupled output paths.</figcaption>
 </figure>
 <p>The phase of \(S_{21}/S_{31}\) was 90° near 3 GHz, confirming the expected quadrature relationship between the two equal-amplitude output signals.</p>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Metric</th><th>Ideal ADS result</th></tr></thead>
 <tbody>
 <tr><td>\(S_{21}\) at 3 GHz</td><td>-3.009 dB</td></tr>
@@ -138,7 +135,7 @@
 <tr><td>\(S_{11}\), near 3 GHz</td><td>about -50 dB</td></tr>
 <tr><td>\(S_{41}\), near 3 GHz</td><td>about -40.5 dB</td></tr>
 </tbody>
-</table>
+</table></div>
 <h2 class="text-secondary text-uppercase" id="bandwidth">5. Branch Length and Bandwidth Sweep</h2>
 <p>Because the coupler depends on four quarter-wave sections, the useful operating band is limited by how closely the branches remain near 90° electrical length. The ideal ADS model was evaluated with three requirements: \(S_{11},S_{41}\le -20\ \text{dB}\), amplitude imbalance within 0.5 dB, and phase difference within \(90^\circ\pm5^\circ\).</p>
 <h3>Nominal bandwidth</h3>
@@ -155,14 +152,14 @@
 <a href="../assets/img/projects/branch-line-coupler/figure-8.png" rel="noopener" target="_blank"><picture><source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/branch-line-coupler/figure-8-320.webp 320w, ../assets/img/projects/branch-line-coupler/figure-8-480.webp 480w, ../assets/img/projects/branch-line-coupler/figure-8-640.webp 640w, ../assets/img/projects/branch-line-coupler/figure-8-800.webp 800w, ../assets/img/projects/branch-line-coupler/figure-8.webp 894w" type="image/webp"/><img alt="Ideal output phase difference bandwidth" decoding="async" fetchpriority="low" height="663" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/branch-line-coupler/figure-8.png" width="894"/></picture></a>
 <figcaption><strong>Figure 8:</strong> Output phase difference between Ports 2 and 3. The phase remains within 90 degrees +/-5 degrees over a broad range around the design frequency.</figcaption>
 </figure>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Requirement</th><th>Approximate valid range</th></tr></thead>
 <tbody>
 <tr><td>Isolation, \(S_{41}\le -20\ \text{dB}\)</td><td>2.84-3.16 GHz</td></tr>
 <tr><td>Amplitude imbalance within 0.5 dB</td><td>2.72-3.28 GHz</td></tr>
 <tr><td>Phase difference within \(90^\circ\pm5^\circ\)</td><td>2.505-3.495 GHz</td></tr>
 </tbody>
-</table>
+</table></div>
 <div class="equation equation-copyable" data-latex="\[BW_\text{ideal} = 3.16-2.84 = 0.32\ \text{GHz} = 320\ \text{MHz}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[BW_\text{ideal} = 3.16-2.84 = 0.32\ \text{GHz} = 320\ \text{MHz}\]" type="button">Copy LaTeX</button>\[BW_\text{ideal} = 3.16-2.84 = 0.32\ \text{GHz} = 320\ \text{MHz}\]</div>
 <div class="equation equation-copyable" data-latex="\[FBW_\text{ideal}=\frac{3.16-2.84}{3.00}\times100\%\approx10.7\%\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[FBW_\text{ideal}=\frac{3.16-2.84}{3.00}\times100\%\approx10.7\%\]" type="button">Copy LaTeX</button>\[FBW_\text{ideal}=\frac{3.16-2.84}{3.00}\times100\%\approx10.7\%\]</div>
 <h3>Common branch-length sweep</h3>
@@ -175,24 +172,24 @@
 <a href="../assets/img/projects/branch-line-coupler/figure-10.png" rel="noopener" target="_blank"><picture><source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/branch-line-coupler/figure-10-320.webp 320w, ../assets/img/projects/branch-line-coupler/figure-10-480.webp 480w, ../assets/img/projects/branch-line-coupler/figure-10-640.webp 640w, ../assets/img/projects/branch-line-coupler/figure-10-800.webp 800w, ../assets/img/projects/branch-line-coupler/figure-10-960.webp 960w" type="image/webp"/><img alt="Common branch length sweep phase difference" decoding="async" fetchpriority="low" height="547" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/branch-line-coupler/figure-10.png" width="1280"/></picture></a>
 <figcaption><strong>Figure 10:</strong> Effect of common branch electrical length on output phase difference. The quadrature condition shifts with the return-loss minimum.</figcaption>
 </figure>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Electrical length at 3 GHz</th><th>Relative branch length</th><th>Approximate shifted center frequency</th></tr></thead>
 <tbody>
 <tr><td>85°</td><td>Shorter than nominal</td><td>3.18 GHz</td></tr>
 <tr><td>90°</td><td>Nominal</td><td>3.00 GHz</td></tr>
 <tr><td>95°</td><td>Longer than nominal</td><td>2.84 GHz</td></tr>
 </tbody>
-</table>
+</table></div>
 <p>Changing all four branches by the same amount primarily translates the ideal response in frequency. In a physical microstrip implementation, the shift is not perfectly self-similar because dispersion, finite-width effects, loss, junctions, and ports also influence the response.</p>
 <h2 class="text-secondary text-uppercase" id="microstrip">6. Microstrip Implementation</h2>
 <p>The ideal transmission-line model was then converted into an ADS MLIN distributed microstrip implementation. This model retains the branch impedances and quarter-wave design intent while adding substrate-dependent propagation, conductor loss, and dielectric loss.</p>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Branch type</th><th>Target impedance</th><th>Width</th><th>Electrical length</th><th>Initial physical length</th></tr></thead>
 <tbody>
 <tr><td>Horizontal branches</td><td>35.35 Ω</td><td>5.326 mm</td><td>90° at 3 GHz</td><td>13.450 mm</td></tr>
 <tr><td>Vertical branches</td><td>50 Ω</td><td>3.110 mm</td><td>90° at 3 GHz</td><td>13.821 mm</td></tr>
 </tbody>
-</table>
+</table></div>
 <figure class="project-figure">
 <a href="../assets/img/projects/branch-line-coupler/figure-11.png" rel="noopener" target="_blank"><picture><source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/branch-line-coupler/figure-11-320.webp 320w, ../assets/img/projects/branch-line-coupler/figure-11-480.webp 480w, ../assets/img/projects/branch-line-coupler/figure-11-640.webp 640w, ../assets/img/projects/branch-line-coupler/figure-11-800.webp 800w, ../assets/img/projects/branch-line-coupler/figure-11.webp 847w" type="image/webp"/><img alt="ADS LineCalc 35.35 ohm branch" decoding="async" fetchpriority="low" height="531" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/branch-line-coupler/figure-11.png" width="847"/></picture></a>
 <figcaption><strong>Figure 11:</strong> ADS LineCalc synthesis of the 35.35 Ω horizontal microstrip branch.</figcaption>
@@ -254,7 +251,7 @@
 <a href="../assets/img/projects/branch-line-coupler/figure-22.png" rel="noopener" target="_blank"><picture><source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/branch-line-coupler/figure-22-320.webp 320w, ../assets/img/projects/branch-line-coupler/figure-22-480.webp 480w, ../assets/img/projects/branch-line-coupler/figure-22-640.webp 640w, ../assets/img/projects/branch-line-coupler/figure-22-800.webp 800w, ../assets/img/projects/branch-line-coupler/figure-22-960.webp 960w" type="image/webp"/><img alt="Tuned HFSS S-parameter response" decoding="async" fetchpriority="low" height="598" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/branch-line-coupler/figure-22.png" width="1647"/></picture></a>
 <figcaption><strong>Figure 22:</strong> Tuned HFSS S-parameter response of the parametric branch-line coupler. At 3 GHz, the model shows strong input matching and isolation with S11 ≈ -29.45 dB and S41 ≈ -41.50 dB.</figcaption>
 </figure>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Quantity</th><th>HFSS result at 3 GHz</th></tr></thead>
 <tbody>
 <tr><td>\(S_{11}\)</td><td>-29.45 dB</td></tr>
@@ -262,7 +259,7 @@
 <tr><td>\(S_{31}\)</td><td>-3.65 dB</td></tr>
 <tr><td>\(S_{41}\)</td><td>-41.50 dB</td></tr>
 </tbody>
-</table>
+</table></div>
 <figure class="project-figure">
 <a href="../assets/img/projects/branch-line-coupler/figure-23.png" rel="noopener" target="_blank"><picture><source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/branch-line-coupler/figure-23-320.webp 320w, ../assets/img/projects/branch-line-coupler/figure-23-480.webp 480w, ../assets/img/projects/branch-line-coupler/figure-23-640.webp 640w, ../assets/img/projects/branch-line-coupler/figure-23-800.webp 800w, ../assets/img/projects/branch-line-coupler/figure-23-960.webp 960w" type="image/webp"/><img alt="Tuned HFSS output amplitude balance" decoding="async" fetchpriority="low" height="601" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/branch-line-coupler/figure-23.png" width="1651"/></picture></a>
 <figcaption><strong>Figure 23:</strong> Tuned HFSS output amplitude balance calculated as dB(S31)-dB(S21). At 3 GHz, the amplitude imbalance is approximately -0.42 dB.</figcaption>
@@ -288,7 +285,7 @@
 <a href="../assets/img/projects/branch-line-coupler/figure-27.png" rel="noopener" target="_blank"><picture><source sizes="(max-width: 991px) calc(100vw - 3rem), 850px" srcset="../assets/img/projects/branch-line-coupler/figure-27-320.webp 320w, ../assets/img/projects/branch-line-coupler/figure-27-480.webp 480w, ../assets/img/projects/branch-line-coupler/figure-27-640.webp 640w, ../assets/img/projects/branch-line-coupler/figure-27-800.webp 800w, ../assets/img/projects/branch-line-coupler/figure-27-960.webp 960w" type="image/webp"/><img alt="HFSS phase bandwidth" decoding="async" fetchpriority="low" height="600" loading="lazy" sizes="(max-width: 991px) calc(100vw - 3rem), 850px" src="../assets/img/projects/branch-line-coupler/figure-27.png" width="1658"/></picture></a>
 <figcaption><strong>Figure 27:</strong> HFSS phase-difference bandwidth analysis using the 90 degrees +/-5 degrees criterion. The phase criterion is satisfied from approximately 2.665 GHz to 3.900 GHz.</figcaption>
 </figure>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Criterion</th><th>Limit</th><th>Valid HFSS range</th></tr></thead>
 <tbody>
 <tr><td>Input match / isolation</td><td>\(S_{11},S_{41}\le -20\ \text{dB}\)</td><td>2.855-3.160 GHz</td></tr>
@@ -296,13 +293,13 @@
 <tr><td>Phase balance</td><td>\(90^\circ\pm5^\circ\)</td><td>2.665-3.900 GHz</td></tr>
 <tr><td>Final usable bandwidth</td><td>All criteria satisfied</td><td>2.855-3.015 GHz</td></tr>
 </tbody>
-</table>
+</table></div>
 <div class="equation equation-copyable" data-latex="\[BW_\text{HFSS}=3.015-2.855=0.160\ \text{GHz}=160\ \text{MHz}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[BW_\text{HFSS}=3.015-2.855=0.160\ \text{GHz}=160\ \text{MHz}\]" type="button">Copy LaTeX</button>\[BW_\text{HFSS}=3.015-2.855=0.160\ \text{GHz}=160\ \text{MHz}\]</div>
 <div class="equation equation-copyable" data-latex="\[FBW_\text{HFSS}=\frac{160\ \text{MHz}}{3\ \text{GHz}}\times100\%\approx5.3\%\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[FBW_\text{HFSS}=\frac{160\ \text{MHz}}{3\ \text{GHz}}\times100\%\approx5.3\%\]" type="button">Copy LaTeX</button>\[FBW_\text{HFSS}=\frac{160\ \text{MHz}}{3\ \text{GHz}}\times100\%\approx5.3\%\]</div>
 <p>The final HFSS bandwidth was limited mainly by output amplitude imbalance. Phase balance remained valid over a much wider range, and match/isolation remained valid to a higher upper frequency than the final usable band.</p>
 <h2 class="text-secondary text-uppercase" id="comparison">8. Comparison and Discussion</h2>
 <p>The coupler was evaluated using three modeling levels: an ideal ADS TLIN model, an ADS MLIN distributed microstrip model, and a full-wave HFSS EM model. Each stage added more physical detail and therefore produced a more realistic result.</p>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Model</th><th>Center-frequency behavior</th><th>Comment</th></tr></thead>
 <tbody>
 <tr><td>Ideal ADS TLIN</td><td>3.0 GHz</td><td>Theoretical lossless quarter-wave response</td></tr>
@@ -310,8 +307,8 @@
 <tr><td>Initial HFSS</td><td>About 3.315 GHz</td><td>Full-wave layout electrically too short</td></tr>
 <tr><td>Tuned HFSS</td><td>Near 3.0 GHz</td><td>Corrected using branch-length scaling</td></tr>
 </tbody>
-</table>
-<table class="table table-bordered">
+</table></div>
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Metric</th><th>Ideal ADS</th><th>ADS MLIN</th><th>Tuned HFSS</th></tr></thead>
 <tbody>
 <tr><td>\(S_{21}\)</td><td>-3.009 dB</td><td>-3.319 dB</td><td>-3.23 dB</td></tr>
@@ -321,14 +318,14 @@
 <tr><td>Amplitude imbalance</td><td>-0.003 dB</td><td>-0.011 dB</td><td>-0.4215 dB</td></tr>
 <tr><td>Phase difference</td><td>90.0°</td><td>90.001°</td><td>89.34°</td></tr>
 </tbody>
-</table>
-<table class="table table-bordered">
+</table></div>
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Model</th><th>Final usable bandwidth</th><th>Fractional bandwidth</th><th>Main limiting factor</th></tr></thead>
 <tbody>
 <tr><td>Ideal ADS</td><td>2.84-3.16 GHz</td><td>about 10.7%</td><td>Isolation</td></tr>
 <tr><td>Tuned HFSS</td><td>2.855-3.015 GHz</td><td>about 5.3%</td><td>Amplitude imbalance</td></tr>
 </tbody>
-</table>
+</table></div>
 <p>The comparison shows why full-wave validation is important for microwave layout design. The ideal model verified the topology, and the MLIN model provided a first physical microstrip approximation. HFSS then revealed layout-level effects from finite-width junctions, feed transitions, substrate/ground behavior, and port discontinuities.</p>
 <p>The initial HFSS upward frequency shift was the key practical result. It showed that even when microstrip lengths are correct according to LineCalc, the complete physical layout can behave differently because the coupler is not just four isolated transmission lines. The junctions and feed regions are part of the electromagnetic structure.</p>
 <h2 class="text-secondary text-uppercase" id="summary">9. Summary and Engineering Takeaways</h2>
@@ -336,7 +333,7 @@
 <p>For a 50 Ω equal-split hybrid coupler, the horizontal branches were designed as 35.35 Ω quarter-wave sections and the vertical branches as 50 Ω quarter-wave sections. The ideal ADS model verified equal power split, high isolation, good input match, and a 90° output phase difference.</p>
 <p>The MLIN implementation introduced realistic microstrip widths, substrate height, dielectric constant, conductor loss, dielectric loss, and effective dielectric constant. The MLIN response stayed close to the ideal result, but showed the expected additional insertion loss compared with the lossless TLIN model.</p>
 <p>The first HFSS layout shifted above the intended 3 GHz center frequency, so the design was rebuilt parametrically and tuned with the scaling factor \(K=1.105\). The final tuned HFSS model achieved strong input matching, strong isolation, acceptable amplitude balance, and near-quadrature phase difference at 3 GHz.</p>
-<table class="table table-bordered">
+<div class="project-table-scroll"><table class="table table-bordered">
 <thead><tr><th>Metric</th><th>Final HFSS result at 3 GHz</th></tr></thead>
 <tbody>
 <tr><td>\(S_{11}\)</td><td>-29.45 dB</td></tr>
@@ -346,7 +343,7 @@
 <tr><td>Amplitude imbalance</td><td>-0.4215 dB</td></tr>
 <tr><td>Phase difference</td><td>89.34°</td></tr>
 </tbody>
-</table>
+</table></div>
 <p>The final overlapping usable bandwidth was 2.855-3.015 GHz, or 160 MHz, corresponding to approximately 5.3% fractional bandwidth. This is narrower than the ideal ADS bandwidth because the full-wave model includes realistic layout effects that are not captured by ideal schematic transmission-line models.</p>
 <p>The main takeaway is that ideal transmission-line synthesis is a necessary starting point, but final microwave layout validation requires EM simulation. ADS establishes the theory, MLIN checks the physical transmission-line dimensions, and HFSS validates the full layout geometry.</p>
 <p>Overall, the result is a 3 GHz branch-line coupler that performs well in full-wave simulation and clearly demonstrates the importance of EM validation when moving from schematic-level RF design to physical microwave layout.</p>
@@ -358,9 +355,9 @@
 <footer class="footer text-center">
 <div class="container"><div class="row justify-content-center"><div class="col-lg-4 mb-5 mb-lg-0">
 <h4 class="text-uppercase mb-4">Socials</h4>
-<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
-<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
-<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com"><i class="fas fa-fw fa-envelope"></i></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank" aria-label="Facebook profile"><span class="social-glyph" aria-hidden="true">f</span></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank" aria-label="LinkedIn profile"><span class="social-glyph social-glyph-in" aria-hidden="true">in</span></a>
+<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com" aria-label="Email Yaniv Lieberman"><span class="social-glyph" aria-hidden="true">@</span></a>
 </div></div></div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

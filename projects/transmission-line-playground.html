@@ -8,9 +8,6 @@
 <meta content="Yaniv Lieberman" name="author"/>
 <title>Transmission Line Playground | Yaniv Lieberman</title>
 <link href="../assets/favicon.ico" rel="icon" type="image/x-icon"/>
-<script crossorigin="anonymous" src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
-<link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
 <link href="../css/styles.css" rel="stylesheet"/>
 <script>
             window.MathJax = {
@@ -27,7 +24,7 @@
             .project-page li { margin-bottom: 0.45rem; }
             .project-figure { margin: 2rem 0; text-align: center; }
             .project-figure img { max-width: 100%; height: auto; border-radius: 0.5rem; box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.12); background: #fff; }
-            .project-figure figcaption { margin-top: 0.75rem; font-size: 0.95rem; color: #6c757d; text-align: left; }
+            .project-figure figcaption { margin-top: 0.75rem; font-size: 0.95rem; color: #6c757d; }
             .equation { background: #f8f9fa; border-left: 0.35rem solid #1A81BC; border-radius: 0.5rem; padding: 1rem; margin: 1.25rem 0 1.5rem; overflow-x: auto; }
             .project-page table { width: 100%; margin: 1.25rem 0 2rem; border-collapse: collapse; }
             .project-page th, .project-page td { border: 1px solid #dee2e6; padding: 0.75rem; vertical-align: top; }
@@ -40,7 +37,7 @@
 <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
 <div class="container">
 <a class="navbar-brand" href="../index.html#page-top">YANIV LIEBERMAN</a>
-<button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <i class="fas fa-bars"></i></button>
+<button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <span class="menu-bars" aria-hidden="true"></span></button>
 <div class="collapse navbar-collapse" id="navbarResponsive">
 <ul class="navbar-nav ms-auto">
 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#about">About</a></li>
@@ -86,22 +83,22 @@
 <p>A transmission line is a structure that guides electromagnetic energy from one point to another. Unlike an ideal wire, which is assumed to transfer signals instantaneously and without loss, a real transmission line exhibits distributed electrical properties along its length. Every infinitesimal section of the line contains series inductance and resistance, as well as shunt capacitance and conductance.</p>
 <p>These distributed parameters cause voltage and current to propagate as waves with finite velocity. The ratio between voltage and current for a traveling wave is known as the characteristic impedance, denoted by \(Z_0\). This impedance is determined by the physical geometry of the line and the materials from which it is constructed.</p>
 <p>A conductor should be treated as a transmission line when its electrical length becomes a significant fraction of the signal wavelength. A common engineering rule of thumb is that transmission line effects become important when the physical length exceeds approximately one-tenth of the wavelength:</p>
-<div class="equation">\[ l &gt; \frac{\lambda}{10} \]</div>
+<div class="equation equation-copyable" data-latex="\[ l &gt; \frac{\lambda}{10} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ l &gt; \frac{\lambda}{10} \]" type="button">Copy LaTeX</button>\[ l &gt; \frac{\lambda}{10} \]</div>
 <p>In digital systems, the relevant wavelength is determined by the highest significant frequency component of the signal, which is closely related to the rise and fall times rather than the clock frequency alone. When this condition is met, reflections, propagation delay, and impedance discontinuities can no longer be neglected.</p>
 <h2 class="text-secondary text-uppercase">Reflection Coefficient and Impedance Matching</h2>
 <p>One of the most important quantities in transmission line analysis is the reflection coefficient, denoted by \(\Gamma\). It describes the ratio between the reflected voltage wave and the incident voltage wave at any point where an impedance discontinuity is encountered. Such discontinuities may occur at the load, at the source, or anywhere along the transmission path where the impedance changes.</p>
-<div class="equation">\[ \Gamma = \frac{V^-}{V^+} = \frac{Z - Z_0}{Z + Z_0} \]</div>
+<div class="equation equation-copyable" data-latex="\[ \Gamma = \frac{V^-}{V^+} = \frac{Z - Z_0}{Z + Z_0} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \Gamma = \frac{V^-}{V^+} = \frac{Z - Z_0}{Z + Z_0} \]" type="button">Copy LaTeX</button>\[ \Gamma = \frac{V^-}{V^+} = \frac{Z - Z_0}{Z + Z_0} \]</div>
 <p>In general, \(\Gamma\) is complex. Its magnitude indicates how much of the incident wave is reflected, while its phase indicates the phase shift introduced by the discontinuity. For passive loads:</p>
-<div class="equation">\[ 0 \leq |\Gamma| \leq 1 \]</div>
+<div class="equation equation-copyable" data-latex="\[ 0 \leq |\Gamma| \leq 1 \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ 0 \leq |\Gamma| \leq 1 \]" type="button">Copy LaTeX</button>\[ 0 \leq |\Gamma| \leq 1 \]</div>
 <p>The following special cases are useful reference points for the rest of the project. They also explain the ideal termination cases used in the first mini lab.</p>
-<table>
+<div class="project-table-scroll"><table>
 <thead><tr><th>Condition</th><th>Reflection coefficient</th><th>Meaning</th></tr></thead>
 <tbody>
 <tr><td>Matched load</td><td>\(\Gamma = 0\)</td><td>No reflection occurs.</td></tr>
 <tr><td>Open circuit</td><td>\(\Gamma = +1\)</td><td>All incident voltage is reflected with the same polarity.</td></tr>
 <tr><td>Short circuit</td><td>\(\Gamma = -1\)</td><td>All incident voltage is reflected with a 180° phase inversion.</td></tr>
 </tbody>
-</table>
+</table></div>
 <p>Impedance matching is the process of making the impedance seen by a transmission line equal to its characteristic impedance. Under this condition, the reflection coefficient becomes zero and the available power is delivered to the load. In RF systems this improves power transfer and reduces standing waves; in high-speed digital systems it reduces ringing, overshoot, undershoot, and timing errors.</p>
 <h2 class="text-secondary text-uppercase" id="mini-lab-1">Mini Lab 1: Ideal Transmission Line Terminations</h2>
 <p>With the basic theory established, the first mini lab examines how an ideal lossless transmission line responds to several common load terminations. The goal is to observe how each termination affects the input reflection coefficient.</p>
@@ -113,22 +110,22 @@
 </figure>
 <h3>Expected Results</h3>
 <p>The theoretical reflection coefficients at the load are:</p>
-<table><thead><tr><th>Load condition</th><th>\(\Gamma\)</th><th>Magnitude</th><th>Phase</th></tr></thead><tbody>
+<div class="project-table-scroll"><table><thead><tr><th>Load condition</th><th>\(\Gamma\)</th><th>Magnitude</th><th>Phase</th></tr></thead><tbody>
 <tr><td>Matched, 50 Ω</td><td>0</td><td>0</td><td>Undefined</td></tr>
 <tr><td>Open circuit</td><td>+1</td><td>1</td><td>0°</td></tr>
 <tr><td>Short circuit</td><td>-1</td><td>1</td><td>180°</td></tr>
 <tr><td>100 Ω load</td><td>\(\frac{100-50}{100+50}=\frac{1}{3}\)</td><td>0.333</td><td>0°</td></tr>
-</tbody></table>
+</tbody></table></div>
 <h3>Simulation Results and Discussion</h3>
 <figure class="project-figure">
 <a href="../assets/img/projects/transmission-line-playground/figure-2.png" rel="noopener" target="_blank"><img alt="Magnitude of the reflection coefficient for the four load terminations." decoding="async" height="340" loading="lazy" src="../assets/img/projects/transmission-line-playground/figure-2.webp" width="714"/></a>
 <figcaption><strong>Figure 2:</strong> Magnitude of the reflection coefficient for the four load terminations.</figcaption>
 </figure>
 <p>Although the traces are labeled as \(S(1,1)\), \(S(2,2)\), \(S(3,3)\), and \(S(4,4)\), they all represent the same physical quantity: the reflection coefficient \(\Gamma\) measured at the input of each corresponding one-port circuit. ADS assigns a unique port number to each separate test case, but for each one-port network the only S-parameter is the input reflection coefficient:</p>
-<div class="equation">\[ S_{11}=\Gamma \]</div>
+<div class="equation equation-copyable" data-latex="\[ S_{11}=\Gamma \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ S_{11}=\Gamma \]" type="button">Copy LaTeX</button>\[ S_{11}=\Gamma \]</div>
 <p>The matched 50 Ω case produces essentially no reflection. Ideally this corresponds to \(20\log_{10}|\Gamma|=-\infty\) dB; in practice ADS reports a very large negative value limited by numerical precision. The open and short circuits both have \(|\Gamma|=1\), corresponding to 0 dB. For the 100 Ω load:</p>
-<div class="equation">\[ \Gamma = \frac{100-50}{100+50}=\frac{1}{3} \]</div>
-<div class="equation">\[ 20\log_{10}\left(\frac{1}{3}\right) \approx -9.54\ \text{dB} \]</div>
+<div class="equation equation-copyable" data-latex="\[ \Gamma = \frac{100-50}{100+50}=\frac{1}{3} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \Gamma = \frac{100-50}{100+50}=\frac{1}{3} \]" type="button">Copy LaTeX</button>\[ \Gamma = \frac{100-50}{100+50}=\frac{1}{3} \]</div>
+<div class="equation equation-copyable" data-latex="\[ 20\log_{10}\left(\frac{1}{3}\right) \approx -9.54\ \text{dB} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ 20\log_{10}\left(\frac{1}{3}\right) \approx -9.54\ \text{dB} \]" type="button">Copy LaTeX</button>\[ 20\log_{10}\left(\frac{1}{3}\right) \approx -9.54\ \text{dB} \]</div>
 <figure class="project-figure">
 <a href="../assets/img/projects/transmission-line-playground/figure-3.png" rel="noopener" target="_blank"><img alt="Phase of the reflection coefficient versus frequency. The matched-load trace appears noisy because \(\Gamma=0\), so its phase is mathematically undefined." decoding="async" height="310" loading="lazy" src="../assets/img/projects/transmission-line-playground/figure-3.webp" width="551"/></a>
 <figcaption><strong>Figure 3:</strong> Phase of the reflection coefficient versus frequency. The matched-load trace appears noisy because \(\Gamma=0\), so its phase is mathematically undefined.</figcaption>
@@ -138,7 +135,7 @@
 <figcaption><strong>Figure 4:</strong> Phase of the reflection coefficient with the matched case removed, making the open, short, and mismatched-load phase trends easier to observe.</figcaption>
 </figure>
 <p>For a lossless transmission line, the input reflection coefficient is related to the load reflection coefficient by:</p>
-<div class="equation">\[ \Gamma_{in}=\Gamma_L e^{-j2\beta l} \]</div>
+<div class="equation equation-copyable" data-latex="\[ \Gamma_{in}=\Gamma_L e^{-j2\beta l} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \Gamma_{in}=\Gamma_L e^{-j2\beta l} \]" type="button">Copy LaTeX</button>\[ \Gamma_{in}=\Gamma_L e^{-j2\beta l} \]</div>
 <p>This equation shows that a lossless transmission line preserves the magnitude of the reflection coefficient while changing only its phase. The phase varies linearly with frequency because the electrical length of the line increases with frequency.</p>
 <figure class="project-figure">
 <a href="../assets/img/projects/transmission-line-playground/figure-5.png" rel="noopener" target="_blank"><img alt="Reflection coefficient trajectories on the Smith chart for the four load terminations." decoding="async" height="417" loading="lazy" src="../assets/img/projects/transmission-line-playground/figure-5.webp" width="427"/></a>
@@ -154,9 +151,9 @@
 <figcaption><strong>Figure 6:</strong> ADS schematic used to sweep transmission line electrical length.</figcaption>
 </figure>
 <h3>Theoretical Background</h3><p>The load reflection coefficient is again \(1/3\), so the magnitude is expected to remain at approximately -9.54 dB. The input reflection coefficient is:</p>
-<div class="equation">\[ \Gamma_{in}=\Gamma_L e^{-j2\beta l} \]</div>
+<div class="equation equation-copyable" data-latex="\[ \Gamma_{in}=\Gamma_L e^{-j2\beta l} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \Gamma_{in}=\Gamma_L e^{-j2\beta l} \]" type="button">Copy LaTeX</button>\[ \Gamma_{in}=\Gamma_L e^{-j2\beta l} \]</div>
 <p>Because the reflected wave travels to the load and back, the phase rotates at twice the electrical length:</p>
-<div class="equation">\[ \angle\Gamma_{in}=\angle\Gamma_L-2EL \]</div>
+<div class="equation equation-copyable" data-latex="\[ \angle\Gamma_{in}=\angle\Gamma_L-2EL \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \angle\Gamma_{in}=\angle\Gamma_L-2EL \]" type="button">Copy LaTeX</button>\[ \angle\Gamma_{in}=\angle\Gamma_L-2EL \]</div>
 <p>This means a 360° electrical-length sweep produces two complete rotations of the reflection coefficient.</p>
 <h3>Expected Results</h3><ol><li>The magnitude of \(S_{11}\) remains approximately -9.54 dB.</li><li>The phase of \(S_{11}\) varies linearly with electrical length.</li><li>The Smith chart shows a circle of constant radius \(|\Gamma|=1/3\).</li><li>Two full rotations occur as electrical length is swept from 0° to 360°.</li></ol>
 <h3>Simulation Results and Discussion</h3>
@@ -194,13 +191,13 @@
 </figure>
 <p>For the selected FR-4 substrate, with \(\varepsilon_r=4.4\), substrate thickness of 1.6 mm, and standard copper thickness, LineCalc determined a trace width of approximately 3.01 mm and a physical length of approximately 41.15 mm.</p>
 <p>For the width, height, and dielectric sweeps, the plotted impedance is extracted from the simulated input reflection coefficient at 1 GHz using the reflection-to-impedance relationship. Since each sweep is evaluated at the design frequency in a 50 Ω environment, this input impedance provides a practical estimate of the microstrip characteristic impedance for each physical geometry.</p>
-<div class="equation">\[ Z_{in}=50\frac{1+S_{11}}{1-S_{11}} \]</div>
+<div class="equation equation-copyable" data-latex="\[ Z_{in}=50\frac{1+S_{11}}{1-S_{11}} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ Z_{in}=50\frac{1+S_{11}}{1-S_{11}} \]" type="button">Copy LaTeX</button>\[ Z_{in}=50\frac{1+S_{11}}{1-S_{11}} \]</div>
 <h3>Theoretical Background</h3><p>The characteristic impedance of a microstrip line is determined mainly by the trace width-to-height ratio and the effective dielectric constant:</p>
-<div class="equation">\[ Z_0 = f\left(\frac{W}{H},\varepsilon_r,T\right) \]</div>
+<div class="equation equation-copyable" data-latex="\[ Z_0 = f\left(\frac{W}{H},\varepsilon_r,T\right) \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ Z_0 = f\left(\frac{W}{H},\varepsilon_r,T\right) \]" type="button">Copy LaTeX</button>\[ Z_0 = f\left(\frac{W}{H},\varepsilon_r,T\right) \]</div>
 <p>The propagation velocity is approximately:</p>
-<div class="equation">\[ v_p=\frac{c}{\sqrt{\varepsilon_{eff}}} \]</div>
+<div class="equation equation-copyable" data-latex="\[ v_p=\frac{c}{\sqrt{\varepsilon_{eff}}} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ v_p=\frac{c}{\sqrt{\varepsilon_{eff}}} \]" type="button">Copy LaTeX</button>\[ v_p=\frac{c}{\sqrt{\varepsilon_{eff}}} \]</div>
 <p>Since the fields of a microstrip exist partly in air and partly in the dielectric, the effective dielectric constant satisfies:</p>
-<div class="equation">\[ 1 &lt; \varepsilon_{eff} &lt; \varepsilon_r \]</div>
+<div class="equation equation-copyable" data-latex="\[ 1 &lt; \varepsilon_{eff} &lt; \varepsilon_r \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ 1 &lt; \varepsilon_{eff} &lt; \varepsilon_r \]" type="button">Copy LaTeX</button>\[ 1 &lt; \varepsilon_{eff} &lt; \varepsilon_r \]</div>
 <h3>Simulation Results and Discussion</h3>
 <figure class="project-figure">
 <a href="../assets/img/projects/transmission-line-playground/figure-13.png" rel="noopener" target="_blank"><img alt="Frequency response of the ideal transmission line (TLIN)." decoding="async" height="443" loading="lazy" src="../assets/img/projects/transmission-line-playground/figure-13.webp" width="665"/></a>
@@ -216,7 +213,7 @@
 <figcaption><strong>Figure 15:</strong> Characteristic impedance as a function of microstrip trace width.</figcaption>
 </figure>
 <p>As trace width increases, characteristic impedance decreases. A wider conductor increases capacitance to the ground plane and reduces the ratio of distributed inductance to capacitance:</p>
-<div class="equation">\[ Z_0=\sqrt{\frac{L'}{C'}} \]</div>
+<div class="equation equation-copyable" data-latex="\[ Z_0=\sqrt{\frac{L&#x27;}{C&#x27;}} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ Z_0=\sqrt{\frac{L&#x27;}{C&#x27;}} \]" type="button">Copy LaTeX</button>\[ Z_0=\sqrt{\frac{L'}{C'}} \]</div>
 <p>The relationship is nonlinear, with the most rapid impedance change occurring at narrow widths. The marker near 3.01 mm confirms the 50 Ω design point.</p>
 <figure class="project-figure">
 <a href="../assets/img/projects/transmission-line-playground/figure-16.png" rel="noopener" target="_blank"><img alt="Characteristic impedance as a function of substrate height." decoding="async" height="807" loading="lazy" src="../assets/img/projects/transmission-line-playground/figure-16.webp" width="1167"/></a>
@@ -241,11 +238,11 @@
 <p>The quarter-wave transformer is one of the simplest impedance matching techniques. It uses a single 90° transmission line section with a carefully chosen characteristic impedance to match two real impedances at a specific frequency.</p>
 <h3>Objective</h3><p>This mini lab matches a 100 Ω resistive load to a 50 Ω source at 1 GHz using a quarter-wave transformer.</p>
 <h3>Theoretical Background</h3><p>A 90° line transforms the load impedance according to:</p>
-<div class="equation">\[ Z_{in}=\frac{Z_t^2}{Z_L} \]</div>
+<div class="equation equation-copyable" data-latex="\[ Z_{in}=\frac{Z_t^2}{Z_L} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ Z_{in}=\frac{Z_t^2}{Z_L} \]" type="button">Copy LaTeX</button>\[ Z_{in}=\frac{Z_t^2}{Z_L} \]</div>
 <p>To obtain a perfect match, \(Z_{in}=Z_0\), so:</p>
-<div class="equation">\[ Z_t=\sqrt{Z_0 Z_L} \]</div>
+<div class="equation equation-copyable" data-latex="\[ Z_t=\sqrt{Z_0 Z_L} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ Z_t=\sqrt{Z_0 Z_L} \]" type="button">Copy LaTeX</button>\[ Z_t=\sqrt{Z_0 Z_L} \]</div>
 <p>For \(Z_0=50\ \Omega\) and \(Z_L=100\ \Omega\):</p>
-<div class="equation">\[ Z_t=\sqrt{50\times100}=70.71\ \Omega \]</div>
+<div class="equation equation-copyable" data-latex="\[ Z_t=\sqrt{50\times100}=70.71\ \Omega \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ Z_t=\sqrt{50\times100}=70.71\ \Omega \]" type="button">Copy LaTeX</button>\[ Z_t=\sqrt{50\times100}=70.71\ \Omega \]</div>
 <h3>Simulation Setup</h3><p>The circuit uses a 70.71 Ω transmission line with 90° electrical length at 1 GHz, terminated by a 100 Ω load. The S-parameter simulation sweeps from 0.8 GHz to 1.2 GHz in 10 MHz steps.</p>
 <figure class="project-figure">
 <a href="../assets/img/projects/transmission-line-playground/figure-19.png" rel="noopener" target="_blank"><img alt="ADS schematic of the quarter-wave transformer used to match a 100 Ω load to a 50 Ω source." decoding="async" height="634" loading="lazy" src="../assets/img/projects/transmission-line-playground/figure-19.webp" width="782"/></a>
@@ -267,11 +264,11 @@
 <figcaption><strong>Figure 21:</strong> ADS schematic illustrating the step-by-step design of the single-stub matching network.</figcaption>
 </figure>
 <h3>Theoretical Background</h3><p>The load is first normalized to the system impedance:</p>
-<div class="equation">\[ z_L=\frac{25+j25}{50}=0.5+j0.5 \]</div>
+<div class="equation equation-copyable" data-latex="\[ z_L=\frac{25+j25}{50}=0.5+j0.5 \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ z_L=\frac{25+j25}{50}=0.5+j0.5 \]" type="button">Copy LaTeX</button>\[ z_L=\frac{25+j25}{50}=0.5+j0.5 \]</div>
 <p>Because the stub is connected in shunt, it is more convenient to work in admittance:</p>
-<div class="equation">\[ y_L=\frac{1}{z_L}=1-j1 \]</div>
+<div class="equation equation-copyable" data-latex="\[ y_L=\frac{1}{z_L}=1-j1 \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ y_L=\frac{1}{z_L}=1-j1 \]" type="button">Copy LaTeX</button>\[ y_L=\frac{1}{z_L}=1-j1 \]</div>
 <p>The design process is to move along the main line until the normalized admittance has a real part of 1, then add a shunt stub that cancels the remaining susceptance:</p>
-<div class="equation">\[ y=1+j0 \]</div>
+<div class="equation equation-copyable" data-latex="\[ y=1+j0 \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ y=1+j0 \]" type="button">Copy LaTeX</button>\[ y=1+j0 \]</div>
 <h3>Manual Smith Chart Design</h3>
 <figure class="project-figure">
 <a href="../assets/img/projects/transmission-line-playground/figure-22.png" rel="noopener" target="_blank"><img alt="Initial normalized load impedance plotted on the Smith chart." decoding="async" height="694" loading="lazy" src="../assets/img/projects/transmission-line-playground/figure-22.webp" width="621"/></a>
@@ -293,7 +290,7 @@
 <figcaption><strong>Figure 25:</strong> Input reflection coefficient magnitude \(S_{11}\) of the completed single-stub matching network.</figcaption>
 </figure>
 <p>At 1 GHz, the reflection coefficient reaches approximately -40 dB, indicating an excellent match. The small residual reflection is mainly due to manual selection of line and stub lengths using finite sweep resolution. Away from 1 GHz, the electrical lengths of the main line and stub change, so the match degrades.</p>
-<h3>Final Design Parameters</h3><table><tbody><tr><th>Load impedance</th><td>\(25+j25\ \Omega\)</td></tr><tr><th>Main line impedance</th><td>50 Ω</td></tr><tr><th>Main line electrical length</th><td>297°</td></tr><tr><th>Stub type</th><td>Short-circuited shunt stub</td></tr><tr><th>Stub impedance</th><td>50 Ω</td></tr><tr><th>Stub electrical length</th><td>225°</td></tr><tr><th>Design frequency</th><td>1 GHz</td></tr></tbody></table>
+<h3>Final Design Parameters</h3><div class="project-table-scroll"><table><tbody><tr><th>Load impedance</th><td>\(25+j25\ \Omega\)</td></tr><tr><th>Main line impedance</th><td>50 Ω</td></tr><tr><th>Main line electrical length</th><td>297°</td></tr><tr><th>Stub type</th><td>Short-circuited shunt stub</td></tr><tr><th>Stub impedance</th><td>50 Ω</td></tr><tr><th>Stub electrical length</th><td>225°</td></tr><tr><th>Design frequency</th><td>1 GHz</td></tr></tbody></table></div>
 <h3>Key Takeaways</h3><ol><li>Single-stub matching can match complex loads using only transmission line sections.</li><li>The design is most naturally performed using admittance on the Smith chart.</li><li>The main line is adjusted until the conductance becomes 1.</li><li>The shunt stub cancels the remaining susceptance.</li><li>Two valid matching solutions usually exist.</li><li>ADS includes optimization tools that can automatically determine line and stub lengths. Here, the design was performed manually to make the Smith chart movement clear.</li></ol>
 <h2 class="text-secondary text-uppercase" id="mini-lab-6">Mini Lab 6: Double-Stub Matching</h2>
 <p>Single-stub matching is effective, but it requires placing the stub at a specific distance from the load. In practical layouts, tuning-element locations may be constrained by PCB geometry, connectors, or mechanical limitations. Double-stub matching addresses this by using two adjustable shunt stubs at fixed positions.</p>
@@ -303,7 +300,7 @@
 <figcaption><strong>Figure 26:</strong> ADS schematic illustrating the step-by-step design of the double-stub matching network.</figcaption>
 </figure>
 <h3>Theoretical Background</h3><p>The network consists of a 30° line section from the load to the first stub, a first shunt stub, a fixed 90° line section, and a second shunt stub. The first stub moves the admittance to a point that can be transformed through the fixed 90° section and completed by the second stub. The final goal is again:</p>
-<div class="equation">\[ y=1+j0 \]</div>
+<div class="equation equation-copyable" data-latex="\[ y=1+j0 \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ y=1+j0 \]" type="button">Copy LaTeX</button>\[ y=1+j0 \]</div>
 <h3>Manual Smith Chart Design</h3>
 <figure class="project-figure">
 <a href="../assets/img/projects/transmission-line-playground/figure-27.png" rel="noopener" target="_blank"><img alt="Initial admittance at the first stub location after the fixed 30° transmission line section." decoding="async" height="557" loading="lazy" src="../assets/img/projects/transmission-line-playground/figure-27.webp" width="912"/></a>
@@ -325,7 +322,7 @@
 <figcaption><strong>Figure 30:</strong> Input reflection coefficient magnitude \(S_{11}\) of the completed double-stub matching network.</figcaption>
 </figure>
 <p>At 1 GHz, the reflection coefficient reaches approximately -40 dB, indicating an excellent match. As with the single-stub case, the residual mismatch is mainly due to the 1° resolution used in the manual sweeps and marker selection. Away from 1 GHz, all line sections and stubs change electrical length, causing the match to degrade.</p>
-<h3>Final Design Parameters</h3><table><tbody><tr><th>Load impedance</th><td>\(25+j25\ \Omega\)</td></tr><tr><th>System impedance</th><td>50 Ω</td></tr><tr><th>Distance from load to first stub</th><td>30°</td></tr><tr><th>Distance between stubs</th><td>90°</td></tr><tr><th>First stub length</th><td>270°</td></tr><tr><th>Second stub length</th><td>228°</td></tr><tr><th>Stub type</th><td>Short-circuited shunt stubs</td></tr><tr><th>Design frequency</th><td>1 GHz</td></tr></tbody></table>
+<h3>Final Design Parameters</h3><div class="project-table-scroll"><table><tbody><tr><th>Load impedance</th><td>\(25+j25\ \Omega\)</td></tr><tr><th>System impedance</th><td>50 Ω</td></tr><tr><th>Distance from load to first stub</th><td>30°</td></tr><tr><th>Distance between stubs</th><td>90°</td></tr><tr><th>First stub length</th><td>270°</td></tr><tr><th>Second stub length</th><td>228°</td></tr><tr><th>Stub type</th><td>Short-circuited shunt stubs</td></tr><tr><th>Design frequency</th><td>1 GHz</td></tr></tbody></table></div>
 <h3>Key Takeaways</h3><ol><li>Double-stub matching enables impedance matching with fixed stub locations.</li><li>The two stub lengths provide independent tuning variables.</li><li>The first stub moves the admittance to a point that can be completed by the second stub.</li><li>The second stub cancels the remaining susceptance and finalizes the match.</li><li>Some loads may not be matchable for a given stub spacing.</li><li>ADS optimization can solve this automatically, but the manual design better illustrates the Smith chart methodology.</li></ol>
 <h2 class="text-secondary text-uppercase" id="final-comparison">Mini Lab 7: Final Comparison of Matching Techniques</h2>
 <p>The final mini lab overlays the input reflection coefficient for the quarter-wave transformer, single-stub matching network, and double-stub matching network. Each method successfully produces a strong match at 1 GHz, but they differ in complexity, flexibility, and bandwidth.</p>
@@ -337,7 +334,7 @@
 <p>The quarter-wave transformer reaches the deepest null, approximately -100 dB, because its parameters were calculated analytically for the real 100 Ω load. In this ideal simulation, the remaining reflection is limited mostly by numerical precision.</p>
 <p>The single-stub and double-stub networks both reach approximately -40 dB at the design frequency. This is still an excellent match and corresponds to a very small reflected power. Their residual mismatch is mainly due to the manual 1° sweep resolution used when selecting line and stub lengths.</p>
 <p>The quarter-wave transformer also shows the broadest response in this example, but it is limited to matching real impedances. The single-stub network can match complex loads but requires a specific stub location. The double-stub network is more complex but allows the stub locations to be fixed, which is often useful in practical layouts.</p>
-<table><thead><tr><th>Technique</th><th>Matches complex loads?</th><th>Fixed stub locations?</th><th>Typical complexity</th><th>Comment</th></tr></thead><tbody><tr><td>Quarter-wave transformer</td><td>No, generally for real loads</td><td>N/A</td><td>Low</td><td>Simple and strong match at one design frequency</td></tr><tr><td>Single-stub matching</td><td>Yes</td><td>No</td><td>Moderate</td><td>Flexible, but stub placement must be selected</td></tr><tr><td>Double-stub matching</td><td>Yes</td><td>Yes</td><td>Higher</td><td>More layout-friendly when stub locations are constrained</td></tr></tbody></table>
+<div class="project-table-scroll"><table><thead><tr><th>Technique</th><th>Matches complex loads?</th><th>Fixed stub locations?</th><th>Typical complexity</th><th>Comment</th></tr></thead><tbody><tr><td>Quarter-wave transformer</td><td>No, generally for real loads</td><td>N/A</td><td>Low</td><td>Simple and strong match at one design frequency</td></tr><tr><td>Single-stub matching</td><td>Yes</td><td>No</td><td>Moderate</td><td>Flexible, but stub placement must be selected</td></tr><tr><td>Double-stub matching</td><td>Yes</td><td>Yes</td><td>Higher</td><td>More layout-friendly when stub locations are constrained</td></tr></tbody></table></div>
 <h3>Key Takeaways</h3><ol><li>Multiple transmission line matching techniques can achieve excellent performance at the design frequency.</li><li>Quarter-wave transformers are simple and effective for real loads, but are frequency dependent.</li><li>Single-stub matching offers more flexibility for complex loads.</li><li>Double-stub matching is useful when stub positions must remain fixed.</li><li>In practical systems, the best method is often determined by physical layout constraints, bandwidth requirements, and load complexity.</li></ol>
 <h2 class="text-secondary text-uppercase">Conclusion</h2>
 <p>This project demonstrated how transmission lines can be used not only to transport signals, but also to transform impedances and eliminate reflections. Starting with the reflection coefficient and ideal terminations, the simulations progressed through line-length transformations, microstrip implementation, and classical matching networks.</p>
@@ -351,9 +348,9 @@
 <footer class="footer text-center">
 <div class="container"><div class="row justify-content-center"><div class="col-lg-4 mb-5 mb-lg-0">
 <h4 class="text-uppercase mb-4">Socials</h4>
-<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
-<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
-<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com"><i class="fas fa-fw fa-envelope"></i></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank" aria-label="Facebook profile"><span class="social-glyph" aria-hidden="true">f</span></a>
+<a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank" aria-label="LinkedIn profile"><span class="social-glyph social-glyph-in" aria-hidden="true">in</span></a>
+<a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com" aria-label="Email Yaniv Lieberman"><span class="social-glyph" aria-hidden="true">@</span></a>
 </div></div></div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
