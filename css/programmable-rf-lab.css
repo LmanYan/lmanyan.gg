@@ -1,0 +1,42 @@
+.rf-lab-page .rf-lab-code { padding: 1.25rem 1.5rem; background: #f2f6f8; border-radius: .5rem; color: #243f50; line-height: 1.6; white-space: pre; overflow-x: auto; }
+.rf-lab-page .project-table-scroll table { font-size: .94rem; }
+.rf-lab-page .project-table-scroll td { overflow-wrap: anywhere; max-width: 34rem; }
+.rf-lab-page .project-figure > a + a { display: block; margin-top: 1rem; }
+.rf-lab-page li { line-height: 1.72; margin-bottom: .35rem; }
+.rf-lab-page [id] { scroll-margin-top: 7rem; }
+.rf-lab-page .project-figure img { max-height: none; }
+.rf-lab-page .project-hero-image { height: auto; max-height: none; }
+
+.rf-lab-page .project-figure figcaption strong {
+  color: #34596b;
+  font-weight: 800;
+}
+
+.rf-lab-page .rf-lab-hash-table th:nth-child(3),
+.rf-lab-page .rf-lab-hash-table td:nth-child(3) {
+  min-width: 41rem;
+  white-space: nowrap;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.86rem;
+}
+
+.rf-lab-page .rf-lab-diagram {
+  margin: 2rem 0 2.25rem;
+  content-visibility: visible;
+  contain-intrinsic-size: auto none;
+}
+
+.rf-lab-page .rf-lab-diagram-image {
+  width: 100%;
+  height: auto;
+  content-visibility: visible;
+  border: 1px solid #c9dce4;
+  border-radius: 1rem;
+  box-shadow: 0 0.6rem 1.6rem rgba(18, 50, 69, 0.12);
+}
+
+@media (max-width: 575.98px) {
+  .rf-lab-page .rf-lab-diagram {
+    margin: 1.5rem -0.35rem 1.75rem;
+  }
+}

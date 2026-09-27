@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+<meta name="description" content="Building a PC-controlled RF bench with HSA2307 firmware analysis, recovered spectrum traces, and an STM32-controlled ADF4351 signal generator."/>
+<meta name="author" content="Yaniv Lieberman"/><title>Programmable RF Lab | Yaniv Lieberman</title>
+<link href="../assets/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="../css/styles.css" rel="stylesheet"/>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},chtml:{scale:1}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<link href="../css/programmable-rf-lab.css" rel="stylesheet"/>
+</head><body id="page-top">
+<nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav"><div class="container"><a class="navbar-brand" href="../index.html#page-top">YANIV LIEBERMAN</a><button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <span class="menu-bars" aria-hidden="true"></span></button><div class="collapse navbar-collapse" id="navbarResponsive"><ul class="navbar-nav ms-auto"><li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#about">About</a></li><li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#portfolio">Portfolio</a></li><li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#contact">Contact</a></li></ul></div></div></nav>
+<header class="project-masthead bg-primary text-white text-center"><div class="container d-flex align-items-center flex-column"><p class="project-kicker text-uppercase mb-3">RF Measurements · Embedded Systems · Instrument Automation</p><h1 class="project-heading text-uppercase mb-0">Programmable RF Lab</h1><div class="divider-custom divider-light"><div class="divider-custom-line"></div><div class="divider-custom-icon"><span class="divider-mark" aria-hidden="true"></span></div><div class="divider-custom-line"></div></div><p class="project-subheading font-weight-light mb-0">From low-cost hardware to a programmable RF bench: recovering HSA2307 spectrum traces and building an STM32-controlled ADF4351 source.</p></div></header>
+<main class="page-section project-page rf-lab-page"><div class="container"><div class="row justify-content-center"><div class="col-lg-9"><a href="../assets/img/projects/programmable-rf-lab/figure-7-1.png" target="_blank" rel="noopener"><img class="project-hero-image project-hero-image-contain project-hero-image-light mb-4" src="../assets/img/projects/programmable-rf-lab/figure-7-1.webp" alt="HSA2307 PC interface displaying a recovered spectrum trace and instrument controls" width="1920" height="1032" loading="eager" decoding="async" fetchpriority="high"/></a><p class="project-date"><time datetime="2026-10-01">October 1, 2026</time></p><div class="project-summary-grid"><div class="project-summary-card"><span class="project-summary-label">Analyzer</span><strong>301 trace points</strong><span>Recovered :SPEC:TRAC? USB query</span></div><div class="project-summary-card"><span class="project-summary-label">RF source</span><strong>35 MHz–4.4 GHz</strong><span>ADF4351 with STM32 control</span></div><div class="project-summary-card"><span class="project-summary-label">Hardware validation</span><strong>1 GHz CW</strong><span>SPI signaling, PLL lock, and RF output</span></div><div class="project-summary-card"><span class="project-summary-label">PC applications</span><strong>Two instrument GUIs</strong><span>Spectrum acquisition and RF source control</span></div></div><nav class="project-toc" aria-label="Project sections"><h3 class="mt-0 text-secondary text-uppercase">Project Sections</h3><ol class="mb-0"><li><a href="#section-1">1. Introduction</a></li><li><a href="#section-2">2. The HSA2307 - A Low-Cost RF Multitool</a></li><li><a href="#section-3">3. The Missing Trace</a></li><li><a href="#section-4">4. Hardware Debug Interfaces</a></li><li><a href="#section-5">5. Firmware Analysis in Ghidra</a></li><li><a href="#section-6">6. Recovering and Validating the Spectrum Trace</a></li><li><a href="#section-7">7. PC Spectrum Analyzer Interface</a></li><li><a href="#section-8">8. The ADF4351 - A Low-Cost Programmable RF Source</a></li><li><a href="#section-9">9. STM32 Control Architecture</a></li><li><a href="#section-10">10. ADF4351 Firmware and Register Programming</a></li><li><a href="#section-11">11. Hardware Bring-Up and RF Validation</a></li><li><a href="#section-12">12. PC RF Signal Generator Interface</a></li><li><a href="#section-13">13. Conclusion and Future Work</a></li></ol></nav>
+<h2 class="text-secondary text-uppercase" id="section-1">1. Introduction</h2>
+<p>As part of an effort to gain more hands-on experience with practical RF and hardware projects, I wanted to build a small RF bench that could support experimentation beyond simulation and circuit design alone. The difficulty is that RF laboratory equipment can quickly become expensive, particularly for an individual hobbyist. Spectrum analyzers, signal generators, oscilloscopes, and related test equipment can each represent a significant investment, making it difficult to assemble a capable personal RF lab without compromises.</p>
+<p>This project began with two relatively affordable pieces of hardware that appeared capable of covering a large portion of those needs: an OWON HSA2307 handheld RF measurement instrument and an ADF4351-based RF signal generator.</p>
+<p>The HSA2307 was particularly attractive because it combines several laboratory instruments into a single portable device, including a spectrum analyzer, oscilloscope, and digital multimeter. In addition to its standalone capabilities, the instrument includes a USB interface and advertised PC connectivity, making it appear well suited for a compact, software-controlled RF bench.</p>
+<p>The ADF4351, on the other hand, provides a low-cost wideband RF synthesizer capable of generating signals across a large frequency range. Combined with an STM32 controller, it offered the possibility of developing a programmable RF source rather than purchasing a dedicated laboratory signal generator.</p>
+<p>Both devices, however, required considerably more work before they could function as practical PC-controlled instruments.</p>
+<p>The HSA2307 could be remotely configured through its USB interface, but one critical capability was missing: access to the measured spectrum trace. Without trace acquisition, the analyzer could be controlled from a computer, but it could not function as a complete PC-based spectrum analyzer. Solving this limitation led to an investigation of the instrument&#x27;s communication interfaces and firmware, including UART and JTAG probing, firmware extraction, and static analysis.</p>
+<p>The ADF4351 presented a different challenge. While the RF synthesizer itself provides the core signal-generation capability, turning it into a usable bench instrument required embedded firmware, SPI control, hardware bring-up and validation, a command interface, and ultimately a graphical PC application.</p>
+<p>What began as two relatively inexpensive pieces of RF hardware therefore developed into a broader RF lab bring-up project spanning RF measurements, embedded systems, digital communication interfaces, firmware interrogation, reverse engineering, and PC-based instrumentation software.</p>
+<p>The final result is a pair of complementary programmable instruments: an STM32-controlled ADF4351 RF source and an HSA2307 spectrum analyzer with extended PC-control capability. This write-up documents the development and investigation of both systems, from low-level hardware interfaces and firmware analysis through RF validation and the final graphical control applications.</p>
+<h2 class="text-secondary text-uppercase" id="section-2">2. The HSA2307 - A Low-Cost RF Multitool</h2>
+<p>The first instrument added to the lab was the OWON HSA2307, a handheld multifunction test instrument centered around a spectrum analyzer covering 9 kHz to 3 GHz.</p>
+<p>What made the HSA2307 particularly attractive was that it was not limited to RF spectrum measurements. The same handheld unit also incorporates a dual-channel 70 MHz oscilloscope with sampling rates up to 250 MSa/s, as well as a 4½-digit digital multimeter. For a small personal lab, this combination is especially useful: a single portable instrument can cover basic RF measurements, time-domain signal debugging, and general electrical measurements without requiring three separate pieces of bench equipment.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-2-1.jpeg" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-2-1.webp" alt="Figure 2.1 - OWON HSA2307 used in the RF lab" width="1200" height="1600" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 2.1</strong> - OWON HSA2307 used in the RF lab</figcaption></figure>
+<p>The price was another major factor. At approximately $300, the HSA2307 sits in a very different category from many traditional RF laboratory spectrum analyzers. While it cannot be expected to match the performance or capabilities of high-end bench equipment, its frequency range and combination of measurement modes make it an appealing option for hobbyist projects, hardware bring-up, and general RF experimentation.</p>
+<p>For this project, however, another feature was equally important: PC connectivity.</p>
+<p>OWON advertises the HSA2000 series with a USB Type-C interface supporting communication with a computer. This immediately made the instrument more interesting than a purely standalone handheld analyzer. A PC interface opens the possibility of automated configuration, measurement capture, data processing, and eventually integration with other programmable laboratory equipment.</p>
+<p>That capability aligned closely with the goal of this project. Rather than using the HSA2307 only through its front-panel interface, I wanted to determine how much of the instrument could be controlled programmatically and whether it could ultimately function as part of an automated RF test setup.</p>
+<p>At first, the answer appeared promising. Connecting the analyzer to a PC exposed a command interface, and several instrument parameters could indeed be queried and modified remotely.</p>
+<p>There was, however, one particularly important piece missing.</p>
+<h2 class="text-secondary text-uppercase" id="section-3">3. The Missing Trace</h2>
+<p>Initial testing of the HSA2307&#x27;s USB interface was encouraging. The instrument enumerated as a USB device and accepted a number of SCPI-style commands, allowing several important spectrum-analyzer settings to be queried and modified directly from a PC.</p>
+<p>Basic identification and frequency-control commands worked as expected. The analyzer responded to queries for its identification string, center frequency, span, reference level, display scale, and several front-end parameters. Many of these settings could also be modified remotely, confirming that communication was not limited to simple status queries.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-3-1.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-3-1.webp" alt="Figure 3.1 - Successful communication with the HSA2307 using basic SCPI-style commands" width="205" height="100" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 3.1</strong> - Successful communication with the HSA2307 using basic SCPI-style commands</figcaption></figure>
+<p>A small subset of the commands tested during the initial investigation is shown below. The listed purposes were inferred from the command naming and observed instrument behavior.</p>
+<div class="project-table-scroll" tabindex="0" role="region" aria-label="CommandAlleged PurposeResult"><table class="table table-bordered table-striped"><thead><tr><th scope="col">Command</th><th scope="col">Alleged Purpose</th><th scope="col">Result</th></tr></thead><tbody><tr><td>*IDN?</td><td>Query instrument identification</td><td>Successful</td></tr><tr><td>:FREQ:CENT?</td><td>Query center frequency</td><td>Successful</td></tr><tr><td>:FREQ:SPAN?</td><td>Query frequency span</td><td>Successful</td></tr><tr><td>:DISP:WIN:Y:RLEV?</td><td>Query display reference level</td><td>Successful</td></tr><tr><td>:DISP:WIN:Y:PDIV?</td><td>Query vertical scale per division</td><td>Successful</td></tr><tr><td>:POW:ATT:AUTO?</td><td>Query automatic input-attenuation state</td><td>Successful</td></tr><tr><td>:POW:GAIN:AUTO?</td><td>Query automatic gain state</td><td>Successful</td></tr><tr><td>:FREQ:CENT &lt;value&gt;</td><td>Set center frequency</td><td>Successful</td></tr><tr><td>:FREQ:SPAN &lt;value&gt;</td><td>Set frequency span</td><td>Successful</td></tr><tr><td>:DISP:WIN:Y:RLEV &lt;value&gt;</td><td>Set display reference level</td><td>Successful</td></tr><tr><td>:POW:ATT &lt;value&gt;</td><td>Set input attenuation</td><td>Successful</td></tr><tr><td>:TRAC? TRACE1</td><td>Retrieve the currently displayed spectrum trace</td><td>No usable response</td></tr></tbody></table></div>
+<p>This was enough to demonstrate that the analyzer could be remotely configured. From a software application, it was already possible to change the displayed frequency range and several important acquisition parameters.</p>
+<p>However, remote configuration alone was not the main objective.</p>
+<p>For the HSA2307 to operate as a useful PC-controlled spectrum analyzer, the computer also needed access to the measured spectrum itself. In other words, the analyzer had to provide the array of amplitude values used to construct the trace visible on its display.</p>
+<p>This is where the interface became problematic.</p>
+<p>The working commands followed conventions similar to those used by SCPI-controlled laboratory instruments, so a trace query was a natural next step. Several trace-related commands and variations were tested, including:</p>
+<pre class="rf-lab-code"><code>:TRAC? TRACE1</code></pre>
+<p>along with queries relating to trace modes, detectors, and trace readout.</p>
+<p>Unlike the basic configuration commands, however, these attempts did not produce useful spectrum data. Depending on the command, the instrument either failed to provide a meaningful response, timed out, or occasionally became unresponsive.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-3-2.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-3-2.webp" alt="Figure 3.2 - Attempted trace acquisition command with no usable returned spectrum data" width="1151" height="744" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 3.2</strong> - Attempted trace acquisition command with no usable returned spectrum data</figcaption></figure>
+<p>The distinction was important. The PC could tell the analyzer where to tune, what span to display, what reference level to use, and how to configure several front-end parameters, but it could not retrieve the measurement that the analyzer was actually displaying.</p>
+<p>Without that final capability, a graphical PC application would effectively be little more than a remote front panel. It could configure the HSA2307, but it could not reproduce the spectrum display, implement PC-side markers, save trace data, or perform automated RF measurements.</p>
+<p>The missing trace command therefore became the central problem of the HSA2307 investigation.</p>
+<p>Rather than continuing to guess undocumented commands indefinitely, the next step was to examine the instrument itself and determine what additional communication and debug interfaces were available internally.</p>
+<h2 class="text-secondary text-uppercase" id="section-4">4. Hardware Debug Interfaces</h2>
+<p>With the external USB command interface providing configuration access but no usable trace data, the next step was to look inside the instrument for lower-level debug interfaces that could provide additional visibility into the firmware.</p>
+<p>Opening the HSA2307 revealed several unpopulated and partially documented headers on the PCB. Of particular interest were a small three-pin header near the RF section and a larger header carrying signals with names commonly associated with processor debugging.</p>
+<p>The first target was the three-pin header, which appeared to be a UART interface.</p>
+<h3 class="text-secondary" id="section-4-1">4.1 UART Investigation</h3>
+<p>The suspected UART header was examined electrically before connecting any external hardware. Ground was identified using continuity measurements, while the remaining pins were checked for their idle voltage and activity during normal operation and power-up.</p>
+<p>One of the candidate signal lines remained at approximately 3.3 V while idle, consistent with the behavior expected from a UART transmit line.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-4-1.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-4-1.webp" alt="Figure 4.1 - Suspected UART header on the HSA2307 PCB with identified signal pins" width="266" height="219" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 4.1</strong> - Suspected UART header on the HSA2307 PCB with identified signal pins</figcaption></figure>
+<p>A 3.3 V USB-to-UART adapter was then connected, initially using common serial configurations such as 115200 baud, 8 data bits, no parity, and one stop bit.</p>
+<p>Some data appeared to be present, but it was not readable as normal ASCII output. At 115200 and 230400 baud, the terminal produced only invalid or corrupted characters.</p>
+<p>To determine whether the interface simply used an unusual baud rate or serial configuration, several additional configurations were tested.</p>
+<div class="project-table-scroll" tabindex="0" role="region" aria-label="ConfigurationObserved Result"><table class="table table-bordered table-striped"><thead><tr><th scope="col">Configuration</th><th scope="col">Observed Result</th></tr></thead><tbody><tr><td>115200, 8N1</td><td>Invalid / unreadable data</td></tr><tr><td>115200, 8E1</td><td>Invalid data</td></tr><tr><td>115200, 8O1</td><td>Invalid data</td></tr><tr><td>115200, 8N2</td><td>Invalid data</td></tr><tr><td>230400 baud</td><td>Unreadable output</td></tr><tr><td>921600 baud</td><td>Repeated raw value around 0x80</td></tr><tr><td>1,000,000 baud</td><td>Repeated raw value around 0x80</td></tr><tr><td>1,500,000 baud</td><td>Repeated raw value around 0x00</td></tr><tr><td>3,000,000 baud</td><td>Repeated raw value around 0x00</td></tr></tbody></table></div>
+<p>Changing parity, stop bits, and baud rate therefore did not reveal a recognizable console.</p>
+<p>At this point, a USB logic analyzer was introduced to observe the signal directly rather than relying only on the UART decoder.</p>
+<p>A HiLetgo FX2-based 24 MHz logic analyzer was connected to the suspected transmit line and configured using PulseView. The analyzer itself was first verified using a known signal before being connected to the HSA2307.</p>
+<p>Captures were then performed during both normal operation and instrument startup.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-4-2.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-4-2.webp" alt="Figure 4.2 - PulseView capture of the suspected UART transmit line during HSA2307 operation" width="289" height="216" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 4.2</strong> - PulseView capture of the suspected UART transmit line during HSA2307 operation</figcaption></figure>
+<p>The resulting waveform provided little evidence of a conventional debug console. Following startup, the candidate transmit line remained continuously high, and repeated captures did not reveal a stream of asynchronous serial data that could be decoded into useful firmware messages.</p>
+<p>The occasional values observed through the USB-to-UART adapter therefore appeared unlikely to represent a usable serial console.</p>
+<p>The UART investigation was still useful. It eliminated one of the simplest possible routes into the instrument and demonstrated that gaining deeper firmware access would require moving beyond a conventional serial debug interface.</p>
+<p>Attention therefore shifted to the larger PCB header and the possibility of accessing the processor through JTAG.</p>
+<h3 class="text-secondary" id="section-4-2">4.2 Debug Interface Investigation</h3>
+<p>With the UART route providing no useful firmware console, attention shifted to a second group of test points and headers on the HSA2307 PCB. Several nearby labels, including signals associated with reset and processor debugging, suggested that the board exposed a hardware debug interface.</p>
+<p>The first assumption was that the interface might provide conventional JTAG access. A Waveshare CH347T-based USB debug adapter was therefore connected and OpenOCD was used to probe the target.</p>
+<p>Initial attempts did not immediately reveal a usable JTAG scan chain. Logic-analyzer measurements nevertheless confirmed that the adapter was generating debug traffic, which indicated that the PC-side interface and cabling were functioning.</p>
+<p>Further investigation suggested that the processor could instead be accessed through Serial Wire Debug (SWD).</p>
+<p>The CH347 adapter was reconfigured accordingly, with OpenOCD explicitly selecting the SWD transport and using a target configuration compatible with the suspected processor family.</p>
+<p>The resulting OpenOCD invocation included:</p>
+<pre class="rf-lab-code"><code>adapter driver ch347
+transport select swd</code></pre>
+<p>along with the corresponding GD32F303 SWD target configuration.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-4-4.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-4-4.webp" alt="Figure 4.4 - OpenOCD configuration for SWD access using the CH347 adapter" width="1429" height="705" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 4.4</strong> - OpenOCD configuration for SWD access using the CH347 adapter</figcaption></figure>
+<p>This change produced the first major breakthrough in the investigation.</p>
+<p>OpenOCD successfully communicated with the target and identified an ARM Cortex-M4 processor. The SWD Debug Port Identification Register was successfully read, and OpenOCD repeatedly reported that target examination had succeeded.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-4-5.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-4-5.webp" alt="Figure 4.5 - Successful OpenOCD access to the HSA2307 processor over SWD" width="1411" height="610" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 4.5</strong> - Successful OpenOCD access to the HSA2307 processor over SWD</figcaption></figure>
+<p>This result confirmed several important points at once.</p>
+<p>First, the exposed hardware interface was not merely an unused manufacturing header - it provided functional processor-level debug access. Second, the processor responded correctly to SWD transactions, meaning that direct access to the device memory was now possible. Finally, the successful OpenOCD connection provided a path forward that no longer depended on undocumented USB commands or an inaccessible UART console.</p>
+<p>At this stage, the investigation changed significantly in scope.</p>
+<p>Rather than attempting to infer the missing spectrum-trace command only through trial-and-error communication with the running instrument, the firmware itself could now be examined directly. The next objective was therefore to use the debug connection to read the processor&#x27;s flash memory and create a complete firmware image for offline analysis.</p>
+<h3 class="text-secondary" id="section-4-3">4.3 Firmware Extraction</h3>
+<p>Successful SWD access made it possible to move from probing the running instrument to directly examining the firmware stored in the processor&#x27;s internal flash.</p>
+<p>In principle, extracting the firmware should have been straightforward: halt the processor and use OpenOCD to read the flash address range into a binary file. In practice, larger continuous reads proved unreliable. Short reads succeeded consistently, while longer transfers would occasionally fail partway through the transaction.</p>
+<p>Testing showed that 256-byte reads were repeatable, so the extraction process was changed from a single large memory read to a chunked acquisition method.</p>
+<p>The flash was read in 256-byte blocks, with each block saved individually. Failed transfers were automatically retried, and the process could resume without restarting the entire dump. Once all blocks had been acquired, they were merged in address order to reconstruct the complete firmware image.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-4-6.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-4-6.webp" alt="Figure 4.6 - Chunked HSA2307 flash extraction with automatic retries" width="945" height="389" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 4.6</strong> - Chunked HSA2307 flash extraction with automatic retries</figcaption></figure>
+<p>The resulting firmware image covered 1 MiB of flash memory, beginning at the processor flash base address of 0x08000000.</p>
+<p>Because the purpose of the dump was firmware analysis, simply producing a binary file was not sufficient. A corrupted byte introduced during SWD communication could later appear to be an instruction, string, pointer, or data structure and lead the reverse-engineering process in the wrong direction.</p>
+<p>The complete extraction was therefore performed more than once and the resulting images were compared.</p>
+<div class="project-table-scroll" tabindex="0" role="region" aria-label="DumpSizeSHA-256"><table class="table table-bordered table-striped rf-lab-hash-table"><thead><tr><th scope="col">Dump</th><th scope="col">Size</th><th scope="col">SHA-256</th></tr></thead><tbody><tr><td>Pass 1</td><td>1,048,576 bytes</td><td>46392BFEAEF8E7634D9D2F53983DDC509AE843FCAB20447AD88D92186CBDA5C7</td></tr><tr><td>Pass 2</td><td>1,048,576 bytes</td><td>D883954264C10D33E8954E51BEE9164EE567CF795EDC86B746E7ECA525FA3248</td></tr></tbody></table></div>
+<p>The two hashes did not match exactly.</p>
+<p>A byte-level comparison, however, showed that the discrepancy was extremely small: only 15 bytes differed across eight 256-byte chunks. Most of these differences occurred near the ends of individual read blocks.</p>
+<p>This pattern was much more consistent with occasional SWD transfer corruption than with large-scale changes in the firmware itself. The result also demonstrated why relying on a single firmware read would have been risky - a dump could appear completely valid while still containing a handful of incorrect bytes.</p>
+<p>The suspect regions could therefore be isolated and re-read independently rather than repeating the entire 1 MiB extraction every time.</p>
+<p>This validation process produced a firmware image suitable for offline inspection and marked another major transition in the project. Until this point, the investigation had focused on observing the HSA2307 externally through USB, UART, and its hardware debug interface.</p>
+<p>With the firmware available as a binary image, the search for the missing trace functionality could now move inside the instrument itself.</p>
+<p>The next step was to load the firmware into Ghidra and begin looking for command strings, parser structures, USB communication routines, and references to spectrum-trace data.</p>
+<h2 class="text-secondary text-uppercase" id="section-5">5. Firmware Analysis in Ghidra</h2>
+<p>With a validated firmware image available, the investigation could move from probing external interfaces to examining the command implementation directly.</p>
+<p>The firmware image was imported into Ghidra as a raw 32-bit little-endian ARM Cortex binary and mapped to the processor flash base address at 0x08000000. Known firmware contents, including the stored HSA2307 model string, were first used to confirm that the image had been loaded at the correct address.</p>
+<p>The goal of this analysis was not to completely reverse engineer every function performed by the instrument. Instead, the immediate objective was considerably narrower: identify how the known remote-control commands were represented inside the firmware and use that structure to determine whether a spectrum-trace transfer command existed.</p>
+<h3 class="text-secondary" id="section-5-1">5.1 Establishing Known Reference Points</h3>
+<p>The first step was to search the firmware for strings corresponding to commands that had already been verified experimentally over USB.</p>
+<p>Searching for terms such as FREQ revealed the mixed nature of the firmware strings. Alongside interface text such as Freq. cent. and Freq. fin., Ghidra also identified a string containing the mixed-case token:</p>
+<pre class="rf-lab-code"><code>FREQuency</code></pre>
+<p>This distinction was important. The presence of an ASCII string alone does not demonstrate that it forms part of the remote-control interface. A command token therefore had to be followed through its cross-references and into the code that used it.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-5-1.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-5-1.webp" alt="Figure 5.1 - Ghidra string search showing the FREQuency command token alongside unrelated frequency-related interface strings." width="893" height="667" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 5.1</strong> - Ghidra string search showing the FREQuency command token alongside unrelated frequency-related interface strings.</figcaption></figure>
+<p>Following the references to FREQuency led to a large initialization routine containing repeated calls to the same function. Many of these calls used recognizable instrument-control strings as arguments, including DISPlay, BANDwidth, SCALe, and other command-like tokens.</p>
+<p>The repeated structure suggested that this function was being used to construct the instrument&#x27;s command hierarchy.</p>
+<p>One occurrence of FREQuency initially led to a group containing measurements such as AVERage, PERiod, RTIme, and pulse-width parameters. This appeared to correspond to oscilloscope measurements rather than spectrum-analyzer frequency control, demonstrating why the surrounding context of each string reference had to be examined.</p>
+<p>A second reference produced a much more recognizable structure.</p>
+<p>The decompiled code first registered a top-level FREQuency node and stored the returned value. That value was then reused as the parent when registering the strings:</p>
+<pre class="rf-lab-code"><code>STARt
+CENTer
+STOP
+SPAN</code></pre>
+<p>The resulting structure could therefore be interpreted as:</p>
+<pre class="rf-lab-code"><code>FREQuency
+  ├── STARt
+  ├── CENTer
+  ├── STOP
+  └── SPAN</code></pre>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-5-2.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-5-2.webp" alt="Figure 5.2 - Decompiled command-registration sequence showing STARt, CENTer, STOP, and SPAN registered beneath the FREQuency command node." width="470" height="181" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 5.2</strong> - Decompiled command-registration sequence showing STARt, CENTer, STOP, and SPAN registered beneath the FREQuency command node.</figcaption></figure>
+<p>This provided an important validation of the reverse-engineering approach. Commands such as:</p>
+<pre class="rf-lab-code"><code>:FREQ:CENT?</code></pre>
+<p>and</p>
+<pre class="rf-lab-code"><code>:FREQ:SPAN?</code></pre>
+<p>had already been successfully executed against the physical HSA2307. The firmware structure reconstructed in Ghidra therefore matched commands whose behavior was already known experimentally.</p>
+<p>With the command-tree interpretation established using known commands, the same approach could now be applied to the missing spectrum-trace function.</p>
+<h3 class="text-secondary" id="section-5-2">5.2 Recovering the Spectrum Trace Command</h3>
+<p>A firmware string search for SPEC identified several occurrences, including filesystem paths associated with stored spectrum files. One occurrence, however, appeared within the same command-registration routine examined previously.</p>
+<p>The corresponding decompiled code registered SPEC as a top-level node and then reused its returned identifier when registering a number of child commands.</p>
+<p>Searching the nearby firmware region for trace-related strings revealed the token:</p>
+<pre class="rf-lab-code"><code>TRAC</code></pre>
+<p>The TRAC entry was then found directly within the SPEC registration block:</p>
+<pre class="rf-lab-code"><code>SPEC
+  └── TRAC</code></pre>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-5-3.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-5-3.webp" alt="Figure 5.3 - Decompiled command-registration sequence showing TRAC registered as a child of the SPEC command node." width="366" height="125" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 5.3</strong> - Decompiled command-registration sequence showing TRAC registered as a child of the SPEC command node.</figcaption></figure>
+<p>This revealed the command path:</p>
+<pre class="rf-lab-code"><code>:SPEC:TRAC?</code></pre>
+<p>The result also explained why the earlier attempts using commands such as:</p>
+<pre class="rf-lab-code"><code>:TRAC? TRACE1</code></pre>
+<p>had failed. Although another TRACe1 string existed elsewhere in the firmware, it belonged to a different portion of the command hierarchy. The spectrum-data transfer function was instead located beneath the dedicated SPEC branch.</p>
+<p>At this point the command hierarchy strongly suggested that :SPEC:TRAC? was the missing query, but the analysis could be taken one step further by following its callback into the response-generation code.</p>
+<h3 class="text-secondary" id="section-5-3">5.3 Following the Trace Handler</h3>
+<p>The TRAC registration contained a callback pointer whose stored address was 0x0804C139. Because ARM Cortex-M function pointers use the least-significant bit to indicate Thumb execution, this corresponded to executable code beginning at:</p>
+<pre class="rf-lab-code"><code>0x0804C138</code></pre>
+<p>Following the pointer produced a compact handler that called another function with the argument:</p>
+<pre class="rf-lab-code"><code>0x12D</code></pre>
+<p>or 301 in decimal.</p>
+<p>The resulting function was then followed into the decompiler, where its purpose became considerably clearer. The code iterated over the requested data points and contained the floating-point format string:</p>
+<pre class="rf-lab-code"><code>%0.7f</code></pre>
+<p>It also contained the literal response prefix:</p>
+<pre class="rf-lab-code"><code>#9000002107</code></pre>
+<p>Together, these findings showed that the TRAC handler was not simply another configuration command. It led directly into code responsible for constructing a host response from a 301-point data set and serializing the values as formatted floating-point numbers.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-5-4.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-5-4.webp" alt="Figure 5.4 - Trace-response implementation: (a) the TRAC callback invokes the formatter for 0x12D (301) points; (b) the formatter contains the %0.7f conversion string and #9000002107 response prefix." width="343" height="226" loading="lazy" decoding="async"/></a><a href="../assets/img/projects/programmable-rf-lab/figure-5-4-b.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-5-4-b.webp" alt="Figure 5.4 - Trace-response implementation: (a) the TRAC callback invokes the formatter for 0x12D (301) points; (b) the formatter contains the %0.7f conversion string and #9000002107 response prefix." width="564" height="670" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 5.4</strong> - Trace-response implementation: (a) the TRAC callback invokes the formatter for 0x12D (301) points; (b) the formatter contains the %0.7f conversion string and #9000002107 response prefix.</figcaption></figure>
+<p>The complete path recovered from the firmware could therefore be summarized as:</p>
+<figure class="project-figure rf-lab-diagram"><a href="../assets/img/projects/programmable-rf-lab/diagrams/trace-command-path.svg" target="_blank" rel="noopener"><img class="rf-lab-diagram-image" src="../assets/img/projects/programmable-rf-lab/diagrams/trace-command-path.svg" alt="Recovered firmware command and response-format path" width="1200" height="290" loading="lazy" decoding="async"/></a></figure>
+<p>This provided a much stronger result than simply locating the text TRAC inside the binary. The command could be followed from its position in the command parser through its registered handler and into the code responsible for formatting the returned spectrum data.</p>
+<h3 class="text-secondary" id="section-5-4">5.4 AI-Assisted Broader Analysis</h3>
+<p>The manual analysis above was intentionally focused on establishing a reproducible path through the firmware: starting from known working commands, identifying the command-registration structure, and then applying the same method to the previously unknown trace function.</p>
+<p>Extending this process manually across the entire firmware image, however, would have required tracing a large number of command nodes, callback pointers, strings, and decompiled functions individually.</p>
+<p>For this reason, AI tools were used to assist with the broader static-analysis process. This included correlating command strings and cross-references, examining decompiled functions, reconstructing larger portions of the command hierarchy, and prioritizing regions of the firmware that were likely to contain useful instrument-control functionality.</p>
+<p>The AI-assisted analysis was treated as an investigative tool rather than an authoritative source. Candidate findings were checked against the firmware itself and, where practical, validated experimentally against the physical instrument.</p>
+<p>The :SPEC:TRAC? command provides a useful example of this workflow. The wider analysis helped identify the relevant portion of the firmware, while manual inspection in Ghidra independently demonstrated the command hierarchy and response-generation path. The final test would therefore be performed on the instrument itself: send the recovered query and determine whether the HSA2307 actually returned the spectrum trace.</p>
+<h2 class="text-secondary text-uppercase" id="section-6">6. Recovering and Validating the Spectrum Trace</h2>
+<p>With the SPEC → TRAC command path recovered from the firmware, the next step was to determine whether the query actually worked on the physical instrument.</p>
+<h3 class="text-secondary" id="section-6-1">6.1 First Successful Trace Acquisition</h3>
+<p>The recovered command was sent through the same USB interface previously used for the known configuration queries:</p>
+<pre class="rf-lab-code"><code>:SPEC:TRAC?</code></pre>
+<p>Unlike the earlier attempts using commands such as :TRAC? TRACE1, the HSA2307 immediately returned a large multi-packet response.</p>
+<p>The beginning of the response contained the same header identified during the firmware analysis:</p>
+<pre class="rf-lab-code"><code>#9000002107,</code></pre>
+<p>followed by a sequence of comma-separated floating-point values.</p>
+<p>After collecting the complete USB transaction rather than reading only a single USB packet, the response contained 3326 bytes. Parsing the returned numeric values produced exactly 301 trace points, matching the 0x12D point count observed earlier in the decompiled trace handler.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-6-1.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-6-1.webp" alt="Figure 6.1 - Successful spectrum-trace acquisition using the recovered :SPEC:TRAC? query. The response begins with the firmware-identified #9000002107 header and contains exactly 301 floating-point trace values." width="879" height="468" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 6.1</strong> - Successful spectrum-trace acquisition using the recovered :SPEC:TRAC? query. The response begins with the firmware-identified #9000002107 header and contains exactly 301 floating-point trace values.</figcaption></figure>
+<p>This provided the first direct experimental confirmation that the command recovered from the firmware was connected to the spectrum data displayed by the instrument.</p>
+<h3 class="text-secondary" id="section-6-2">6.2 Response Format</h3>
+<p>The trace response initially appears similar to a conventional instrument data block because it begins with:</p>
+<pre class="rf-lab-code"><code>#9000002107</code></pre>
+<p>However, the firmware analysis showed that the HSA2307 does not construct a conventional fixed-length binary payload.</p>
+<p>Instead, each of the 301 samples is converted to variable-width ASCII text using the format:</p>
+<pre class="rf-lab-code"><code>%0.7f</code></pre>
+<p>and separated by commas.</p>
+<p>The resulting transaction captured from the physical instrument was 3326 bytes long, despite the 2107 value contained in the response header. This experimentally confirmed the serialization inconsistency observed during the firmware analysis.</p>
+<p>A PC-side implementation therefore cannot safely treat 2107 as the actual transfer length.</p>
+<p>Instead, the trace parser:</p>
+<ul><li>Locates the known #9000002107, prefix.</li><li>Collects the complete multi-packet USB response.</li><li>Extracts valid floating-point values from the returned byte stream.</li><li>Retains the first 301 complete samples.</li></ul>
+<p>This produced repeatable trace acquisition without relying on the inconsistent length field.</p>
+<h3 class="text-secondary" id="section-6-3">6.3 Reconstructing the Frequency Axis</h3>
+<p>The returned trace contains the amplitude samples themselves, but does not provide a frequency value alongside each individual point.</p>
+<p>The frequency axis can instead be reconstructed from the analyzer&#x27;s current start and stop frequencies, which are independently available through the remote-control interface.</p>
+<p>For a normal sweep containing 301 points:</p>
+<div class="equation equation-copyable" data-latex="\[f_i = f_{\mathrm{start}} + i\frac{f_{\mathrm{stop}}-f_{\mathrm{start}}}{300}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[f_i = f_{\mathrm{start}} + i\frac{f_{\mathrm{stop}}-f_{\mathrm{start}}}{300}\]" type="button">Copy LaTeX</button>\[f_i = f_{\mathrm{start}} + i\frac{f_{\mathrm{stop}}-f_{\mathrm{start}}}{300}\]</div>
+<p>where:</p>
+<div class="equation equation-copyable" data-latex="\[i=0,1,\ldots,300\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[i=0,1,\ldots,300\]" type="button">Copy LaTeX</button>\[i=0,1,\ldots,300\]</div>
+<p>The first returned point therefore corresponds to the configured start frequency and the final point corresponds to the stop frequency.</p>
+<p>Combining the queried sweep limits with the 301 returned samples produces a complete PC-side representation of the spectrum trace.</p>
+<h3 class="text-secondary" id="section-6-4">6.4 Determining the Amplitude Scale</h3>
+<p>The returned floating-point values were clearly related to the displayed spectrum, but their numerical values were not directly expressed in dBm.</p>
+<p>To determine the relationship, traces were acquired under the same analyzer settings using two independent methods:</p>
+<ul><li>the recovered :SPEC:TRAC? USB query, providing the raw trace values;</li><li>the HSA2307&#x27;s own CSV export, providing the corresponding amplitude values in dBm.</li></ul>
+<p>The two data sets were then compared point-by-point in Excel.</p>
+<p>Rather than assuming a particular conversion, the HSA-exported amplitudes were plotted directly against the raw USB values using an XY scatter plot and fitted with a linear regression.</p>
+<p>The resulting relationship was:</p>
+<div class="equation equation-copyable" data-latex="\[A_{\mathrm{HSA}} = 0.9999A_{\mathrm{raw}} - 100.46\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[A_{\mathrm{HSA}} = 0.9999A_{\mathrm{raw}} - 100.46\]" type="button">Copy LaTeX</button>\[A_{\mathrm{HSA}} = 0.9999A_{\mathrm{raw}} - 100.46\]</div>
+<p>with the displayed coefficient of determination rounding to:</p>
+<div class="equation equation-copyable" data-latex="\[R^2 = 1.000\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[R^2 = 1.000\]" type="button">Copy LaTeX</button>\[R^2 = 1.000\]</div>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-6-2.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-6-2.webp" alt="Figure 6.2 - Linear relationship between the raw :SPEC:TRAC? values and amplitudes exported by the HSA2307. The fitted slope of 0.9999 indicates an essentially 1:1 dB scale with an approximately -100.46 dB offset." width="1600" height="992" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 6.2</strong> - Linear relationship between the raw :SPEC:TRAC? values and amplitudes exported by the HSA2307. The fitted slope of 0.9999 indicates an essentially 1:1 dB scale with an approximately -100.46 dB offset.</figcaption></figure>
+<p>The near-unity slope is particularly useful. It indicates that the returned values are not arbitrary ADC counts requiring a nonlinear conversion. Instead, the trace already preserves the analyzer&#x27;s logarithmic amplitude scale and primarily differs from the exported dBm values by a constant offset.</p>
+<p>For this instrument, the practical conversion can therefore be simplified to:</p>
+<div class="equation equation-copyable" data-latex="\[A_{\mathrm{dBm}} \approx A_{\mathrm{raw}} - 100.46\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[A_{\mathrm{dBm}} \approx A_{\mathrm{raw}} - 100.46\]" type="button">Copy LaTeX</button>\[A_{\mathrm{dBm}} \approx A_{\mathrm{raw}} - 100.46\]</div>
+<p>The small deviation of the fitted slope from exactly 1 is negligible for the purpose of displaying the recovered trace.</p>
+<p>Because the comparison was performed using separate acquisitions rather than an identical frozen data set, individual points were not expected to be perfectly identical. Despite this, the measurements collapsed onto a highly linear relationship, providing strong experimental confirmation of the conversion.</p>
+<h3 class="text-secondary" id="section-6-5">6.5 Result</h3>
+<p>At this point, the original limitation of the HSA2307 PC interface had been resolved.</p>
+<p>The computer could now:</p>
+<ul><li>configure the analyzer through its existing command interface;</li><li>retrieve the complete 301-point spectrum trace;</li><li>reconstruct the corresponding frequency axis;</li><li>convert the returned raw amplitude values into dBm;</li><li>and process or save the resulting measurements independently of the instrument display.</li></ul>
+<p>The investigation had therefore progressed from an unsuccessful guessed command:</p>
+<pre class="rf-lab-code"><code>:TRAC? TRACE1</code></pre>
+<p>through hardware interrogation, firmware extraction, and static analysis to the recovered and experimentally validated query:</p>
+<pre class="rf-lab-code"><code>:SPEC:TRAC?</code></pre>
+<p>With trace acquisition available, the HSA2307 could finally be treated as more than a remotely configurable handheld instrument. The next step was to use the recovered functionality to build a complete PC-based spectrum-analyzer interface.</p>
+<h2 class="text-secondary text-uppercase" id="section-7">7. PC Spectrum Analyzer Interface</h2>
+<p>Recovering the spectrum trace solved the central communication problem, but manually sending USB commands and parsing the returned data was not a practical way to use the analyzer during normal bench work.</p>
+<p>The final step was therefore to combine the recovered command set, trace parser, frequency reconstruction, and amplitude conversion into a dedicated PC application.</p>
+<p>The result was a Python-based graphical interface that turns the HSA2307 into a more conventional PC-controlled spectrum analyzer while continuing to use the instrument itself for the RF acquisition.</p>
+<h3 class="text-secondary" id="section-7-1">7.1 Instrument Control</h3>
+<p>When connected, the application first identifies the HSA2307 and verifies that the instrument is operating in spectrum-analyzer mode. It then queries the current analyzer configuration and populates the corresponding controls in the GUI.</p>
+<p>The available controls include:</p>
+<ul><li>start and stop frequency;</li><li>center frequency and span;</li><li>resolution bandwidth;</li><li>automatic or manual RBW selection;</li><li>input attenuation and automatic attenuation;</li><li>preamplifier control;</li><li>reference level;</li><li>vertical dB/division scale.</li></ul>
+<p>Changing these parameters in the application sends the corresponding recovered commands back to the instrument.</p>
+<p>Particular care was required for the frequency controls. Start/stop and center/span represent two different descriptions of the same sweep, meaning that blindly transmitting all four values could unintentionally overwrite a newly requested configuration.</p>
+<p>The GUI therefore tracks which parameters were actually edited and sends only the relevant commands before reading the resulting settings back from the analyzer.</p>
+<p>This allows the physical instrument to remain the authoritative source for the final sweep configuration.</p>
+<h3 class="text-secondary" id="section-7-2">7.2 Trace Acquisition and Display</h3>
+<p>Trace acquisition is performed using the recovered:</p>
+<pre class="rf-lab-code"><code>:SPEC:TRAC?</code></pre>
+<p>query.</p>
+<p>The application collects the complete multi-packet USB response, extracts the 301 returned trace values, reconstructs the frequency axis from the analyzer&#x27;s current start and stop frequencies, and applies the amplitude conversion established during the validation process.</p>
+<p>The resulting spectrum is then displayed directly in the application.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-7-1.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-7-1.webp" alt="Figure 7.1 - Final HSA2307 PC interface showing remotely controlled analyzer settings, the recovered spectrum trace, and interactive markers." width="1920" height="1032" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 7.1</strong> - Final HSA2307 PC interface showing remotely controlled analyzer settings, the recovered spectrum trace, and interactive markers.</figcaption></figure>
+<p>The plot automatically scales its frequency units between kHz, MHz, and GHz depending on the selected sweep range.</p>
+<p>Moving the cursor across the trace also provides an interactive frequency and amplitude readout, allowing individual portions of the spectrum to be inspected without relying on the HSA2307&#x27;s physical display.</p>
+<h3 class="text-secondary" id="section-7-3">7.3 PC-Side Markers</h3>
+<p>Once trace data was available on the PC, measurement functionality no longer had to be limited to the marker implementation provided by the instrument firmware.</p>
+<p>The GUI therefore implements its own marker system directly on the acquired trace.</p>
+<p>A new marker can be created by right-clicking the desired location on the spectrum. The marker is snapped to the nearest acquired trace point and its frequency and amplitude are added to a marker table.</p>
+<p>Markers are assigned default names such as:</p>
+<p>M1, M2, M3, ...</p>
+<p>and can subsequently be renamed.</p>
+<p>Markers can also be selected either from the table or directly from the plotted trace. This makes the PC interface useful not only for reproducing the analyzer display, but also for adding measurement and interaction features on top of the recovered spectrum data.</p>
+<p>The marker implementation is performed entirely on the PC side and therefore does not depend on the more limited marker commands available through the HSA2307 firmware.</p>
+<h3 class="text-secondary" id="section-7-4">7.4 Measurement Export</h3>
+<p>The recovered trace can also be saved directly from the application.</p>
+<p>An explicit trace acquisition generates a CSV containing the reconstructed frequency values and corresponding amplitudes, allowing the measurement to be imported into Excel, Python, MATLAB, or other analysis tools.</p>
+<p>Separating acquisition from visualization also makes the data available for later automated measurements, comparisons, and processing without requiring screenshots or manual transcription from the analyzer.</p>
+<h3 class="text-secondary" id="section-7-5">7.5 Result</h3>
+<p>The completed application changed the role of the HSA2307 considerably.</p>
+<p>At the beginning of the investigation, the PC interface could modify several analyzer settings but could not retrieve the measurement itself. After recovering and validating the undocumented trace path, the same instrument could now be used through a graphical PC interface providing:</p>
+<ul><li>remote analyzer configuration;</li><li>complete spectrum-trace acquisition;</li><li>calibrated amplitude display;</li><li>cursor-based measurement readout;</li><li>PC-side markers;</li><li>and CSV measurement export.</li></ul>
+<p>The result was not a replacement for the HSA2307 firmware or RF hardware, but an additional software layer built on top of the capabilities already present inside the instrument.</p>
+<p>More importantly, it completed the original objective of the investigation: transforming an inexpensive handheld analyzer with limited documented PC functionality into a practical programmable RF measurement tool.</p>
+<h2 class="text-secondary text-uppercase" id="section-8">8. The ADF4351 - A Low-Cost Programmable RF Source</h2>
+<p>With the spectrum-analyzer side of the lab operational, the next missing capability was a controllable RF source.</p>
+<p>Dedicated RF signal generators can quickly become another expensive piece of laboratory equipment, particularly when wide frequency coverage and computer control are required. For basic RF experimentation, filter testing, receiver bring-up, and other bench measurements, however, a much simpler source can already be extremely useful.</p>
+<p>This made inexpensive ADF4351-based synthesizer modules particularly attractive.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-8-1.jpeg" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-8-1.webp" alt="Figure 8.1 - ADF4351 RF synthesizer module used in the project." width="828" height="1104" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 8.1</strong> - ADF4351 RF synthesizer module used in the project.</figcaption></figure>
+<p>At first glance, the module appeared almost unusually capable for its cost. The ADF4351 combines a fractional-N/integer-N PLL with an integrated VCO and provides an RF output covering approximately 35 MHz to 4.4 GHz. The internal VCO itself operates from 2.2 to 4.4 GHz, while programmable output dividers of 1, 2, 4, 8, 16, 32, and 64 extend the usable output frequency down to 35 MHz.</p>
+<p>This frequency range was particularly useful for a small personal RF bench. A single inexpensive module could cover much of the range of interest for the filters, antennas, cables, and other RF hardware I wanted to experiment with.</p>
+<p>The device also appeared straightforward to control. Rather than requiring a complicated digital interface, the ADF4351 is configured through a simple 3-wire serial interface, functionally consisting of clock, data, and latch-enable signals. Six 32-bit configuration registers control the PLL, output divider, RF output power, operating modes, and other synthesizer functions.</p>
+<p>This made the device a good candidate for an STM32-based controller: calculate the required register values, transmit them over SPI, and expose a simpler command interface to the PC.</p>
+<p>Some of the relevant ADF4351 characteristics are summarized below.</p>
+<div class="project-table-scroll" tabindex="0" role="region" aria-label="ParameterDatasheet Capability"><table class="table table-bordered table-striped"><thead><tr><th scope="col">Parameter</th><th scope="col">Datasheet Capability</th></tr></thead><tbody><tr><td>RF output frequency</td><td>35 MHz to 4.4 GHz</td></tr><tr><td>Synthesizer architecture</td><td>Fractional-N / Integer-N PLL</td></tr><tr><td>Integrated VCO range</td><td>2.2 GHz to 4.4 GHz</td></tr><tr><td>Output divider</td><td>÷1, ÷2, ÷4, ÷8, ÷16, ÷32, ÷64</td></tr><tr><td>RF output power</td><td>Approximately -4 to +5 dBm, programmable in 3 dB steps</td></tr><tr><td>Digital control</td><td>3-wire serial interface</td></tr><tr><td>RF output mute</td><td>Software and hardware controllable</td></tr><tr><td>Lock indication</td><td>Analog and digital lock detect</td></tr><tr><td>Supply voltage</td><td>3.0 V to 3.6 V</td></tr></tbody></table></div>
+<p>The datasheet specifies typical programmable RF output levels spanning approximately -4 dBm to +5 dBm, with 3 dB steps. It also provides RF mute and lock-detect functionality, both of which are particularly useful when turning the synthesizer into a practical bench instrument rather than using it only as a bare RF IC.</p>
+<p>The datasheet also specifies low phase-noise operation and a typical integrated RMS jitter on the order of 0.3 ps, although the performance of a complete low-cost module also depends on factors outside the ADF4351 itself, including the reference oscillator, loop filter, power supplies, PCB layout, and RF output network.</p>
+<p>For this project, the goal was therefore not to claim performance equivalent to a calibrated laboratory signal generator. Instead, the objective was to determine whether an inexpensive ADF4351 module could be turned into a useful, controllable RF source by combining it with an STM32, custom firmware, RF validation, and a PC interface.</p>
+<p>Unlike the HSA2307 investigation, where the main challenge was recovering functionality hidden inside an existing instrument, the ADF4351 presented almost the opposite problem: the RF capability was readily available, but the surrounding control system still had to be built.</p>
+<p>The first step was therefore to provide the synthesizer with an embedded controller capable of calculating and programming its registers over SPI.</p>
+<h2 class="text-secondary text-uppercase" id="section-9">9. STM32 Control Architecture</h2>
+<p>The ADF4351 was not controlled directly from the PC. Instead, an STM32 microcontroller was placed between the user interface and the RF synthesizer, providing a simple embedded control layer for the module.</p>
+<p>This part of the project actually builds on the <a href="uart-interface-stm32.html">first technical portfolio write-up</a> I published, which focused on developing a UART-based command-line interface for an STM32. That project established the basic communication framework used here: a PC sends human-readable commands over UART, the STM32 parses them, executes the requested operation, and returns status information to the host.</p>
+<p>Rather than repeating the full UART CLI implementation in this write-up, that existing interface was reused as the foundation for the RF generator.</p>
+<p>The resulting control path was:</p>
+<figure class="project-figure rf-lab-diagram"><a href="../assets/img/projects/programmable-rf-lab/diagrams/control-architecture.svg" target="_blank" rel="noopener"><img class="rf-lab-diagram-image" src="../assets/img/projects/programmable-rf-lab/diagrams/control-architecture.svg" alt="ADF4351 control architecture from PC through STM32 and SPI to RF output" width="1200" height="290" loading="lazy" decoding="async"/></a></figure>
+<p>The PC therefore does not need to understand the ADF4351 register format directly. It only needs to issue higher-level commands such as setting a frequency, changing the RF output level, enabling or disabling the output, or requesting the current synthesizer state.</p>
+<p>The STM32 translates those requests into the register values required by the ADF4351.</p>
+<h3 class="text-secondary" id="section-9-1">9.1 UART Command Layer</h3>
+<p>The existing UART CLI provided a convenient interface for bringing up the synthesizer before any graphical application was developed.</p>
+<p>A typical interaction could therefore follow the form:</p>
+<pre class="rf-lab-code"><code>SET FREQ 1000000000
+SET POWER 5
+RF ON
+STATUS</code></pre>
+<p>The exact command entered by the user is parsed by the STM32 and passed to the appropriate ADF4351 control routine.</p>
+<p>This proved particularly useful during hardware bring-up. Individual synthesizer functions could be exercised directly from a terminal without recompiling the firmware for every test, making it possible to change frequency, power, and operating state while simultaneously observing the SPI bus, lock status, and RF output.</p>
+<h3 class="text-secondary" id="section-9-2">9.2 SPI Interface</h3>
+<p>Communication between the STM32 and ADF4351 uses the synthesizer&#x27;s three-wire serial interface.</p>
+<p>The relevant signals are:</p>
+<ul><li>DATA - serial configuration data;</li><li>CLK - serial clock;</li><li>LE - latch enable, used to transfer a completed 32-bit word into the selected ADF4351 register.</li></ul>
+<p>Each configuration transaction consists of a 32-bit register word shifted into the device before the latch-enable signal commits the value.</p>
+<p>Although the interface is SPI-like, the ADF4351 is primarily a write-configured device. The microcontroller therefore maintains the desired synthesizer state in firmware and generates the required register values locally rather than treating the device like a conventional readable SPI peripheral.</p>
+<h3 class="text-secondary" id="section-9-3">9.3 Separating User Commands from RF Configuration</h3>
+<p>A useful design choice was to keep the UART command interface separate from the low-level ADF4351 implementation.</p>
+<p>Conceptually, the firmware is divided into three layers:</p>
+<figure class="project-figure rf-lab-diagram"><a href="../assets/img/projects/programmable-rf-lab/diagrams/firmware-layers.svg" target="_blank" rel="noopener"><img class="rf-lab-diagram-image" src="../assets/img/projects/programmable-rf-lab/diagrams/firmware-layers.svg" alt="Firmware layers from UART command to SPI transfer" width="1200" height="290" loading="lazy" decoding="async"/></a></figure>
+<p>For example, a request for a new output frequency does not require the user to calculate PLL register fields manually. The STM32 receives the requested frequency, determines the corresponding synthesizer configuration, constructs the required 32-bit register values, and then programs the ADF4351 in the appropriate sequence.</p>
+<p>This separation also made the system easier to extend later. The same high-level RF functions used by the UART CLI could eventually be called from a graphical PC application without changing the underlying ADF4351 control code.</p>
+<h3 class="text-secondary" id="section-9-4">9.4 Bring-Up Strategy</h3>
+<p>The UART interface became the primary bring-up tool for the RF source.</p>
+<p>Before attempting to build a graphical signal-generator application, the system could be tested one layer at a time:</p>
+<figure class="project-figure rf-lab-diagram"><a href="../assets/img/projects/programmable-rf-lab/diagrams/bring-up-strategy.svg" target="_blank" rel="noopener"><img class="rf-lab-diagram-image" src="../assets/img/projects/programmable-rf-lab/diagrams/bring-up-strategy.svg" alt="Layered RF source bring-up and validation sequence" width="1200" height="290" loading="lazy" decoding="async"/></a></figure>
+<p>This layered approach made debugging considerably easier. If the requested RF signal did not appear, the problem could be isolated by checking whether the UART command had been received, whether the expected SPI transaction occurred, whether the synthesizer reported lock, and finally whether the RF output appeared at the expected frequency.</p>
+<p>With the communications architecture in place, the next task was therefore to implement the ADF4351-specific firmware: converting a requested RF frequency into a valid PLL configuration and programming the device registers accordingly.</p>
+<h2 class="text-secondary text-uppercase" id="section-10">10. ADF4351 Firmware and Register Programming</h2>
+<p>With the UART control layer in place, the next task was to translate a requested RF frequency into a valid ADF4351 configuration.</p>
+<p>Although the device is controlled through only six 32-bit registers, setting an output frequency involves more than writing the desired value directly. The requested RF frequency must first be mapped into the ADF4351&#x27;s internal VCO range, the PLL division ratio must be calculated, and a number of supporting parameters must be configured before the register words can be transmitted.</p>
+<p>The firmware therefore separates the process into two stages:</p>
+<figure class="project-figure rf-lab-diagram"><a href="../assets/img/projects/programmable-rf-lab/diagrams/frequency-programming.svg" target="_blank" rel="noopener"><img class="rf-lab-diagram-image" src="../assets/img/projects/programmable-rf-lab/diagrams/frequency-programming.svg" alt="ADF4351 frequency programming process" width="1200" height="290" loading="lazy" decoding="async"/></a></figure>
+<h3 class="text-secondary" id="section-10-1">10.1 Reference and Phase-Frequency Detector</h3>
+<p>The module used in this project contains a 25 MHz reference oscillator.</p>
+<p>The firmware currently uses:</p>
+<ul><li>reference divider \(R=1\);</li><li>reference doubler disabled;</li><li>reference divide-by-two disabled.</li></ul>
+<p>The resulting phase-frequency detector frequency is therefore:</p>
+<div class="equation equation-copyable" data-latex="\[f_{\mathrm{PFD}}=25\ \mathrm{MHz}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[f_{\mathrm{PFD}}=25\ \mathrm{MHz}\]" type="button">Copy LaTeX</button>\[f_{\mathrm{PFD}}=25\ \mathrm{MHz}\]</div>
+<p>The requested channel spacing is then used to calculate the fractional modulus:</p>
+<div class="equation equation-copyable" data-latex="\[\mathrm{MOD}=\frac{f_{\mathrm{PFD}}}{f_{\mathrm{step}}}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\mathrm{MOD}=\frac{f_{\mathrm{PFD}}}{f_{\mathrm{step}}}\]" type="button">Copy LaTeX</button>\[\mathrm{MOD}=\frac{f_{\mathrm{PFD}}}{f_{\mathrm{step}}}\]</div>
+<p>The ADF4351 provides a 12-bit MOD field, so the resulting value must remain between 2 and 4095. The firmware also requires the selected channel spacing to divide the 25 MHz PFD frequency evenly.</p>
+<p>For example, with the default 10 kHz spacing:</p>
+<div class="equation equation-copyable" data-latex="\[\mathrm{MOD}=\frac{25\,000\,000}{10\,000}=2500\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\mathrm{MOD}=\frac{25\,000\,000}{10\,000}=2500\]" type="button">Copy LaTeX</button>\[\mathrm{MOD}=\frac{25\,000\,000}{10\,000}=2500\]</div>
+<h3 class="text-secondary" id="section-10-2">10.2 VCO and Output Divider Selection</h3>
+<p>The internal ADF4351 VCO operates between approximately 2.2 and 4.4 GHz.</p>
+<p>For requested frequencies below this range, the firmware selects the smallest available RF output divider that moves the internal VCO frequency back into its valid operating range:</p>
+<div class="equation equation-copyable" data-latex="\[f_{\mathrm{VCO}}=f_{\mathrm{RF}}\times D\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[f_{\mathrm{VCO}}=f_{\mathrm{RF}}\times D\]" type="button">Copy LaTeX</button>\[f_{\mathrm{VCO}}=f_{\mathrm{RF}}\times D\]</div>
+<p>where:</p>
+<div class="equation equation-copyable" data-latex="\[D\in\{1,2,4,8,16,32,64\}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[D\in\{1,2,4,8,16,32,64\}\]" type="button">Copy LaTeX</button>\[D\in\{1,2,4,8,16,32,64\}\]</div>
+<p>The divider is increased until the calculated VCO frequency falls between 2.2 and 4.4 GHz.</p>
+<p>For example, a 1 GHz output requires:</p>
+<div class="equation equation-copyable" data-latex="\[D=4\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[D=4\]" type="button">Copy LaTeX</button>\[D=4\]</div>
+<p>giving:</p>
+<div class="equation equation-copyable" data-latex="\[f_{\mathrm{VCO}}=4\ \mathrm{GHz}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[f_{\mathrm{VCO}}=4\ \mathrm{GHz}\]" type="button">Copy LaTeX</button>\[f_{\mathrm{VCO}}=4\ \mathrm{GHz}\]</div>
+<p>whereas a 2.45 GHz output can use:</p>
+<div class="equation equation-copyable" data-latex="\[D=1\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[D=1\]" type="button">Copy LaTeX</button>\[D=1\]</div>
+<p>and operate the VCO directly at 2.45 GHz.</p>
+<p>This mechanism is what allows the integrated 2.2-4.4 GHz VCO to produce RF outputs well below its own operating frequency.</p>
+<h3 class="text-secondary" id="section-10-3">10.3 Calculating INT, FRAC, and MOD</h3>
+<p>Once the VCO frequency is known, the required PLL division ratio is calculated as:</p>
+<div class="equation equation-copyable" data-latex="\[N=\mathrm{INT}+\frac{\mathrm{FRAC}}{\mathrm{MOD}}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[N=\mathrm{INT}+\frac{\mathrm{FRAC}}{\mathrm{MOD}}\]" type="button">Copy LaTeX</button>\[N=\mathrm{INT}+\frac{\mathrm{FRAC}}{\mathrm{MOD}}\]</div>
+<p>with:</p>
+<div class="equation equation-copyable" data-latex="\[N=\frac{f_{\mathrm{VCO}}}{f_{\mathrm{PFD}}}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[N=\frac{f_{\mathrm{VCO}}}{f_{\mathrm{PFD}}}\]" type="button">Copy LaTeX</button>\[N=\frac{f_{\mathrm{VCO}}}{f_{\mathrm{PFD}}}\]</div>
+<p>The integer portion becomes the INT field, while the remaining fractional portion is converted into FRAC/MOD.</p>
+<p>The firmware calculates:</p>
+<div class="equation equation-copyable" data-latex="\[\mathrm{INT}=\left\lfloor\frac{f_{\mathrm{VCO}}}{f_{\mathrm{PFD}}}\right\rfloor\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\mathrm{INT}=\left\lfloor\frac{f_{\mathrm{VCO}}}{f_{\mathrm{PFD}}}\right\rfloor\]" type="button">Copy LaTeX</button>\[\mathrm{INT}=\left\lfloor\frac{f_{\mathrm{VCO}}}{f_{\mathrm{PFD}}}\right\rfloor\]</div>
+<p>and derives FRAC from the remaining frequency error.</p>
+<p>If the fractional value rounds up to the modulus, the firmware increments INT and resets FRAC to zero. For non-zero fractional configurations, FRAC and MOD are also reduced by their greatest common divisor, producing a simpler fractional ratio.</p>
+<p>When:</p>
+<div class="equation equation-copyable" data-latex="\[\mathrm{FRAC}=0\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\mathrm{FRAC}=0\]" type="button">Copy LaTeX</button>\[\mathrm{FRAC}=0\]</div>
+<p>the synthesizer can operate in integer-N mode. Otherwise the configuration is treated as fractional-N.</p>
+<p>As an example, requesting 2450 MHz with the 25 MHz PFD produces:</p>
+<div class="equation equation-copyable" data-latex="\[N=\frac{2450}{25}=98\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[N=\frac{2450}{25}=98\]" type="button">Copy LaTeX</button>\[N=\frac{2450}{25}=98\]</div>
+<p>and therefore:</p>
+<div class="equation equation-copyable" data-latex="\[\mathrm{INT}=98,\quad\mathrm{FRAC}=0\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\mathrm{INT}=98,\quad\mathrm{FRAC}=0\]" type="button">Copy LaTeX</button>\[\mathrm{INT}=98,\quad\mathrm{FRAC}=0\]</div>
+<p>With a 10 kHz channel spacing, the firmware still retains:</p>
+<div class="equation equation-copyable" data-latex="\[\mathrm{MOD}=2500\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\mathrm{MOD}=2500\]" type="button">Copy LaTeX</button>\[\mathrm{MOD}=2500\]</div>
+<p>but the zero fractional term means the actual PLL configuration is integer-N.</p>
+<p>A typical CLI response therefore reports:</p>
+<pre class="rf-lab-code"><code>requested : 2450.000000 MHz
+actual    : 2450.000000 MHz
+VCO       : 2450.000000 MHz
+INT=98  FRAC=0  MOD=2500  RFdiv=1  BSdiv=200  (integer-N)</code></pre>
+<p>The firmware reports the requested frequency, calculated VCO frequency, actual realizable output frequency, divider values, and whether the final configuration is integer- or fractional-N.</p>
+<h3 class="text-secondary" id="section-10-4">10.4 Supporting PLL Parameters</h3>
+<p>Several supporting parameters must also be selected before the six register words can be assembled.</p>
+<p>The firmware selects the ADF4351 prescaler according to the calculated integer divider. The 8/9 prescaler is used when the integer division ratio is sufficiently large, while lower division ratios use the 4/5 prescaler.</p>
+<p>The band-select clock is also constrained. With the firmware configured for the low band-select clock mode, the divider is selected so that:</p>
+<div class="equation equation-copyable" data-latex="\[f_{\mathrm{BS}}\leq125\ \mathrm{kHz}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[f_{\mathrm{BS}}\leq125\ \mathrm{kHz}\]" type="button">Copy LaTeX</button>\[f_{\mathrm{BS}}\leq125\ \mathrm{kHz}\]</div>
+<p>For the 25 MHz PFD used here:</p>
+<div class="equation equation-copyable" data-latex="\[\mathrm{BS}_{\mathrm{DIV}}=\frac{25\ \mathrm{MHz}}{125\ \mathrm{kHz}}=200\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[\mathrm{BS}_{\mathrm{DIV}}=\frac{25\ \mathrm{MHz}}{125\ \mathrm{kHz}}=200\]" type="button">Copy LaTeX</button>\[\mathrm{BS}_{\mathrm{DIV}}=\frac{25\ \mathrm{MHz}}{125\ \mathrm{kHz}}=200\]</div>
+<p>which explains the BSdiv=200 value visible in the CLI output.</p>
+<h3 class="text-secondary" id="section-10-5">10.5 Register Construction</h3>
+<p>Once the PLL parameters are known, the firmware constructs the six ADF4351 registers.</p>
+<p>The primary functions of the generated words are summarized below.</p>
+<div class="project-table-scroll" tabindex="0" role="region" aria-label="RegisterMain Configuration Used in This Project"><table class="table table-bordered table-striped"><thead><tr><th scope="col">Register</th><th scope="col">Main Configuration Used in This Project</th></tr></thead><tbody><tr><td>R0</td><td>INT and FRAC PLL divider values</td></tr><tr><td>R1</td><td>MOD, phase value, and prescaler</td></tr><tr><td>R2</td><td>Reference divider, charge-pump settings, integer/fractional lock-detect configuration, MUXOUT</td></tr><tr><td>R3</td><td>Band-select and clock-divider timing configuration</td></tr><tr><td>R4</td><td>RF output divider, band-select divider, RF output enable, output power</td></tr><tr><td>R5</td><td>Digital lock-detect output configuration</td></tr></tbody></table></div>
+<p>The output power selection is encoded in Register 4 and exposes the ADF4351&#x27;s four nominal power settings:</p>
+<ul><li>-4 dBm</li><li>-1 dBm</li><li>+2 dBm</li><li>+5 dBm</li></ul>
+<p>Register 4 also contains the main RF-output enable bit, allowing the firmware to disable the RF output without shutting down the complete synthesizer. Register 5 configures the lock-detect pin for digital lock indication.</p>
+<h3 class="text-secondary" id="section-10-6">10.6 SPI Register Transfer</h3>
+<p>Once all six register words have been generated, they are transmitted to the ADF4351 over SPI.</p>
+<p>Each word is sent most-significant byte first as a 32-bit transaction. LE remains low while the register is shifted into the device and is then briefly driven high to latch the completed word.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-10-1.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-10-1.webp" alt="Figure 10.1 - Logic-analyzer capture of an ADF4351 32-bit SPI register write showing DATA, CLK, and the LE latch pulse." width="1649" height="425" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 10.1</strong> - Logic-analyzer capture of an ADF4351 32-bit SPI register write showing DATA, CLK, and the LE latch pulse.</figcaption></figure>
+<p>A complete configuration is written in the order:</p>
+<div class="equation equation-copyable" data-latex="\[R5\rightarrow R4\rightarrow R3\rightarrow R2\rightarrow R1\rightarrow R0\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[R5\rightarrow R4\rightarrow R3\rightarrow R2\rightarrow R1\rightarrow R0\]" type="button">Copy LaTeX</button>\[R5\rightarrow R4\rightarrow R3\rightarrow R2\rightarrow R1\rightarrow R0\]</div>
+<p>with R0 written last, since writing R0 initiates the VCO band-selection process.</p>
+<p>During initialization, the firmware also transmits one dummy SPI word with LE held low before any real register programming. This was added to absorb an unwanted initial clock edge observed when the STM32 SPI peripheral was first enabled, preventing that startup behavior from affecting a valid ADF4351 register transaction.</p>
+<h3 class="text-secondary" id="section-10-7">10.7 Lock Detection and Readback</h3>
+<p>After the configuration is written, the firmware waits briefly for the synthesizer to settle before sampling the hardware lock-detect signal.</p>
+<p>The lock state can then be queried independently through:</p>
+<pre class="rf-lab-code"><code>LOCK</code></pre>
+<p>while the complete calculated register configuration can be displayed using:</p>
+<pre class="rf-lab-code"><code>REG</code></pre>
+<p>and the current generator state through:</p>
+<pre class="rf-lab-code"><code>STATUS</code></pre>
+<p>This proved useful during bring-up because the software could distinguish between several different stages of operation. A correctly parsed UART command and valid set of register values did not necessarily mean that the PLL had actually locked; the hardware lock-detect signal provided a separate confirmation that the RF synthesizer had accepted the configuration.</p>
+<p>At this point, the complete digital control path was operational:</p>
+<figure class="project-figure rf-lab-diagram"><a href="../assets/img/projects/programmable-rf-lab/diagrams/digital-control-path.svg" target="_blank" rel="noopener"><img class="rf-lab-diagram-image" src="../assets/img/projects/programmable-rf-lab/diagrams/digital-control-path.svg" alt="Complete ADF4351 digital control path" width="1200" height="290" loading="lazy" decoding="async"/></a></figure>
+<p>The next step was to verify that this digital configuration was actually reaching the ADF4351 correctly on the physical interface, and then confirm that the expected RF signal appeared at the module output.</p>
+<h2 class="text-secondary text-uppercase" id="section-11">11. Hardware Bring-Up and RF Validation</h2>
+<p>At this point, the control software could calculate a valid ADF4351 configuration and transmit the resulting register values through SPI. The remaining question was whether the complete physical system behaved as expected.</p>
+<p>The bring-up process was therefore approached in layers: first verify the digital interface, then confirm PLL lock, and finally inspect the generated RF signal directly with the spectrum analyzer.</p>
+<h3 class="text-secondary" id="section-11-1">11.1 Initial Bring-Up</h3>
+<p>Early tests demonstrated an important distinction between correct-looking firmware output and a functioning RF synthesizer.</p>
+<p>For example, requesting a 2.45 GHz signal produced a sensible calculated configuration:</p>
+<pre class="rf-lab-code"><code>requested : 2450.000000 MHz
+actual    : 2450.000000 MHz
+VCO       : 2450.000000 MHz
+INT=98  FRAC=0  MOD=2500  RFdiv=1  BSdiv=200  (integer-N)</code></pre>
+<p>Yet the hardware initially reported:</p>
+<pre class="rf-lab-code"><code>LOCK: NO</code></pre>
+<p>The PLL calculations therefore appeared reasonable, but that alone did not establish that the ADF4351 had actually received and accepted the configuration.</p>
+<p>Rather than immediately modifying the register equations, the next step was to observe the digital interface directly.</p>
+<h3 class="text-secondary" id="section-11-2">11.2 SPI Validation with a Logic Analyzer</h3>
+<p>A logic analyzer was connected to the ADF4351 control lines so that the SPI transaction could be inspected independently of both the STM32 firmware and the RF output.</p>
+<p>The key signals were:</p>
+<ul><li>CLK - SPI clock;</li><li>DATA - MOSI configuration data;</li><li>LE - latch enable.</li></ul>
+<p>Each register transaction was expected to contain exactly 32 clocked data bits, followed by an LE pulse that transfers the completed word into the selected ADF4351 register.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-11-1.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-11-1.webp" alt="Figure 11.1 - Logic-analyzer capture of an ADF4351 register write showing 32 serial data bits followed by the LE latch pulse." width="1395" height="636" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 11.1</strong> - Logic-analyzer capture of an ADF4351 register write showing 32 serial data bits followed by the LE latch pulse.</figcaption></figure>
+<p>The captures confirmed that the STM32 was generating the expected clock and data activity and that LE remained low during the transfer before pulsing high after the final bit.</p>
+<p>A complete synthesizer update consisted of six such transfers in the required sequence:</p>
+<div class="equation equation-copyable" data-latex="\[R5\rightarrow R4\rightarrow R3\rightarrow R2\rightarrow R1\rightarrow R0\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[R5\rightarrow R4\rightarrow R3\rightarrow R2\rightarrow R1\rightarrow R0\]" type="button">Copy LaTeX</button>\[R5\rightarrow R4\rightarrow R3\rightarrow R2\rightarrow R1\rightarrow R0\]</div>
+<p>with R0 written last to initiate VCO band selection. This order is also enforced directly by the firmware.</p>
+<p>One additional startup behavior was discovered during this process. When the STM32 SPI peripheral was first enabled, an unwanted initial clock edge could occur. To prevent this from affecting a real register transaction, the initialization routine was modified to transmit one dummy 32-bit word while LE remained low. Since the word was never latched, the extra startup activity was safely discarded before the actual configuration was written.</p>
+<p>This is a good example of why observing the physical bus was useful. A firmware function call such as HAL_SPI_Transmit() only proves that the software attempted to send data; the logic-analyzer capture confirmed what was actually occurring on the wire.</p>
+<h3 class="text-secondary" id="section-11-3">11.3 PLL Lock</h3>
+<p>Once the digital interface had been verified, the lock-detect signal provided the next level of confirmation.</p>
+<p>The ADF4351 module exposes its digital lock state to the STM32, allowing the firmware to report whether the PLL has successfully settled onto the requested frequency.</p>
+<p>After resolving the initial bring-up issues, a 1 GHz configuration successfully reported lock.</p>
+<p>At that point, three independent stages of the signal chain agreed:</p>
+<figure class="project-figure rf-lab-diagram"><a href="../assets/img/projects/programmable-rf-lab/diagrams/lock-validation.svg" target="_blank" rel="noopener"><img class="rf-lab-diagram-image" src="../assets/img/projects/programmable-rf-lab/diagrams/lock-validation.svg" alt="Signal-chain validation through PLL lock" width="1200" height="290" loading="lazy" decoding="async"/></a></figure>
+<p>The final verification was therefore to measure the RF output itself.</p>
+<h3 class="text-secondary" id="section-11-4">11.4 RF Output Verification</h3>
+<p>The ADF4351 output was connected directly to the HSA2307 spectrum analyzer through a coaxial cable and configured for a 1 GHz continuous-wave output.</p>
+<p>The resulting spectrum showed a clear carrier at the commanded frequency.</p>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-11-2.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-11-2.webp" alt="Figure 11.2 - HSA2307 measurement of the ADF4351 module generating a locked 1 GHz CW signal." width="1920" height="1032" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 11.2</strong> - HSA2307 measurement of the ADF4351 module generating a locked 1 GHz CW signal.</figcaption></figure>
+<p>This completed the fundamental bring-up loop: the frequency requested through the UART CLI resulted in an SPI configuration, the ADF4351 reported PLL lock, and the RF carrier appeared at the expected frequency on the spectrum analyzer.</p>
+<p>The signal generator could therefore be validated using the spectrum-analyzer platform developed earlier in this project, making the two halves of the RF lab directly complementary.</p>
+<h3 class="text-secondary" id="section-11-5">11.5 Output-Power Testing</h3>
+<p>The ADF4351 also provides four programmable nominal output-power settings:</p>
+<div class="equation equation-copyable" data-latex="\[-4,\ -1,\ +2,\ +5\ \mathrm{dBm}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[-4,\ -1,\ +2,\ +5\ \mathrm{dBm}\]" type="button">Copy LaTeX</button>\[-4,\ -1,\ +2,\ +5\ \mathrm{dBm}\]</div>
+<p>To verify that the control was functioning, each setting was applied while observing the carrier level on the HSA2307.</p>
+<div class="project-table-scroll" tabindex="0" role="region" aria-label="Programmed SettingMeasured Carrier Level"><table class="table table-bordered table-striped"><thead><tr><th scope="col">Programmed Setting</th><th scope="col">Measured Carrier Level</th></tr></thead><tbody><tr><td>+5 dBm</td><td>+0.51 dBm</td></tr><tr><td>+2 dBm</td><td>-2.49 dBm</td></tr><tr><td>-1 dBm</td><td>approximately -5 dBm</td></tr><tr><td>-4 dBm</td><td>-7.99 dBm</td></tr></tbody></table></div>
+<p>The absolute measured output was approximately 4.5 dB below the nominal programmed level, but the measured steps were very close to the expected 3 dB spacing.</p>
+<p>This distinction is useful. The test does not establish the absolute calibrated output power of the ADF4351 IC itself, since the result also includes the low-cost module implementation, output matching network, coaxial losses, and measurement uncertainty. It does, however, confirm that the programmable RF-power field is functioning consistently and producing the expected relative change between settings.</p>
+<p>When the RF output was disabled, the measured carrier dropped to approximately:</p>
+<div class="equation equation-copyable" data-latex="\[-56\ \mathrm{dBm}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[-56\ \mathrm{dBm}\]" type="button">Copy LaTeX</button>\[-56\ \mathrm{dBm}\]</div>
+<p>providing a clear experimental check that the firmware&#x27;s output-enable control was also functioning.</p>
+<h3 class="text-secondary" id="section-11-6">11.6 Bring-Up Result</h3>
+<p>The bring-up process therefore validated the system at several independent levels:</p>
+<figure class="project-figure rf-lab-diagram"><a href="../assets/img/projects/programmable-rf-lab/diagrams/bringup-validation.svg" target="_blank" rel="noopener"><img class="rf-lab-diagram-image" src="../assets/img/projects/programmable-rf-lab/diagrams/bringup-validation.svg" alt="RF source validation from UART command to measured carrier" width="1200" height="290" loading="lazy" decoding="async"/></a></figure>
+<p>This layered validation was especially useful because failures at different stages produced very different symptoms. A syntactically correct command did not guarantee a valid register calculation, a valid register calculation did not guarantee correct SPI signaling, and correct SPI signaling did not by itself prove that the PLL had locked or that RF energy was appearing at the output.</p>
+<p>By verifying each layer independently, the ADF4351 module was taken from an inexpensive RF breakout board to a functioning programmable CW source with confirmed frequency control, output-power control, RF enable/disable behavior, and PLL lock indication.</p>
+<p>With the hardware and firmware validated, the remaining step was to replace the terminal-based control workflow with a dedicated PC signal-generator interface.</p>
+<h2 class="text-secondary text-uppercase" id="section-12">12. PC RF Signal Generator Interface</h2>
+<p>Once the ADF4351 could be configured reliably from the STM32 command-line interface, the final step was to make the source convenient to use during normal RF bench work.</p>
+<p>Typing commands such as:</p>
+<pre class="rf-lab-code"><code>FREQ 1000
+PWR 5
+ON
+LOCK</code></pre>
+<p>was useful during development, but not ideal for repeated measurements. A dedicated Python application was therefore written on top of the existing UART command interface.</p>
+<p>Rather than duplicating the ADF4351 register calculations on the PC, the application leaves the low-level RF configuration inside the STM32 firmware. The GUI simply translates user actions into the same high-level CLI commands used during bring-up.</p>
+<p>This keeps the control architecture straightforward:</p>
+<figure class="project-figure rf-lab-diagram"><a href="../assets/img/projects/programmable-rf-lab/diagrams/gui-control.svg" target="_blank" rel="noopener"><img class="rf-lab-diagram-image" src="../assets/img/projects/programmable-rf-lab/diagrams/gui-control.svg" alt="PC signal-generator control architecture" width="1200" height="290" loading="lazy" decoding="async"/></a></figure>
+<h3 class="text-secondary" id="section-12-1">12.1 Connection and Communication</h3>
+<p>The application communicates with the STM32 through a standard USB-to-UART connection at 115200 baud.</p>
+<p>When a COM port is opened, the software sends a STATUS command to verify that the expected synthesizer firmware is actually responding rather than assuming that any successfully opened serial port is the correct device.</p>
+<p>The original STM32 CLI therefore remains the communication protocol between the PC and the embedded controller.</p>
+<p>This also means the signal generator can still be operated from a terminal if the GUI is unavailable.</p>
+<h3 class="text-secondary" id="section-12-2">12.2 Frequency and Channel-Step Control</h3>
+<p>The main frequency control accepts values in:</p>
+<ul><li>kHz;</li><li>MHz;</li><li>GHz.</li></ul>
+<p>The user can therefore enter frequencies in whichever unit is most convenient rather than manually converting everything into a single base unit.</p>
+<p>The interface also exposes the synthesizer&#x27;s channel step, which determines the fractional frequency resolution used by the STM32 PLL calculations.</p>
+<p>Several frequently useful frequencies were added as quick presets:</p>
+<div class="equation equation-copyable" data-latex="\[100,\ 500,\ 1000,\ 1500,\ 2450\ \mathrm{MHz}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[100,\ 500,\ 1000,\ 1500,\ 2450\ \mathrm{MHz}\]" type="button">Copy LaTeX</button>\[100,\ 500,\ 1000,\ 1500,\ 2450\ \mathrm{MHz}\]</div>
+<p>allowing common test frequencies to be selected with a single click.</p>
+<p>Before transmitting a request, the GUI checks that the selected frequency falls inside the implemented synthesizer range and that the channel step and output-power selections are valid. The resulting values are then converted into the corresponding STEP, PWR, and FREQ commands and sent to the STM32.</p>
+<h3 class="text-secondary" id="section-12-3">12.3 RF Output Control</h3>
+<p>The GUI exposes three separate controls affecting the RF hardware.</p>
+<p>RF OUTPUT controls the ADF4351 RF output-enable bit while allowing the PLL itself to remain configured.</p>
+<p>SYNTHESIZER CE controls the hardware chip-enable line and therefore provides a more complete synthesizer disable.</p>
+<p>PDBRF MUTE controls the module&#x27;s RF power-down input.</p>
+<p>Keeping these functions separate was useful during bring-up because it made it possible to distinguish between disabling only the RF output stage and disabling the synthesizer hardware more completely.</p>
+<p>The four programmable ADF4351 output-power settings are also directly selectable:</p>
+<div class="equation equation-copyable" data-latex="\[-4,\ -1,\ +2,\ +5\ \mathrm{dBm}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[-4,\ -1,\ +2,\ +5\ \mathrm{dBm}\]" type="button">Copy LaTeX</button>\[-4,\ -1,\ +2,\ +5\ \mathrm{dBm}\]</div>
+<p>These correspond to the same settings validated experimentally in the previous section.</p>
+<h3 class="text-secondary" id="section-12-4">12.4 Synthesizer Status</h3>
+<p>In addition to controlling the generator, the application displays several internal synthesizer parameters returned by the STM32.</p>
+<p>These include:</p>
+<ul><li>PLL lock state;</li><li>actual calculated output frequency;</li><li>internal VCO frequency;</li><li>channel spacing;</li><li>INT;</li><li>FRAC;</li><li>MOD;</li><li>RF output divider;</li><li>integer-N or fractional-N operating mode.</li></ul>
+<figure class="project-figure"><a href="../assets/img/projects/programmable-rf-lab/figure-12-1.png" target="_blank" rel="noopener"><img src="../assets/img/projects/programmable-rf-lab/figure-12-1.webp" alt="Figure 12.1 - Final ADF4351 signal-generator PC interface showing frequency and power controls, RF enable controls, synthesizer status, PLL lock indication, and command log." width="1920" height="1032" loading="lazy" decoding="async"/></a><figcaption><strong>Figure 12.1</strong> - Final ADF4351 signal-generator PC interface showing frequency and power controls, RF enable controls, synthesizer status, PLL lock indication, and command log.</figcaption></figure>
+<p>Displaying these values makes the GUI useful as more than a simplified control panel. It also exposes the underlying PLL state during experimentation.</p>
+<p>For example, a 1 GHz request can immediately show that the internal VCO is operating at 4 GHz with an output divider of four, while a 2.45 GHz request can operate directly from the VCO without an additional RF divider.</p>
+<h3 class="text-secondary" id="section-12-5">12.5 Automatic Lock Monitoring</h3>
+<p>The hardware lock-detect signal is also incorporated into the application.</p>
+<p>Rather than requiring the user to repeatedly issue the LOCK command manually, the GUI periodically queries the STM32 and updates the lock indicator automatically.</p>
+<p>The current implementation performs this check approximately every 750 ms while the device is connected and the serial interface is otherwise idle.</p>
+<p>The result is an immediate visual indication of whether the synthesizer has successfully settled after a frequency change.</p>
+<p>This proved particularly useful during testing because a valid frequency calculation alone does not guarantee that the physical PLL has locked.</p>
+<h3 class="text-secondary" id="section-12-6">12.6 Debug and Diagnostic Access</h3>
+<p>Although the application is intended to simplify normal operation, the lower-level development tools were deliberately retained.</p>
+<p>The interface therefore provides direct access to:</p>
+<pre class="rf-lab-code"><code>STATUS
+REGISTERS
+HELP</code></pre>
+<p>and includes a command log showing communication between the PC and STM32.</p>
+<p>The register display is particularly useful when debugging because the six generated 32-bit ADF4351 register values can still be inspected without returning to an external serial terminal.</p>
+<p>This preserves much of the visibility that was useful during hardware bring-up while presenting the normal RF controls through a cleaner front end.</p>
+<h3 class="text-secondary" id="section-12-7">12.7 Result</h3>
+<p>The completed software stack now separated the system into three distinct layers:</p>
+<figure class="project-figure rf-lab-diagram"><a href="../assets/img/projects/programmable-rf-lab/diagrams/software-stack.svg" target="_blank" rel="noopener"><img class="rf-lab-diagram-image" src="../assets/img/projects/programmable-rf-lab/diagrams/software-stack.svg" alt="RF generator software stack" width="1200" height="290" loading="lazy" decoding="async"/></a></figure>
+<p>The PC application handles usability and presentation, the STM32 handles synthesizer calculations and hardware control, and the ADF4351 performs the RF generation.</p>
+<p>This architecture also means that improvements to the embedded firmware do not require the PC application to understand the individual ADF4351 register fields.</p>
+<p>Combined with the HSA2307 software developed earlier, the bench now contained two complementary PC-controlled RF instruments:</p>
+<figure class="project-figure rf-lab-diagram"><a href="../assets/img/projects/programmable-rf-lab/diagrams/bench-loop.svg" target="_blank" rel="noopener"><img class="rf-lab-diagram-image" src="../assets/img/projects/programmable-rf-lab/diagrams/bench-loop.svg" alt="Closed-loop RF bench with source, device under test, analyzer, and PC control" width="1200" height="290" loading="lazy" decoding="async"/></a></figure>
+<p>One system could generate a programmable CW stimulus, while the other could acquire and export the resulting spectrum.</p>
+<h2 class="text-secondary text-uppercase" id="section-13">13. Conclusion and Future Work</h2>
+<p>This project began with a relatively simple goal: build a more capable RF bench without the cost of conventional laboratory equipment.</p>
+<p>The result was two complementary PC-controlled instruments built from inexpensive hardware.</p>
+<p>On the measurement side, the HSA2307 investigation progressed well beyond its originally documented PC functionality. USB communication was characterized, hardware debug interfaces were investigated, the instrument firmware was extracted through SWD, and static analysis in Ghidra revealed the undocumented :SPEC:TRAC? command used internally to transfer spectrum data.</p>
+<p>That command was then validated experimentally, its unusual response framing was characterized, the returned 301-point trace was reconstructed into a frequency spectrum, and the raw amplitude values were correlated with the instrument&#x27;s own exported measurements. The recovered functionality was ultimately incorporated into a dedicated Python interface providing remote configuration, spectrum display, markers, and data export.</p>
+<p>On the source side, an inexpensive ADF4351 synthesizer module was combined with an STM32 controller. The firmware calculates the required PLL parameters, constructs the six configuration registers, programs the synthesizer over SPI, and exposes the resulting functionality through the UART CLI originally developed in my first portfolio project.</p>
+<p>That interface was then extended into a PC signal-generator application providing frequency, power, output-enable, and PLL-status control.</p>
+<p>Together, the two systems form a small programmable RF bench:</p>
+<figure class="project-figure rf-lab-diagram"><a href="../assets/img/projects/programmable-rf-lab/diagrams/bench-flow.svg" target="_blank" rel="noopener"><img class="rf-lab-diagram-image" src="../assets/img/projects/programmable-rf-lab/diagrams/bench-flow.svg" alt="Programmable RF bench measurement flow" width="1200" height="290" loading="lazy" decoding="async"/></a></figure>
+<p>The setup is not intended to replace calibrated laboratory equipment. Absolute amplitude accuracy, phase noise, dynamic range, source purity, and other performance characteristics remain dependent on inexpensive RF modules and an entry-level handheld analyzer.</p>
+<p>Its value is instead in making practical RF experimentation significantly more accessible.</p>
+<h3 class="text-secondary" id="section-13-1">13.1 Applying the Setup to Fabricated RF Designs</h3>
+<p>One particularly useful application is the validation of RF circuits that were previously designed and simulated.</p>
+<p>Many of my earlier projects - including filters, couplers, transmission-line structures, and antennas - were developed primarily through circuit and full-wave electromagnetic simulation. Fabricating those designs introduces effects that are difficult to represent perfectly in simulation, including material tolerances, connector transitions, manufacturing variation, soldering, and unintended parasitics.</p>
+<p>The completed RF bench provides a path toward closing that loop.</p>
+<p>For example, a fabricated band-pass filter could be driven with a swept ADF4351 signal while the HSA2307 records the output amplitude. Repeating the measurement across frequency would allow the measured transmission response to be compared directly against ADS, HFSS, or CST predictions.</p>
+<p>Even with the limitations of the hardware, this would allow useful quantities such as center-frequency shift, passband shape, insertion loss, bandwidth, and stopband behavior to be investigated experimentally.</p>
+<p>The project therefore provides more than two standalone instruments. It creates a foundation for adding hardware validation to simulation-based RF design work.</p>
+<h3 class="text-secondary" id="section-13-2">13.2 Future Work - S11 Measurement</h3>
+<p>The most significant missing capability is currently reflection measurement.</p>
+<p>The present source-and-spectrum-analyzer arrangement can measure transmitted signals relatively naturally, making it suitable for approximate \(S_{21}\)-type measurements. It cannot, however, directly separate the incident and reflected waves required to determine:</p>
+<div class="equation equation-copyable" data-latex="\[S_{11}\]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[S_{11}\]" type="button">Copy LaTeX</button>\[S_{11}\]</div>
+<p>Adding this capability would significantly expand the usefulness of the bench, particularly for antenna, filter, matching-network, and transmission-line experiments.</p>
+<p>A future extension could therefore add a directional coupler or RF bridge between the signal generator and the device under test. One coupled path could provide a reference proportional to the incident wave while another measurement path captures the reflected power.</p>
+<p>With automated frequency sweeping, appropriate calibration, and correction for the coupler characteristics, the PC software could then calculate an approximate reflection response across frequency.</p>
+<p>Conceptually:</p>
+<figure class="project-figure rf-lab-diagram"><a href="../assets/img/projects/programmable-rf-lab/diagrams/s11-extension.svg" target="_blank" rel="noopener"><img class="rf-lab-diagram-image" src="../assets/img/projects/programmable-rf-lab/diagrams/s11-extension.svg" alt="Proposed reflection measurement architecture using a directional coupler" width="1200" height="290" loading="lazy" decoding="async"/></a></figure>
+<p>This would move the system toward a basic scalar network-analysis capability.</p>
+<p>It would still not provide the full complex magnitude-and-phase measurement available from a vector network analyzer, but it would enable measurements such as return loss and approximate VSWR and would make practical \(S_{11}\) validation possible.</p>
+<h3 class="text-secondary" id="section-13-3">13.3 Final Result</h3>
+<p>The project ultimately combined several areas that are often treated separately: embedded firmware, digital-interface debugging, firmware reverse engineering, RF synthesizer programming, instrument automation, and practical RF measurement.</p>
+<p>More importantly, it produced a bench that can continue to support future projects.</p>
+<p>Instead of ending with a single measurement demonstration, the setup can now be used to test fabricated versions of simulated RF structures, automate frequency sweeps, export measurement data for comparison with simulation, and eventually expand into reflection measurements.</p>
+<p>For a relatively low-cost collection of hardware, that makes it a useful platform for continuing the transition from simulated RF design toward design, fabrication, measurement, and validation.</p>
+<div class="project-actions"><a class="btn btn-primary" href="../index.html#portfolio">Back to Portfolio</a></div>
+</div></div></div></main>
+<footer class="footer text-center"><div class="container"><div class="row justify-content-center"><div class="col-lg-4 mb-5 mb-lg-0"><h4 class="text-uppercase mb-4">Socials</h4><a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank" aria-label="Facebook profile"><span class="social-glyph" aria-hidden="true">f</span></a><a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank" aria-label="LinkedIn profile"><span class="social-glyph social-glyph-in" aria-hidden="true">in</span></a><a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com" aria-label="Email Yaniv Lieberman"><span class="social-glyph" aria-hidden="true">@</span></a></div></div></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script><script src="../js/scripts.js"></script>
+</body></html>
