@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+<meta name="description" content="A 3 GHz phased patch-array study covering broadside gain, beam steering, mutual coupling, grating lobes, active impedance, and a 2×2 planar array."/>
+<meta name="author" content="Yaniv Lieberman"/><title>Phased Patch Antenna Array | Yaniv Lieberman</title>
+<link href="../assets/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="../css/styles.css" rel="stylesheet"/>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},chtml:{scale:1}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head><body id="page-top">
+<nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav"><div class="container"><a class="navbar-brand" href="../index.html#page-top">YANIV LIEBERMAN</a><button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" data-bs-target="#navbarResponsive" data-bs-toggle="collapse" type="button">Menu <span class="menu-bars" aria-hidden="true"></span></button><div class="collapse navbar-collapse" id="navbarResponsive"><ul class="navbar-nav ms-auto"><li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#about">About</a></li><li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#portfolio">Portfolio</a></li><li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="../index.html#contact">Contact</a></li></ul></div></div></nav>
+<header class="project-masthead bg-primary text-white text-center"><div class="container d-flex align-items-center flex-column"><p class="project-kicker text-uppercase mb-3">Phased Arrays · HFSS · 3 GHz</p><h1 class="project-heading text-uppercase mb-0">Phased Patch Antenna Array</h1><div class="divider-custom divider-light"><div class="divider-custom-line"></div><div class="divider-custom-icon"><span class="divider-mark" aria-hidden="true"></span></div><div class="divider-custom-line"></div></div><p class="project-subheading font-weight-light mb-0">From a validated 3 GHz patch to linear and planar arrays: beam steering, mutual coupling, active matching, and scan limits.</p></div></header>
+<main class="page-section project-page"><div class="container"><div class="row justify-content-center"><div class="col-lg-9">
+<a href="../assets/img/projects/phased-patch-antenna-array/figure-9-1.png" target="_blank" rel="noopener"><img class="project-hero-image project-hero-image-contain project-hero-image-light mb-4" src="../assets/img/projects/phased-patch-antenna-array/hero-preview.webp" alt="HFSS model of the four-element 2×2 planar patch array" width="900" height="487" loading="eager" decoding="async" fetchpriority="high"/></a>
+<p class="project-date"><time datetime="2026-10-15">October 15, 2026</time></p>
+<div class="project-summary-grid"><div class="project-summary-card"><span class="project-summary-label">1×2 broadside</span><strong>8.63 dBi</strong><span>46.5° array-plane half-power beamwidth</span></div><div class="project-summary-card"><span class="project-summary-label">2×2 broadside</span><strong>10.11 dBi</strong><span>52.3° × 50.4° principal-plane beamwidths</span></div><div class="project-summary-card"><span class="project-summary-label">Beam steering</span><strong>±19° achieved</strong><span>For ±30° commands; scan loss below 0.62 dB</span></div><div class="project-summary-card"><span class="project-summary-label">Active match</span><strong>13.57 dB</strong><span>Worst-port return loss at broadside, 3 GHz</span></div></div>
+<div class="project-toc"><h3 class="mt-0 text-secondary text-uppercase">Project Sections</h3><ol class="mb-0"><li><a href="#section-1">1. Introduction and Objectives</a></li><li><a href="#section-2">2. Reference Antenna Element</a></li><li><a href="#section-3">3. Array Theory and Design Parameters</a></li><li><a href="#section-4">4. Broadside Array Baseline</a></li><li><a href="#section-5">5. Element Spacing and Mutual Coupling</a></li><li><a href="#section-6">6. Progressive Phase and Beam Steering</a></li><li><a href="#section-7">7. Grating Lobes and Scan-Angle Limits</a></li><li><a href="#section-8">8. Active Input Matching During Beam Steering</a></li><li><a href="#section-9">9. Extension to a 2×2 Planar Array</a></li><li><a href="#section-10">10. Practical Implementation Considerations and Limitations</a></li><li><a href="#section-11">11. Conclusion</a></li></ol></div>
+<p>This study builds on the <a href="rectangular-patch-antenna.html">rectangular patch antenna</a> and <a href="antenna-integration.html">antenna integration</a> projects. All results below are full-wave simulations; the physical feed network and measurement validation remain future work.</p>
+<h2 class="text-secondary text-uppercase" id="section-1">1. Introduction and Objectives</h2>
+<p>The previous projects developed a rectangular microstrip patch antenna operating at approximately 3 GHz and subsequently examined how its performance changed when realistic features such as a finite ground plane, coaxial feed, mechanical connector, and nearby dielectric structures were introduced. Those studies focused primarily on the behavior of a single radiating element. The present project extends that validated antenna into a small phased array and investigates the additional capabilities and limitations introduced when multiple elements operate together.</p>
+<h3 class="text-secondary" id="section-1-1">1.1 Motivation for an Antenna Array</h3>
+<p>The radiation pattern of a single patch antenna is primarily determined by its geometry and installation environment. Once fabricated, its main beam generally remains fixed, while its achievable directivity and beamwidth are limited by the antenna’s physical aperture.</p>
+<p>An antenna array combines the fields radiated by multiple elements. When the elements are excited coherently, constructive interference reinforces radiation in selected directions, while destructive interference reduces radiation in others. Increasing the effective aperture in this manner can produce a narrower beam and greater directivity than can be obtained from a single element of the same type.</p>
+<p>The relative phase applied to each element also provides control over the direction of maximum radiation. By changing these excitation phases, the main beam can be steered electronically without physically rotating the antenna. Larger arrays can additionally use amplitude and phase control to shape the radiation pattern, adjust sidelobe levels, and place nulls in selected directions.</p>
+<p>These benefits are accompanied by several practical limitations. Closely spaced elements interact through mutual coupling, causing the current distribution and input impedance of each element to depend on the excitation of the other elements. Beam steering can also reduce realized gain, distort the pattern, and change the active impedance presented at the antenna ports. Conversely, excessive element spacing can produce grating lobes, additional strong radiation beams that limit the array’s usable scanning range.</p>
+<p>The behavior of an array therefore represents a compromise between aperture size, mutual coupling, beamwidth, scan range, impedance stability, and grating-lobe suppression.</p>
+<h3 class="text-secondary" id="section-1-2">1.2 Project Objectives</h3>
+<p>The objective of this project is to develop practical phased-array experience by extending the previously validated 3 GHz rectangular patch into linear and planar arrays.</p>
+<p>A two-element linear array was first used as a controlled platform for studying the fundamental relationships between element spacing, excitation phase, mutual coupling, and radiation-pattern formation. Its simulated full-wave behavior was compared with predictions obtained from analytical array-factor theory and pattern multiplication.</p>
+<p>The investigation then examined how progressive excitation phase steers the main beam and how element spacing affects coupling, beamwidth, realized gain, and the formation of grating lobes. The multiport S-parameters were also used to evaluate active reflection coefficient and scan-dependent input behavior.</p>
+<p>Finally, the linear array was extended into a 2×2 planar configuration to evaluate broadside gain, principal-plane beamwidth, and the additional coupling paths of a planar arrangement. Two-dimensional electronic steering remains a possible extension.</p>
+<p>The principal objectives are therefore to:</p>
+<ul>
+<li>Construct and validate a 1×2 array using the existing patch element.</li>
+<li>Compare analytical array predictions with full-wave HFSS results.</li>
+<li>Quantify the effect of element spacing on mutual coupling and radiation performance.</li>
+<li>Apply progressive phase excitation to demonstrate electronic beam steering.</li>
+<li>Identify the onset of grating lobes as spacing and scan angle increase.</li>
+<li>Evaluate scan angle, beamwidth, realized gain, and active input behavior.</li>
+<li>Extend the final linear-array design into a 2×2 planar array.</li>
+</ul>
+<h3 class="text-secondary" id="section-1-3">1.3 Scope and Methodology</h3>
+<p>The project used the corrected 3 GHz patch antenna from the preceding integration study as its reference element. The 1×2 array served as the primary analytical and parametric model, beginning with a nominal center-to-center spacing of \(0.5\lambda_0\). This spacing provides a conventional starting point that generally offers a useful compromise between mutual coupling and grating-lobe suppression.</p>
+<p>Each antenna element was represented by an independent port in HFSS. Equal-amplitude excitations with controlled relative phase were applied directly to these ports, allowing the electromagnetic behavior of the radiating array to be isolated from the design of a physical power-divider or phase-shifter network.</p>
+<p>Directivity, gain, and realized gain are normalized to radiated, accepted, and incident power, respectively. Array comparisons therefore use these normalized quantities rather than unnormalized radiated field strength. In the two-port baseline, each port received 1 W of incident power; the gain increase is not simply a consequence of doubling the supplied power.</p>
+<p>The study focused on the radiating aperture and its electromagnetic interactions. The detailed design of a corporate feed network, RF phase shifters, control electronics, and calibration system is outside the present scope. These components represent possible extensions once the underlying array behavior has been established.</p>
+<h2 class="text-secondary text-uppercase" id="section-2">2. Reference Antenna Element</h2>
+<p>The array developed in this project is based on the corrected 3 GHz inset-fed rectangular patch antenna established in the preceding antenna-integration study. Reusing a previously validated element provides a known electromagnetic baseline, allowing changes in impedance and radiation behavior to be attributed primarily to array spacing, mutual coupling, and phased excitation rather than to uncertainty in the individual antenna design.</p>
+<p>The corrected ideal-feed configuration is used instead of the later connector- and radome-integrated models. This retains the finite PCB geometry and final tuned patch dimensions while excluding the additional asymmetry and detuning introduced by the SMA launch and surrounding mechanical structures. Each array element can therefore be excited through an identical idealized port.</p>
+<h3 class="text-secondary" id="section-2-1">2.1 Reference Geometry</h3>
+<p>The antenna is implemented on Rogers RO4350B with a relative permittivity of</p>
+<div class="equation equation-copyable" data-latex="\[ \epsilon_r=3.48 \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \epsilon_r=3.48 \]" type="button">Copy LaTeX</button>\[ \epsilon_r=3.48 \]</div>
+<p>and a substrate thickness of</p>
+<div class="equation equation-copyable" data-latex="\[ h=1.52\ \mathrm{mm}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ h=1.52\ \mathrm{mm}. \]" type="button">Copy LaTeX</button>\[ h=1.52\ \mathrm{mm}. \]</div>
+<p>A copper thickness of \(0.035\ \mathrm{mm}\) is used for the patch, feed line, and ground plane.</p>
+<p>The final patch width and length are:</p>
+<div class="equation equation-copyable" data-latex="\[ W_p=33.40\ \mathrm{mm}, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ W_p=33.40\ \mathrm{mm}, \]" type="button">Copy LaTeX</button>\[ W_p=33.40\ \mathrm{mm}, \]</div>
+<div class="equation equation-copyable" data-latex="\[ L_p=25.21\ \mathrm{mm}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ L_p=25.21\ \mathrm{mm}. \]" type="button">Copy LaTeX</button>\[ L_p=25.21\ \mathrm{mm}. \]</div>
+<p>The patch is excited using a \(3.48\ \mathrm{mm}\)-wide microstrip line designed to provide an approximately \(50\ \Omega\) feed. Impedance matching is achieved using an inset depth of \(9.50\ \mathrm{mm}\), with a \(0.50\ \mathrm{mm}\) gap between the feed line and the adjacent patch conductor.</p>
+<p>The reference PCB uses a longitudinal ground-plane margin of \(M_{\mathrm{right}}=10\ \mathrm{mm}\) beyond the radiating edge and a lateral margin of \(M_y=10\ \mathrm{mm}\) on either side of the patch. The finite substrate and ground plane are retained as part of each array element because the preceding study demonstrated that the ground dimensions influence bandwidth, current distribution, and radiation behavior.</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Parameter</th><th scope="col">Reference value</th></tr>
+</thead>
+<tbody>
+<tr><td>Substrate</td><td>Rogers RO4350B</td></tr>
+
+<tr><td>Relative permittivity, \(\epsilon_r\)</td><td>3.48</td></tr>
+
+<tr><td>Substrate thickness, \(h\)</td><td>1.52 mm</td></tr>
+
+<tr><td>Copper thickness, \(t\)</td><td>0.035 mm</td></tr>
+
+<tr><td>Patch width, \(W_p\)</td><td>33.40 mm</td></tr>
+
+<tr><td>Patch length, \(L_p\)</td><td>25.21 mm</td></tr>
+
+<tr><td>Feed width, \(W_f\)</td><td>3.48 mm</td></tr>
+
+<tr><td>Inset depth, \(L_{\mathrm{inset}}\)</td><td>9.50 mm</td></tr>
+
+<tr><td>Inset gap, \(g\)</td><td>0.50 mm</td></tr>
+
+<tr><td>Longitudinal margin, \(M_{\mathrm{right}}\)</td><td>10 mm</td></tr>
+
+<tr><td>Lateral margin, \(M_y\)</td><td>10 mm</td></tr>
+</tbody></table></div>
+<figure class="project-figure" id="figure-2-1"><a href="../assets/img/projects/antenna-integration/figure-2-1.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/antenna-integration/figure-2-1.webp"/><img src="../assets/img/projects/antenna-integration/figure-2-1.png" alt="Corrected 3 GHz inset-fed patch geometry used as the reference element for the array." width="714" height="460" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 2.1.</strong> Corrected 3 GHz inset-fed patch geometry used as the reference element for the array.</figcaption></figure>
+<h3 class="text-secondary" id="section-2-2">2.2 Reference Input Performance</h3>
+<p>The patch length was previously reduced from \(25.50\ \mathrm{mm}\) to \(25.21\ \mathrm{mm}\) after a higher-accuracy adaptive solution showed that the original geometry resonated slightly below 3 GHz. The feed width and inset geometry did not require further modification.</p>
+<p>The corrected antenna exhibits a minimum reflection coefficient of</p>
+<div class="equation equation-copyable" data-latex="\[ S_{11,\min}=-33.71\ \mathrm{dB} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ S_{11,\min}=-33.71\ \mathrm{dB} \]" type="button">Copy LaTeX</button>\[ S_{11,\min}=-33.71\ \mathrm{dB} \]</div>
+<p>at a resonant frequency of</p>
+<div class="equation equation-copyable" data-latex="\[ f_r=3.005\ \mathrm{GHz}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ f_r=3.005\ \mathrm{GHz}. \]" type="button">Copy LaTeX</button>\[ f_r=3.005\ \mathrm{GHz}. \]</div>
+<p>At the nominal operating frequency of 3 GHz, the reflection coefficient remains strongly matched:</p>
+<div class="equation equation-copyable" data-latex="\[ S_{11}(3\ \mathrm{GHz})\approx-23.44\ \mathrm{dB}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ S_{11}(3\ \mathrm{GHz})\approx-23.44\ \mathrm{dB}. \]" type="button">Copy LaTeX</button>\[ S_{11}(3\ \mathrm{GHz})\approx-23.44\ \mathrm{dB}. \]</div>
+<p>The reported −10 dB impedance bandwidth is approximately 56.7 MHz:</p>
+<div class="equation equation-copyable" data-latex="\[ BW_{-10\mathrm{dB}}\approx56.7\ \mathrm{MHz}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ BW_{-10\mathrm{dB}}\approx56.7\ \mathrm{MHz}. \]" type="button">Copy LaTeX</button>\[ BW_{-10\mathrm{dB}}\approx56.7\ \mathrm{MHz}. \]</div>
+<p>The corresponding fractional bandwidth is:</p>
+<div class="equation equation-copyable" data-latex="\[ FBW = \frac{56.7\ \mathrm{MHz}}{3.0\ \mathrm{GHz}} \times100 \approx1.89\%. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ FBW = \frac{56.7\ \mathrm{MHz}}{3.0\ \mathrm{GHz}} \times100 \approx1.89\%. \]" type="button">Copy LaTeX</button>\[ FBW = \frac{56.7\ \mathrm{MHz}}{3.0\ \mathrm{GHz}} \times100 \approx1.89\%. \]</div>
+<p>The 5 MHz difference between the resonant and nominal frequencies corresponds to approximately \(0.17\%\) of the operating frequency and is sufficiently small for the antenna to serve as the 3 GHz array element without further retuning.</p>
+<figure class="project-figure" id="figure-2-2"><a href="../assets/img/projects/antenna-integration/figure-2-2.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/antenna-integration/figure-2-2.webp"/><img src="../assets/img/projects/antenna-integration/figure-2-2.png" alt="Reflection coefficient of the corrected reference element, showing resonance near 3 GHz and a \(-10\ \mathrm{dB}\) bandwidth of approximately 56.7 MHz." width="1534" height="468" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 2.2.</strong> Reflection coefficient of the corrected reference element, showing resonance near 3 GHz and a \(-10\ \mathrm{dB}\) bandwidth of approximately 56.7 MHz.</figcaption></figure>
+<h3 class="text-secondary" id="section-2-3">2.3 Reference Radiation Performance</h3>
+<p>At 3 GHz, the antenna produces the expected broadside radiation pattern of the dominant rectangular-patch mode. The main beam is directed approximately normal to the patch surface along the positive \(z\)-axis.</p>
+<p>The simulated peak directivity is</p>
+<div class="equation equation-copyable" data-latex="\[ D_{\max}=7.07\ \mathrm{dBi}, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ D_{\max}=7.07\ \mathrm{dBi}, \]" type="button">Copy LaTeX</button>\[ D_{\max}=7.07\ \mathrm{dBi}, \]</div>
+<p>while the peak realized gain is</p>
+<div class="equation equation-copyable" data-latex="\[ G_{\mathrm{realized,max}}=6.29\ \mathrm{dBi}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ G_{\mathrm{realized,max}}=6.29\ \mathrm{dBi}. \]" type="button">Copy LaTeX</button>\[ G_{\mathrm{realized,max}}=6.29\ \mathrm{dBi}. \]</div>
+<p>The corresponding radiation and total efficiencies are:</p>
+<div class="equation equation-copyable" data-latex="\[ \eta_{\mathrm{rad}}=83.96\%, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \eta_{\mathrm{rad}}=83.96\%, \]" type="button">Copy LaTeX</button>\[ \eta_{\mathrm{rad}}=83.96\%, \]</div>
+<div class="equation equation-copyable" data-latex="\[ \eta_{\mathrm{total}}=83.58\%. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \eta_{\mathrm{total}}=83.58\%. \]" type="button">Copy LaTeX</button>\[ \eta_{\mathrm{total}}=83.58\%. \]</div>
+<p>The small difference between radiation and total efficiency is consistent with the strong impedance match at 3 GHz. The difference between directivity and realized gain primarily represents dielectric, conductor, and residual mismatch losses.</p>
+<figure class="project-figure" id="figure-2-3"><a href="../assets/img/projects/antenna-integration/figure-2-3.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/antenna-integration/figure-2-3.webp"/><img src="../assets/img/projects/antenna-integration/figure-2-3.png" alt="Three-dimensional realized-gain pattern of the corrected reference antenna at 3 GHz, showing the broadside main beam along the positive \(z\)-axis." width="427" height="300" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 2.3.</strong> Three-dimensional realized-gain pattern of the corrected reference antenna at 3 GHz, showing the broadside main beam along the positive \(z\)-axis.</figcaption></figure>
+<h3 class="text-secondary" id="section-2-4">2.4 Reference Performance Summary</h3>
+<p>The principal characteristics of the isolated array element are summarized below.</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Performance metric</th><th scope="col">Reference value</th></tr>
+</thead>
+<tbody>
+<tr><td>Resonant frequency</td><td>3.005 GHz</td></tr>
+
+<tr><td>Minimum \(S_{11}\)</td><td>\(-33.71\ \mathrm{dB}\)</td></tr>
+
+<tr><td>\(S_{11}\) at 3 GHz</td><td>\(-23.44\ \mathrm{dB}\)</td></tr>
+
+<tr><td>\(-10\ \mathrm{dB}\) bandwidth</td><td>56.7 MHz</td></tr>
+
+<tr><td>Fractional bandwidth</td><td>1.89%</td></tr>
+
+<tr><td>Peak directivity</td><td>7.07 dBi</td></tr>
+
+<tr><td>Peak realized gain</td><td>6.29 dBi</td></tr>
+
+<tr><td>Radiation efficiency</td><td>83.96%</td></tr>
+
+<tr><td>Total efficiency</td><td>83.58%</td></tr>
+
+<tr><td>Main-beam direction</td><td>Broadside, \(+z\)</td></tr>
+</tbody></table></div>
+<p>These results define the single-element reference against which the 1×2 and 2×2 arrays are evaluated. Subsequent changes in resonance, input match, realized gain, beamwidth, and radiation direction can therefore be measured relative to an established and validated baseline.</p>
+<h2 class="text-secondary text-uppercase" id="section-3">3. Array Theory and Design Parameters</h2>
+<p>The radiation pattern of an antenna array is determined by both the characteristics of the individual radiating element and the relative positions and excitations of all elements in the array. The validated rectangular patch establishes the element pattern, while the array geometry and port excitations determine how the fields from the individual patches combine in space.</p>
+<p>This section establishes the analytical relationships used to predict the array behavior before constructing the corresponding full-wave HFSS model.</p>
+<h3 class="text-secondary" id="section-3-1">3.1 Element Pattern and Array Factor</h3>
+<p>Under the pattern-multiplication approximation, the total field radiated by an array of identical elements can be expressed as:</p>
+<div class="equation equation-copyable" data-latex="\[ E_{\mathrm{array}}(\theta,\phi) \approx E_{\mathrm{element}}(\theta,\phi) AF(\theta,\phi), \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ E_{\mathrm{array}}(\theta,\phi) \approx E_{\mathrm{element}}(\theta,\phi) AF(\theta,\phi), \]" type="button">Copy LaTeX</button>\[ E_{\mathrm{array}}(\theta,\phi) \approx E_{\mathrm{element}}(\theta,\phi) AF(\theta,\phi), \]</div>
+<p>where \(E_{\mathrm{element}}\) is the radiation pattern of a single isolated element and \(AF\) is the array factor.</p>
+<p>The element pattern describes the angular radiation envelope imposed by the rectangular patch. The array factor describes the interference produced by the relative positions, amplitudes, and phases of the elements. It therefore controls the direction of the main beam, the locations of nulls, the beamwidth, and the appearance of secondary or grating lobes.</p>
+<p>Pattern multiplication assumes that every element retains the same radiation pattern it would have in isolation. In a practical array, mutual coupling and the finite shared ground plane alter the current distribution and embedded pattern of each element. The analytical result should therefore be treated as a first-order prediction that is compared with the full-wave HFSS solution.</p>
+<h3 class="text-secondary" id="section-3-2">3.2 Two-Element Linear Array</h3>
+<p>The first array investigated in this project consists of two identical patches positioned along the \(y\)-axis with a center-to-center separation \(d\). The two ports are excited with equal amplitudes and a relative phase \(\beta\).</p>
+<p>For this configuration, the array factor in the \(y\)-\(z\) plane is:</p>
+<div class="equation equation-copyable" data-latex="\[ AF(\theta) = 1+e^{j\left(kd\sin\theta+\beta\right)}, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ AF(\theta) = 1+e^{j\left(kd\sin\theta+\beta\right)}, \]" type="button">Copy LaTeX</button>\[ AF(\theta) = 1+e^{j\left(kd\sin\theta+\beta\right)}, \]</div>
+<p>where:</p>
+<div class="equation equation-copyable" data-latex="\[ k=\frac{2\pi}{\lambda_0}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ k=\frac{2\pi}{\lambda_0}. \]" type="button">Copy LaTeX</button>\[ k=\frac{2\pi}{\lambda_0}. \]</div>
+<p>The array factor can also be written as:</p>
+<div class="equation equation-copyable" data-latex="\[ AF(\theta) = 2e^{j\psi/2} \cos\left(\frac{\psi}{2}\right), \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ AF(\theta) = 2e^{j\psi/2} \cos\left(\frac{\psi}{2}\right), \]" type="button">Copy LaTeX</button>\[ AF(\theta) = 2e^{j\psi/2} \cos\left(\frac{\psi}{2}\right), \]</div>
+<p>where:</p>
+<div class="equation equation-copyable" data-latex="\[ \psi=kd\sin\theta+\beta. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \psi=kd\sin\theta+\beta. \]" type="button">Copy LaTeX</button>\[ \psi=kd\sin\theta+\beta. \]</div>
+<p>Because the exponential term affects phase but not magnitude, the normalized array-factor magnitude is:</p>
+<div class="equation equation-copyable" data-latex="\[ \left|AF_{\mathrm{norm}}(\theta)\right| = \left| \cos\left( \frac{kd\sin\theta+\beta}{2} \right) \right|. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \left|AF_{\mathrm{norm}}(\theta)\right| = \left| \cos\left( \frac{kd\sin\theta+\beta}{2} \right) \right|. \]" type="button">Copy LaTeX</button>\[ \left|AF_{\mathrm{norm}}(\theta)\right| = \left| \cos\left( \frac{kd\sin\theta+\beta}{2} \right) \right|. \]</div>
+<p>For equal-phase excitation, \(\beta=0^\circ\), the contributions from both elements add constructively at broadside:</p>
+<div class="equation equation-copyable" data-latex="\[ \theta_0=0^\circ. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \theta_0=0^\circ. \]" type="button">Copy LaTeX</button>\[ \theta_0=0^\circ. \]</div>
+<p>At the nominal spacing \(d=0.5\lambda_0\), the broadside two-element array factor becomes:</p>
+<div class="equation equation-copyable" data-latex="\[ \left|AF_{\mathrm{norm}}(\theta)\right| = \left| \cos\left( \frac{\pi}{2}\sin\theta \right) \right|. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \left|AF_{\mathrm{norm}}(\theta)\right| = \left| \cos\left( \frac{\pi}{2}\sin\theta \right) \right|. \]" type="button">Copy LaTeX</button>\[ \left|AF_{\mathrm{norm}}(\theta)\right| = \left| \cos\left( \frac{\pi}{2}\sin\theta \right) \right|. \]</div>
+<p>The ideal array-factor half-power points occur at approximately \(\theta=\pm30^\circ\), giving an array-factor HPBW of approximately:</p>
+<div class="equation equation-copyable" data-latex="\[ HPBW_{\mathrm{AF}}\approx60^\circ. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ HPBW_{\mathrm{AF}}\approx60^\circ. \]" type="button">Copy LaTeX</button>\[ HPBW_{\mathrm{AF}}\approx60^\circ. \]</div>
+<p>The actual HFSS beamwidth is expected to differ because the total pattern also includes the patch element pattern, finite ground plane, and mutual coupling.</p>
+<h3 class="text-secondary" id="section-3-3">3.3 Directivity and Beamwidth Advantage</h3>
+<p>A single patch has a fixed physical aperture and correspondingly limited directivity. Combining multiple elements increases the effective aperture of the radiating system and concentrates more of the radiated power into the main beam.</p>
+<p>For an ideal array of \(N\) identical, uniformly excited elements, the approximate maximum directivity increase is:</p>
+<div class="equation equation-copyable" data-latex="\[ D_{\mathrm{array}} \approx N D_{\mathrm{element}}, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ D_{\mathrm{array}} \approx N D_{\mathrm{element}}, \]" type="button">Copy LaTeX</button>\[ D_{\mathrm{array}} \approx N D_{\mathrm{element}}, \]</div>
+<p>where the directivities are expressed in linear units. In decibels, the ideal improvement is:</p>
+<div class="equation equation-copyable" data-latex="\[ \Delta D \approx 10\log_{10}(N). \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \Delta D \approx 10\log_{10}(N). \]" type="button">Copy LaTeX</button>\[ \Delta D \approx 10\log_{10}(N). \]</div>
+<p>The theoretical improvements for the arrays used in this project are therefore:</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Configuration</th><th scope="col">Number of elements</th><th scope="col">Ideal directivity increase</th></tr>
+</thead>
+<tbody>
+<tr><td>Single patch</td><td>1</td><td>0 dB</td></tr>
+
+<tr><td>1×2 array</td><td>2</td><td>3.01 dB</td></tr>
+
+<tr><td>2×2 array</td><td>4</td><td>6.02 dB</td></tr>
+</tbody></table></div>
+<p>Using the reference-element directivity of \(7.07\ \mathrm{dBi}\), ideal first-order estimates are:</p>
+<div class="equation equation-copyable" data-latex="\[ D_{\mathrm{1\times2}} \approx 7.07+3.01 = 10.08\ \mathrm{dBi}, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ D_{\mathrm{1\times2}} \approx 7.07+3.01 = 10.08\ \mathrm{dBi}, \]" type="button">Copy LaTeX</button>\[ D_{\mathrm{1\times2}} \approx 7.07+3.01 = 10.08\ \mathrm{dBi}, \]</div>
+<div class="equation equation-copyable" data-latex="\[ D_{\mathrm{2\times2}} \approx 7.07+6.02 = 13.09\ \mathrm{dBi}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ D_{\mathrm{2\times2}} \approx 7.07+6.02 = 13.09\ \mathrm{dBi}. \]" type="button">Copy LaTeX</button>\[ D_{\mathrm{2\times2}} \approx 7.07+6.02 = 13.09\ \mathrm{dBi}. \]</div>
+<p>These values represent ideal estimates rather than guaranteed HFSS results. Finite array size, coupling, element-pattern changes, dielectric and conductor losses, edge effects, and scan-dependent mismatch can reduce the realized improvement.</p>
+<p>The 1×2 array is expected to narrow the beam primarily in the \(y\)-\(z\) array plane. Its beamwidth in the orthogonal plane should remain closer to that of the single patch. The 2×2 array should narrow the beam in both principal planes.</p>
+<h3 class="text-secondary" id="section-3-4">3.4 Progressive Phase and Beam Steering</h3>
+<p>The main beam occurs approximately where the fields from adjacent elements are in phase. For the linear array, this condition is:</p>
+<div class="equation equation-copyable" data-latex="\[ kd\sin\theta_0+\beta=0. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ kd\sin\theta_0+\beta=0. \]" type="button">Copy LaTeX</button>\[ kd\sin\theta_0+\beta=0. \]</div>
+<p>The expected scan angle is therefore:</p>
+<div class="equation equation-copyable" data-latex="\[ \theta_0 = \sin^{-1} \left( -\frac{\beta}{kd} \right). \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \theta_0 = \sin^{-1} \left( -\frac{\beta}{kd} \right). \]" type="button">Copy LaTeX</button>\[ \theta_0 = \sin^{-1} \left( -\frac{\beta}{kd} \right). \]</div>
+<p>Alternatively, the progressive phase required to steer the beam toward a selected angle is:</p>
+<div class="equation equation-copyable" data-latex="\[ \beta = -kd\sin\theta_0. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \beta = -kd\sin\theta_0. \]" type="button">Copy LaTeX</button>\[ \beta = -kd\sin\theta_0. \]</div>
+<p>For the nominal spacing \(d=0.5\lambda_0\):</p>
+<div class="equation equation-copyable" data-latex="\[ kd=\pi, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ kd=\pi, \]" type="button">Copy LaTeX</button>\[ kd=\pi, \]</div>
+<p>and therefore:</p>
+<div class="equation equation-copyable" data-latex="\[ \beta=-\pi\sin\theta_0. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \beta=-\pi\sin\theta_0. \]" type="button">Copy LaTeX</button>\[ \beta=-\pi\sin\theta_0. \]</div>
+<p>The expected scan angles for the planned phase excitations are:</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Progressive phase, \(\beta\)</th><th scope="col">Predicted beam angle, \(\theta_0\)</th></tr>
+</thead>
+<tbody>
+<tr><td>\(+135^\circ\)</td><td>\(-48.6^\circ\)</td></tr>
+
+<tr><td>\(+90^\circ\)</td><td>\(-30.0^\circ\)</td></tr>
+
+<tr><td>\(+45^\circ\)</td><td>\(-14.5^\circ\)</td></tr>
+
+<tr><td>\(0^\circ\)</td><td>\(0^\circ\)</td></tr>
+
+<tr><td>\(-45^\circ\)</td><td>\(+14.5^\circ\)</td></tr>
+
+<tr><td>\(-90^\circ\)</td><td>\(+30.0^\circ\)</td></tr>
+
+<tr><td>\(-135^\circ\)</td><td>\(+48.6^\circ\)</td></tr>
+</tbody></table></div>
+<p>The HFSS beam angles are compared with these analytical values. Differences can result from mutual coupling, changes in the embedded element patterns, finite-ground effects, and the reduced contribution of the patch element pattern at large scan angles.</p>
+<h3 class="text-secondary" id="section-3-5">3.5 Element Spacing and Grating Lobes</h3>
+<p>Element spacing influences both the physical aperture and the interaction between adjacent antennas. Small spacing generally produces stronger mutual coupling, while increasing the spacing enlarges the aperture and can narrow the main beam.</p>
+<p>However, if the spacing becomes too large, more than one direction can satisfy the constructive-interference condition. The resulting additional maxima are known as grating lobes.</p>
+<p>For a uniformly spaced linear array, radiation maxima satisfy:</p>
+<div class="equation equation-copyable" data-latex="\[ kd\left(\sin\theta-\sin\theta_0\right) = 2\pi m, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ kd\left(\sin\theta-\sin\theta_0\right) = 2\pi m, \]" type="button">Copy LaTeX</button>\[ kd\left(\sin\theta-\sin\theta_0\right) = 2\pi m, \]</div>
+<p>where \(m\) is an integer. A grating lobe enters visible space when a solution other than the intended main beam satisfies:</p>
+<div class="equation equation-copyable" data-latex="\[ -1\leq\sin\theta\leq1. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ -1\leq\sin\theta\leq1. \]" type="button">Copy LaTeX</button>\[ -1\leq\sin\theta\leq1. \]</div>
+<p>A commonly used spacing limit for avoiding grating lobes while steering to \(\theta_0\) is:</p>
+<div class="equation equation-copyable" data-latex="\[ \frac{d}{\lambda_0} &lt; \frac{1}{1+\left|\sin\theta_0\right|}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \frac{d}{\lambda_0} &lt; \frac{1}{1+\left|\sin\theta_0\right|}. \]" type="button">Copy LaTeX</button>\[ \frac{d}{\lambda_0} &lt; \frac{1}{1+\left|\sin\theta_0\right|}. \]</div>
+<p>The resulting theoretical limits are:</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Intended scan angle</th><th scope="col">Maximum spacing without a visible grating lobe</th></tr>
+</thead>
+<tbody>
+<tr><td>\(0^\circ\)</td><td>\(1.000\lambda_0\)</td></tr>
+
+<tr><td>\(15^\circ\)</td><td>\(0.794\lambda_0\)</td></tr>
+
+<tr><td>\(30^\circ\)</td><td>\(0.667\lambda_0\)</td></tr>
+
+<tr><td>\(45^\circ\)</td><td>\(0.586\lambda_0\)</td></tr>
+
+<tr><td>\(60^\circ\)</td><td>\(0.536\lambda_0\)</td></tr>
+
+<tr><td>\(90^\circ\)</td><td>\(0.500\lambda_0\)</td></tr>
+</tbody></table></div>
+<p>The nominal \(0.5\lambda_0\) spacing therefore provides the largest theoretical scan range without a distinct visible-space grating lobe. Wider spacings may produce a narrower broadside beam but progressively reduce the usable scan range.</p>
+<h3 class="text-secondary" id="section-3-6">3.6 Mutual Coupling</h3>
+<p>The analytical array factor assumes independent elements, but the electromagnetic field produced by one patch can induce currents on the other patch. This interaction is described as mutual coupling.</p>
+<p>For the two-element array, coupling is primarily quantified using:</p>
+<div class="equation equation-copyable" data-latex="\[ S_{21}=S_{12}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ S_{21}=S_{12}. \]" type="button">Copy LaTeX</button>\[ S_{21}=S_{12}. \]</div>
+<p>A lower value of \(\left|S_{21}\right|\) indicates greater isolation between the elements. Coupling is generally expected to become stronger as the elements are moved closer together, although substrate modes, ground-plane currents, and field cancellation can produce more complex behavior than a simple monotonic relationship.</p>
+<p>Mutual coupling can affect:</p>
+<ul>
+<li>Resonant frequency.</li>
+<li>Input impedance.</li>
+<li>Impedance bandwidth.</li>
+<li>Surface-current distribution.</li>
+<li>Embedded element pattern.</li>
+<li>Beam direction and symmetry.</li>
+<li>Realized gain and scan performance.</li>
+</ul>
+<p>The spacing sweep therefore evaluates both radiation-pattern behavior and multiport S-parameters.</p>
+<h3 class="text-secondary" id="section-3-7">3.7 Active Reflection Coefficient and Active Impedance</h3>
+<p>The conventional \(S_{11}\) of one array element is calculated while the other port is terminated in the reference impedance. During actual array operation, however, both elements are excited simultaneously. The signal coupled from one element into the other therefore combines with the incident excitation and changes the effective input match.</p>
+<p>For equal-amplitude excitation, with Port 2 having a relative phase \(\beta\), the active reflection coefficient at Port 1 is:</p>
+<div class="equation equation-copyable" data-latex="\[ \Gamma_{\mathrm{active},1} = S_{11}+S_{12}e^{j\beta}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \Gamma_{\mathrm{active},1} = S_{11}+S_{12}e^{j\beta}. \]" type="button">Copy LaTeX</button>\[ \Gamma_{\mathrm{active},1} = S_{11}+S_{12}e^{j\beta}. \]</div>
+<p>Similarly, the active reflection coefficient at Port 2 is:</p>
+<div class="equation equation-copyable" data-latex="\[ \Gamma_{\mathrm{active},2} = S_{22}+S_{21}e^{-j\beta}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \Gamma_{\mathrm{active},2} = S_{22}+S_{21}e^{-j\beta}. \]" type="button">Copy LaTeX</button>\[ \Gamma_{\mathrm{active},2} = S_{22}+S_{21}e^{-j\beta}. \]</div>
+<p>The corresponding active input impedance is:</p>
+<div class="equation equation-copyable" data-latex="\[ Z_{\mathrm{active}} = Z_0 \frac{1+\Gamma_{\mathrm{active}}} {1-\Gamma_{\mathrm{active}}}, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ Z_{\mathrm{active}} = Z_0 \frac{1+\Gamma_{\mathrm{active}}} {1-\Gamma_{\mathrm{active}}}, \]" type="button">Copy LaTeX</button>\[ Z_{\mathrm{active}} = Z_0 \frac{1+\Gamma_{\mathrm{active}}} {1-\Gamma_{\mathrm{active}}}, \]</div>
+<p>where \(Z_0=50\ \Omega\).</p>
+<p>These expressions demonstrate that the active match depends not only on the passive port parameters but also on the progressive excitation phase. The antenna may therefore appear well matched when one port is excited independently while exhibiting a poorer match under a particular beam-steering condition.</p>
+<h3 class="text-secondary" id="section-3-8">3.8 Planar 2×2 Array</h3>
+<p>After the linear-array behavior was characterized, the design was extended into a 2×2 planar array. For an array distributed in both the \(x\)- and \(y\)-directions, the array factor can be expressed as:</p>
+<div class="equation equation-copyable" data-latex="\[ AF(\theta,\phi) = \sum_{m=0}^{M-1} \sum_{n=0}^{N-1} a_{mn} e^{j\left[ k m d_x\sin\theta\cos\phi + k n d_y\sin\theta\sin\phi + m\beta_x + n\beta_y \right]}, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ AF(\theta,\phi) = \sum_{m=0}^{M-1} \sum_{n=0}^{N-1} a_{mn} e^{j\left[ k m d_x\sin\theta\cos\phi + k n d_y\sin\theta\sin\phi + m\beta_x + n\beta_y \right]}, \]" type="button">Copy LaTeX</button>\[ AF(\theta,\phi) = \sum_{m=0}^{M-1} \sum_{n=0}^{N-1} a_{mn} e^{j\left[ k m d_x\sin\theta\cos\phi + k n d_y\sin\theta\sin\phi + m\beta_x + n\beta_y \right]}, \]</div>
+<p>where \(d_x\) and \(d_y\) are the spacings along the two array axes, while \(\beta_x\) and \(\beta_y\) are the corresponding progressive phase shifts.</p>
+<p>To steer the beam toward \((\theta_0,\phi_0)\), the required phase progressions are:</p>
+<div class="equation equation-copyable" data-latex="\[ \beta_x = -kd_x\sin\theta_0\cos\phi_0, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \beta_x = -kd_x\sin\theta_0\cos\phi_0, \]" type="button">Copy LaTeX</button>\[ \beta_x = -kd_x\sin\theta_0\cos\phi_0, \]</div>
+<div class="equation equation-copyable" data-latex="\[ \beta_y = -kd_y\sin\theta_0\sin\phi_0. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \beta_y = -kd_y\sin\theta_0\sin\phi_0. \]" type="button">Copy LaTeX</button>\[ \beta_y = -kd_y\sin\theta_0\sin\phi_0. \]</div>
+<p>Applying phase progression along only one axis steers the array-factor maximum in the corresponding principal plane. Applying progression along both axes enables two-dimensional steering in principle; the 2×2 full-wave results reported here use broadside excitation.</p>
+<p>The analytical relationships developed in this section define the expected array behavior. The following sections describe the corresponding HFSS models and examine how closely these ideal predictions represent the full-wave behavior of the practical patch array.</p>
+<h2 class="text-secondary text-uppercase" id="section-4">4. Broadside Array Baseline</h2>
+<p>After constructing the parameterized \(1\times2\) model, the array was first evaluated under equal-amplitude, equal-phase excitation. This configuration establishes the broadside reference case against which the later spacing and beam-steering studies can be compared.</p>
+<p>The two elements were arranged along the \(y\)-axis with a center-to-center spacing of:</p>
+<div class="equation equation-copyable" data-latex="\[ d_y=0.5\lambda_0 \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ d_y=0.5\lambda_0 \]" type="button">Copy LaTeX</button>\[ d_y=0.5\lambda_0 \]</div>
+<p>At the 3 GHz design frequency:</p>
+<div class="equation equation-copyable" data-latex="\[ \lambda_0=\frac{c}{f_0}\approx100\text{ mm} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \lambda_0=\frac{c}{f_0}\approx100\text{ mm} \]" type="button">Copy LaTeX</button>\[ \lambda_0=\frac{c}{f_0}\approx100\text{ mm} \]</div>
+<p>and therefore:</p>
+<div class="equation equation-copyable" data-latex="\[ d_y=50\text{ mm} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ d_y=50\text{ mm} \]" type="button">Copy LaTeX</button>\[ d_y=50\text{ mm} \]</div>
+<p>Each patch was derived from the previously validated single-element design. The two elements shared a common substrate and ground plane but were connected to independent ports, allowing their excitation amplitudes and phases to be controlled separately.</p>
+<p>For the broadside case, the sources were configured as:</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Source</th><th scope="col">Magnitude</th><th scope="col">Phase</th></tr>
+</thead>
+<tbody>
+<tr><td>Port 1</td><td>1</td><td>\(0^\circ\)</td></tr>
+
+<tr><td>Port 2</td><td>1</td><td>\(0^\circ\)</td></tr>
+</tbody></table></div>
+<p>Equal-phase excitation causes the fields from both elements to add constructively in the direction normal to the array surface.</p>
+<figure class="project-figure" id="figure-4-1"><a href="../assets/img/projects/phased-patch-antenna-array/figure-4-1.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-4-1.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-4-1.png" alt="Parameterized \(1\times2\) patch-array model with \(0.5\lambda_0\) element spacing." width="629" height="455" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 4.1.</strong> Parameterized \(1\times2\) patch-array model with \(0.5\lambda_0\) element spacing.</figcaption></figure>
+<h3 class="text-secondary" id="section-4-1">4.1 Input Match and Mutual Coupling</h3>
+<p>Figure 4.2 presents the two-port S-parameters of the array. Since the geometry is symmetric, the \(S_{11}\) and \(S_{22}\) responses are nearly identical.</p>
+<p>The two resonances occurred close to \(3.025\text{ GHz}\), slightly above the original 3 GHz design frequency. The minimum reflection coefficients were approximately:</p>
+<div class="equation equation-copyable" data-latex="\[ S_{11,\min}\approx-32.94\text{ dB} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ S_{11,\min}\approx-32.94\text{ dB} \]" type="button">Copy LaTeX</button>\[ S_{11,\min}\approx-32.94\text{ dB} \]</div>
+<div class="equation equation-copyable" data-latex="\[ S_{22,\min}\approx-30.51\text{ dB} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ S_{22,\min}\approx-30.51\text{ dB} \]" type="button">Copy LaTeX</button>\[ S_{22,\min}\approx-30.51\text{ dB} \]</div>
+<p>The small difference between the two responses is attributable to numerical and meshing asymmetry rather than a meaningful difference between the elements.</p>
+<p>The mutual coupling near resonance was approximately:</p>
+<div class="equation equation-copyable" data-latex="\[ S_{21}\approx-17.51\text{ dB} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ S_{21}\approx-17.51\text{ dB} \]" type="button">Copy LaTeX</button>\[ S_{21}\approx-17.51\text{ dB} \]</div>
+<p>This corresponds to a coupled-power ratio of approximately:</p>
+<div class="equation equation-copyable" data-latex="\[ 10^{S_{21}/10} = 10^{-17.51/10} \approx1.77\% \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ 10^{S_{21}/10} = 10^{-17.51/10} \approx1.77\% \]" type="button">Copy LaTeX</button>\[ 10^{S_{21}/10} = 10^{-17.51/10} \approx1.77\% \]</div>
+<p>The coupling is therefore measurable but moderate. This is consistent with the expected behavior of two microstrip patches separated by approximately half a wavelength.</p>
+<p>The resonance shift relative to the isolated patch also demonstrates that array elements cannot be treated as completely independent radiators. Each element modifies the electromagnetic environment seen by the other, altering its input impedance and resonant frequency.</p>
+<figure class="project-figure" id="figure-4-2"><a href="../assets/img/projects/phased-patch-antenna-array/figure-4-2.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-4-2.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-4-2.png" alt="Input reflection coefficients and mutual coupling of the \(1\times2\) array." width="1536" height="468" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 4.2.</strong> Input reflection coefficients and mutual coupling of the \(1\times2\) array.</figcaption></figure>
+<h3 class="text-secondary" id="section-4-2">4.2 Broadside Radiation Pattern</h3>
+<p>The radiation pattern was evaluated at 3 GHz using the stored adaptive field solution. Although the minimum input reflection occurred near \(3.025\text{ GHz}\), the difference is less than one percent, and the 3 GHz solution provides an appropriate reference for the intended operating frequency.</p>
+<p>Figure 4.3 compares the two principal radiation-plane cuts:</p>
+<ul>
+<li>\(\phi=90^\circ\): array plane, containing the element-spacing axis</li>
+<li>\(\phi=0^\circ\): orthogonal plane</li>
+</ul>
+<p>The array-plane pattern is significantly narrower because the two-element array factor acts in this plane. The orthogonal-plane pattern remains considerably broader and more closely resembles the radiation pattern of an individual patch.</p>
+<p>The array-plane half-power points occurred at approximately:</p>
+<div class="equation equation-copyable" data-latex="\[ \theta_{\mathrm{HP,L}}=-23.33^\circ \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \theta_{\mathrm{HP,L}}=-23.33^\circ \]" type="button">Copy LaTeX</button>\[ \theta_{\mathrm{HP,L}}=-23.33^\circ \]</div>
+<div class="equation equation-copyable" data-latex="\[ \theta_{\mathrm{HP,R}}=23.13^\circ \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \theta_{\mathrm{HP,R}}=23.13^\circ \]" type="button">Copy LaTeX</button>\[ \theta_{\mathrm{HP,R}}=23.13^\circ \]</div>
+<p>giving an array-plane half-power beamwidth of:</p>
+<div class="equation equation-copyable" data-latex="\[ \mathrm{HPBW}_{\phi=90^\circ} = 23.13^\circ-(-23.33^\circ) = 46.47^\circ \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \mathrm{HPBW}_{\phi=90^\circ} = 23.13^\circ-(-23.33^\circ) = 46.47^\circ \]" type="button">Copy LaTeX</button>\[ \mathrm{HPBW}_{\phi=90^\circ} = 23.13^\circ-(-23.33^\circ) = 46.47^\circ \]</div>
+<p>The orthogonal-plane half-power points occurred at approximately:</p>
+<div class="equation equation-copyable" data-latex="\[ \theta_{\mathrm{HP,L}}=-46.02^\circ \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \theta_{\mathrm{HP,L}}=-46.02^\circ \]" type="button">Copy LaTeX</button>\[ \theta_{\mathrm{HP,L}}=-46.02^\circ \]</div>
+<div class="equation equation-copyable" data-latex="\[ \theta_{\mathrm{HP,R}}=42.01^\circ \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \theta_{\mathrm{HP,R}}=42.01^\circ \]" type="button">Copy LaTeX</button>\[ \theta_{\mathrm{HP,R}}=42.01^\circ \]</div>
+<p>giving:</p>
+<div class="equation equation-copyable" data-latex="\[ \mathrm{HPBW}_{\phi=0^\circ} = 42.01^\circ-(-46.02^\circ) = 88.02^\circ \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \mathrm{HPBW}_{\phi=0^\circ} = 42.01^\circ-(-46.02^\circ) = 88.02^\circ \]" type="button">Copy LaTeX</button>\[ \mathrm{HPBW}_{\phi=0^\circ} = 42.01^\circ-(-46.02^\circ) = 88.02^\circ \]</div>
+<p>The moderate asymmetry in the orthogonal-plane pattern is caused by the inset feeds and finite board geometry. In contrast, the array-plane pattern remains highly symmetric about broadside.</p>
+<p>The peak realized gain was approximately:</p>
+<div class="equation equation-copyable" data-latex="\[ G_{\mathrm{realized,peak}}=8.63\text{ dBi} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ G_{\mathrm{realized,peak}}=8.63\text{ dBi} \]" type="button">Copy LaTeX</button>\[ G_{\mathrm{realized,peak}}=8.63\text{ dBi} \]</div>
+<p>The corresponding back-direction realized gain was approximately:</p>
+<div class="equation equation-copyable" data-latex="\[ G_{\mathrm{back}}\approx-4.55\text{ dBi} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ G_{\mathrm{back}}\approx-4.55\text{ dBi} \]" type="button">Copy LaTeX</button>\[ G_{\mathrm{back}}\approx-4.55\text{ dBi} \]</div>
+<p>resulting in a front-to-back ratio of:</p>
+<div class="equation equation-copyable" data-latex="\[ \mathrm{FBR} = 8.63-(-4.55) \approx13.17\text{ dB} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \mathrm{FBR} = 8.63-(-4.55) \approx13.17\text{ dB} \]" type="button">Copy LaTeX</button>\[ \mathrm{FBR} = 8.63-(-4.55) \approx13.17\text{ dB} \]</div>
+<p>No prominent grating lobes appeared at the \(0.5\lambda_0\) spacing.</p>
+<figure class="project-figure" id="figure-4-3"><a href="../assets/img/projects/phased-patch-antenna-array/figure-4-3.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-4-3.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-4-3.png" alt="Broadside realized-gain patterns in the array and orthogonal principal planes at 3 GHz." width="1531" height="470" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 4.3.</strong> Broadside realized-gain patterns in the array and orthogonal principal planes at 3 GHz.</figcaption></figure>
+<h3 class="text-secondary" id="section-4-3">4.3 Three-Dimensional Radiation Pattern</h3>
+<p>The three-dimensional realized-gain pattern is shown in Figure 4.4. The main beam points in the \(+\hat{z}\) direction, normal to the patch surfaces, confirming the expected broadside operation.</p>
+<p>The pattern is compressed along the array axis because of the two-element array factor, while remaining wider in the orthogonal plane. This produces the elongated broadside beam shape expected from a linear \(1\times2\) array.</p>
+<p>The peak realized gain increased by approximately 2.34 dB relative to the 6.29 dBi isolated-patch reference:</p>
+<div class="equation equation-copyable" data-latex="\[ \Delta G = 8.63-6.29 = 2.34\text{ dB}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \Delta G = 8.63-6.29 = 2.34\text{ dB}. \]" type="button">Copy LaTeX</button>\[ \Delta G = 8.63-6.29 = 2.34\text{ dB}. \]</div>
+<p>The result is reasonably close to the ideal \(3\text{ dB}\) improvement expected when the number of identical radiating elements is doubled. The remaining difference is caused by dielectric and conductor losses, impedance mismatch, mutual coupling, and the non-ideal finite ground plane.</p>
+<figure class="project-figure" id="figure-4-4"><a href="../assets/img/projects/phased-patch-antenna-array/figure-4-4.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-4-4.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-4-4.png" alt="Three-dimensional realized-gain pattern of the \(1\times2\) array under broadside excitation." width="610" height="371" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 4.4.</strong> Three-dimensional realized-gain pattern of the \(1\times2\) array under broadside excitation.</figcaption></figure>
+<h3 class="text-secondary" id="section-4-4">4.4 Directivity, Gain, and Efficiency</h3>
+<p>The main antenna parameters were calculated over the complete radiation sphere at 3 GHz. The results are summarized in Table 4.1.</p>
+<p>Table 4.1. Broadside array parameters at 3 GHz.</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Parameter</th><th scope="col">Result</th></tr>
+</thead>
+<tbody>
+<tr><td>Peak directivity</td><td>\(9.285\text{ dBi}\)</td></tr>
+
+<tr><td>Peak gain</td><td>\(8.814\text{ dBi}\)</td></tr>
+
+<tr><td>Peak realized gain</td><td>\(8.626\text{ dBi}\)</td></tr>
+
+<tr><td>Radiation efficiency</td><td>\(89.72\%\)</td></tr>
+
+<tr><td>Total efficiency</td><td>\(85.91\%\)</td></tr>
+
+<tr><td>Radiated power</td><td>\(1.718\text{ W}\)</td></tr>
+
+<tr><td>Accepted power</td><td>\(1.915\text{ W}\)</td></tr>
+
+<tr><td>Array-plane HPBW</td><td>\(46.47^\circ\)</td></tr>
+
+<tr><td>Orthogonal-plane HPBW</td><td>\(88.02^\circ\)</td></tr>
+
+<tr><td>Front-to-back ratio</td><td>\(13.17\text{ dB}\)</td></tr>
+</tbody></table></div>
+<p>The radiation efficiency is defined as:</p>
+<div class="equation equation-copyable" data-latex="\[ \eta_{\mathrm{rad}} = \frac{P_{\mathrm{rad}}}{P_{\mathrm{acc}}} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \eta_{\mathrm{rad}} = \frac{P_{\mathrm{rad}}}{P_{\mathrm{acc}}} \]" type="button">Copy LaTeX</button>\[ \eta_{\mathrm{rad}} = \frac{P_{\mathrm{rad}}}{P_{\mathrm{acc}}} \]</div>
+<p>Using the simulated powers:</p>
+<div class="equation equation-copyable" data-latex="\[ \eta_{\mathrm{rad}} = \frac{1.718}{1.915} \approx0.8972 = 89.72\% \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \eta_{\mathrm{rad}} = \frac{1.718}{1.915} \approx0.8972 = 89.72\% \]" type="button">Copy LaTeX</button>\[ \eta_{\mathrm{rad}} = \frac{1.718}{1.915} \approx0.8972 = 89.72\% \]</div>
+<p>The peak gain is related to the peak directivity through this efficiency:</p>
+<div class="equation equation-copyable" data-latex="\[ G_{\mathrm{peak}} = D_{\mathrm{peak}} + 10\log_{10}\left(\eta_{\mathrm{rad}}\right) \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ G_{\mathrm{peak}} = D_{\mathrm{peak}} + 10\log_{10}\left(\eta_{\mathrm{rad}}\right) \]" type="button">Copy LaTeX</button>\[ G_{\mathrm{peak}} = D_{\mathrm{peak}} + 10\log_{10}\left(\eta_{\mathrm{rad}}\right) \]</div>
+<div class="equation equation-copyable" data-latex="\[ G_{\mathrm{peak}} = 9.285 + 10\log_{10}(0.8972) \approx8.814\text{ dBi} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ G_{\mathrm{peak}} = 9.285 + 10\log_{10}(0.8972) \approx8.814\text{ dBi} \]" type="button">Copy LaTeX</button>\[ G_{\mathrm{peak}} = 9.285 + 10\log_{10}(0.8972) \approx8.814\text{ dBi} \]</div>
+<p>With \(1\text{ W}\) incident at each port, the total incident power was \(2\text{ W}\). The total efficiency, which also includes mismatch loss, was therefore:</p>
+<div class="equation equation-copyable" data-latex="\[ \eta_{\mathrm{total}} = \frac{P_{\mathrm{rad}}}{P_{\mathrm{inc}}} = \frac{1.718}{2} \approx0.8591 = 85.91\% \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \eta_{\mathrm{total}} = \frac{P_{\mathrm{rad}}}{P_{\mathrm{inc}}} = \frac{1.718}{2} \approx0.8591 = 85.91\% \]" type="button">Copy LaTeX</button>\[ \eta_{\mathrm{total}} = \frac{P_{\mathrm{rad}}}{P_{\mathrm{inc}}} = \frac{1.718}{2} \approx0.8591 = 85.91\% \]</div>
+<p>The realized gain is related to the directivity through the total efficiency:</p>
+<div class="equation equation-copyable" data-latex="\[ G_{\mathrm{realized,peak}} = D_{\mathrm{peak}} + 10\log_{10}\left(\eta_{\mathrm{total}}\right) \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ G_{\mathrm{realized,peak}} = D_{\mathrm{peak}} + 10\log_{10}\left(\eta_{\mathrm{total}}\right) \]" type="button">Copy LaTeX</button>\[ G_{\mathrm{realized,peak}} = D_{\mathrm{peak}} + 10\log_{10}\left(\eta_{\mathrm{total}}\right) \]</div>
+<div class="equation equation-copyable" data-latex="\[ G_{\mathrm{realized,peak}} = 9.285 + 10\log_{10}(0.8591) \approx8.626\text{ dBi} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ G_{\mathrm{realized,peak}} = 9.285 + 10\log_{10}(0.8591) \approx8.626\text{ dBi} \]" type="button">Copy LaTeX</button>\[ G_{\mathrm{realized,peak}} = 9.285 + 10\log_{10}(0.8591) \approx8.626\text{ dBi} \]</div>
+<p>The relatively small difference between gain and realized gain indicates that mismatch loss is minor. Most of the difference between directivity and realized gain results from dielectric and conductor losses in the antenna structure.</p>
+<h3 class="text-secondary" id="section-4-5">4.5 Element Surface Current</h3>
+<p>Figure 4.5 shows the surface-current magnitude on the two patches and feed lines under equal-phase excitation.</p>
+<p>The two elements exhibit nearly identical current distributions, confirming that they are excited symmetrically. Strong current appears around the inset-feed regions, along the feed lines, and across the patch surfaces. The current maxima and minima occur at corresponding positions on both elements.</p>
+<p>The matching current-magnitude distributions are consistent with symmetric excitation. The specified equal source phases and broadside radiation pattern confirm the intended operating state; magnitude plots alone do not establish relative current phase. The radiated fields combine to produce the observed gain increase and reduced array-plane beamwidth.</p>
+<figure class="project-figure" id="figure-4-5"><a href="../assets/img/projects/phased-patch-antenna-array/figure-4-5.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-4-5.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-4-5.png" alt="Patch and feed-line surface-current magnitude under equal-amplitude, equal-phase excitation." width="423" height="432" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 4.5.</strong> Patch and feed-line surface-current magnitude under equal-amplitude, equal-phase excitation.</figcaption></figure>
+<h3 class="text-secondary" id="section-4-6">4.6 Ground-Plane Surface Current</h3>
+<p>The corresponding ground-plane current is shown in Figure 4.6.</p>
+<p>Strong return currents appear beneath each patch and feed line, with a smooth reduction in magnitude away from the active regions. The current distribution is highly symmetric between the two elements, which is consistent with the symmetry of the array-plane radiation pattern.</p>
+<p>A lower current level remains visible between the two antennas. This represents one of the electromagnetic coupling paths between the elements through the shared ground structure. However, the inter-element ground current is substantially weaker than the local return currents beneath the patches, consistent with the moderate \(S_{21}\) value.</p>
+<p>The current also remains relatively weak near the outer ground-plane edges, indicating that the finite board does not excite a dominant asymmetric edge mode in the broadside configuration.</p>
+<figure class="project-figure" id="figure-4-6"><a href="../assets/img/projects/phased-patch-antenna-array/figure-4-6.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-4-6.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-4-6.png" alt="Ground-plane surface-current magnitude under broadside excitation at 3 GHz." width="410" height="421" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 4.6.</strong> Ground-plane surface-current magnitude under broadside excitation at 3 GHz.</figcaption></figure>
+<h3 class="text-secondary" id="section-4-7">4.7 Baseline Summary</h3>
+<p>The \(1\times2\) array produced a stable broadside beam with a peak realized gain of approximately \(8.63\text{ dBi}\). Relative to the 6.29 dBi isolated-patch reference, the realized gain increased by approximately 2.34 dB and the beamwidth decreased in the array plane.</p>
+<p>The main baseline results were:</p>
+<ul>
+<li>Resonance near \(3.025\text{ GHz}\)</li>
+<li>Mutual coupling of approximately \(-17.51\text{ dB}\)</li>
+<li>Peak realized gain of \(8.63\text{ dBi}\)</li>
+<li>Radiation efficiency of \(89.72\%\)</li>
+<li>Total efficiency of \(85.91\%\)</li>
+<li>Array-plane HPBW of \(46.47^\circ\)</li>
+<li>Orthogonal-plane HPBW of \(88.02^\circ\)</li>
+<li>Front-to-back ratio of approximately \(13.17\text{ dB}\)</li>
+<li>Symmetric element and ground-current distributions</li>
+<li>No prominent grating lobes</li>
+</ul>
+<p>This equal-phase \(0.5\lambda_0\) configuration provides the reference case for the element-spacing and mutual-coupling study presented in Section 5.</p>
+<h2 class="text-secondary text-uppercase" id="section-5">5. Element Spacing and Mutual Coupling</h2>
+<p>Element spacing is one of the primary design variables in an antenna array. Placing the elements close together generally increases mutual coupling and can alter their input impedances. Increasing the spacing reduces coupling and enlarges the effective aperture, but it also strengthens secondary lobes and can eventually produce grating lobes.</p>
+<p>To investigate these effects, the center-to-center spacing of the two patches was swept while keeping the individual element geometry and broadside excitation unchanged.</p>
+<p>The spacing was parameterized as:</p>
+<div class="equation equation-copyable" data-latex="\[ d_y=d_{\mathrm{frac}}\lambda_0 \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ d_y=d_{\mathrm{frac}}\lambda_0 \]" type="button">Copy LaTeX</button>\[ d_y=d_{\mathrm{frac}}\lambda_0 \]</div>
+<p>where the free-space wavelength at 3 GHz is:</p>
+<div class="equation equation-copyable" data-latex="\[ \lambda_0=\frac{c}{f_0}\approx100\text{ mm} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \lambda_0=\frac{c}{f_0}\approx100\text{ mm} \]" type="button">Copy LaTeX</button>\[ \lambda_0=\frac{c}{f_0}\approx100\text{ mm} \]</div>
+<p>The following spacing values were simulated:</p>
+<div class="equation equation-copyable" data-latex="\[ d_y/\lambda_0= 0.35,\ 0.40,\ 0.50,\ 0.60,\ 0.75,\ 1.00,\ 1.20 \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ d_y/\lambda_0= 0.35,\ 0.40,\ 0.50,\ 0.60,\ 0.75,\ 1.00,\ 1.20 \]" type="button">Copy LaTeX</button>\[ d_y/\lambda_0= 0.35,\ 0.40,\ 0.50,\ 0.60,\ 0.75,\ 1.00,\ 1.20 \]</div>
+<p>These values correspond to physical separations from \(35\text{ mm}\) to \(120\text{ mm}\). The minimum spacing was limited to \(0.35\lambda_0\), since the patch width was approximately \(33.4\text{ mm}\) and smaller values would cause the elements to overlap.</p>
+<p>The substrate, ground plane, air region, feeds, and ports were parameterized so that the complete array remained centered and updated automatically as the spacing changed.</p>
+<h3 class="text-secondary" id="section-5-1">5.1 Mutual Coupling</h3>
+<p>Figure 5.1 shows the transmission coefficient \(S_{21}\) at 3 GHz as a function of element spacing.</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Element spacing</th><th scope="col">\(S_{21}\) at 3 GHz</th><th scope="col">Coupled-power ratio</th></tr>
+</thead>
+<tbody>
+<tr><td>\(0.35\lambda_0\)</td><td>\(-6.73\text{ dB}\)</td><td>\(21.2\%\)</td></tr>
+
+<tr><td>\(0.40\lambda_0\)</td><td>\(-11.31\text{ dB}\)</td><td>\(7.4\%\)</td></tr>
+
+<tr><td>\(0.50\lambda_0\)</td><td>\(-18.06\text{ dB}\)</td><td>\(1.56\%\)</td></tr>
+
+<tr><td>\(0.60\lambda_0\)</td><td>\(-23.42\text{ dB}\)</td><td>\(0.46\%\)</td></tr>
+
+<tr><td>\(0.75\lambda_0\)</td><td>\(-30.62\text{ dB}\)</td><td>\(0.087\%\)</td></tr>
+
+<tr><td>\(1.00\lambda_0\)</td><td>\(-41.14\text{ dB}\)</td><td>\(0.0077\%\)</td></tr>
+
+<tr><td>\(1.20\lambda_0\)</td><td>\(-49.09\text{ dB}\)</td><td>\(0.0012\%\)</td></tr>
+</tbody></table></div>
+<p>The coupled-power ratio was calculated using:</p>
+<div class="equation equation-copyable" data-latex="\[ \frac{P_2}{P_1}=\left|S_{21}\right|^2 =10^{S_{21,\mathrm{dB}}/10} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \frac{P_2}{P_1}=\left|S_{21}\right|^2 =10^{S_{21,\mathrm{dB}}/10} \]" type="button">Copy LaTeX</button>\[ \frac{P_2}{P_1}=\left|S_{21}\right|^2 =10^{S_{21,\mathrm{dB}}/10} \]</div>
+<p>The \(0.35\lambda_0\) case exhibited particularly strong coupling, with more than \(20\%\) of the incident power represented by the \(S_{21}\) transmission ratio. Increasing the spacing to \(0.5\lambda_0\) reduced this value to approximately \(1.56\%\).</p>
+<p>At \(0.75\lambda_0\), the coupling fell below \(-30\text{ dB}\), and at spacings of one wavelength or greater it became negligible.</p>
+<p>The trend is nearly monotonic, indicating that the dominant change is the reduction of near-field interaction as the elements are separated. No substantial oscillations caused by the finite ground plane appeared over the simulated range.</p>
+<figure class="project-figure" id="figure-5-1"><a href="../assets/img/projects/phased-patch-antenna-array/figure-5-1.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-5-1.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-5-1.png" alt="Mutual coupling at 3 GHz as a function of normalized element spacing." width="1536" height="518" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 5.1.</strong> Mutual coupling at 3 GHz as a function of normalized element spacing.</figcaption></figure>
+<h3 class="text-secondary" id="section-5-2">5.2 Input-Match Variation</h3>
+<p>Mutual coupling also modifies the input impedance of each element. Figure 5.2 compares \(S_{11}\) across the frequency sweep for all seven spacing cases.</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Spacing</th><th scope="col">Resonance</th><th scope="col">Minimum \(S_{11}\)</th><th scope="col">\(S_{11}\) at 3 GHz</th><th scope="col">Approximate \(-10\text{ dB}\) bandwidth</th></tr>
+</thead>
+<tbody>
+<tr><td>\(0.35\lambda_0\)</td><td>3.051 GHz</td><td>\(-15.97\text{ dB}\)</td><td>\(-9.86\text{ dB}\)</td><td>76 MHz</td></tr>
+
+<tr><td>\(0.40\lambda_0\)</td><td>3.034 GHz</td><td>\(-33.20\text{ dB}\)</td><td>\(-9.51\text{ dB}\)</td><td>58 MHz</td></tr>
+
+<tr><td>\(0.50\lambda_0\)</td><td>3.026 GHz</td><td>\(-30.91\text{ dB}\)</td><td>\(-10.50\text{ dB}\)</td><td>53 MHz</td></tr>
+
+<tr><td>\(0.60\lambda_0\)</td><td>3.025 GHz</td><td>\(-29.46\text{ dB}\)</td><td>\(-10.72\text{ dB}\)</td><td>54 MHz</td></tr>
+
+<tr><td>\(0.75\lambda_0\)</td><td>3.028 GHz</td><td>\(-35.99\text{ dB}\)</td><td>\(-9.86\text{ dB}\)</td><td>54 MHz</td></tr>
+
+<tr><td>\(1.00\lambda_0\)</td><td>3.028 GHz</td><td>\(-35.13\text{ dB}\)</td><td>\(-9.81\text{ dB}\)</td><td>55 MHz</td></tr>
+
+<tr><td>\(1.20\lambda_0\)</td><td>3.030 GHz</td><td>\(-38.52\text{ dB}\)</td><td>\(-9.28\text{ dB}\)</td><td>55 MHz</td></tr>
+</tbody></table></div>
+<p>The strongest detuning occurred at \(0.35\lambda_0\). The resonance shifted upward to approximately \(3.051\text{ GHz}\), and the minimum \(S_{11}\) became considerably shallower. This behavior is consistent with the strong mutual coupling measured for this spacing.</p>
+<p>At \(0.40\lambda_0\), the resonance occurred near \(3.034\text{ GHz}\). From \(0.50\lambda_0\) onward, it remained relatively stable between approximately \(3.025\) and \(3.030\text{ GHz}\).</p>
+<p>The \(-10\text{ dB}\) bandwidth also stabilized near \(53\) to \(55\text{ MHz}\) once the spacing reached \(0.5\lambda_0\). This indicates that the element input impedance becomes much less sensitive to spacing after the strongest near-field interaction has been reduced.</p>
+<p>The radiation patterns in the following sections were evaluated at the 3 GHz design frequency. Although some spacing cases are slightly above the \(-10\text{ dB}\) level at exactly 3 GHz, realized gain includes this mismatch loss and therefore remains the appropriate comparison quantity.</p>
+<figure class="project-figure" id="figure-5-2"><a href="../assets/img/projects/phased-patch-antenna-array/figure-5-2.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-5-2.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-5-2.png" alt="Input reflection coefficient for different element spacings." width="1538" height="518" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 5.2.</strong> Input reflection coefficient for different element spacings.</figcaption></figure>
+<h3 class="text-secondary" id="section-5-3">5.3 Effect on the Broadside Radiation Pattern</h3>
+<p>The broadside realized-gain patterns were evaluated using equal-amplitude, equal-phase excitation:</p>
+<div class="equation equation-copyable" data-latex="\[ A_1=A_2 \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ A_1=A_2 \]" type="button">Copy LaTeX</button>\[ A_1=A_2 \]</div>
+<div class="equation equation-copyable" data-latex="\[ \beta=0^\circ \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \beta=0^\circ \]" type="button">Copy LaTeX</button>\[ \beta=0^\circ \]</div>
+<p>The \(\phi=90^\circ\) cut was used because it contains the element-spacing axis and therefore shows the effect of the array factor most clearly.</p>
+<p>For two identical elements separated along the \(y\)-axis, the broadside array factor is:</p>
+<div class="equation equation-copyable" data-latex="\[ AF(\theta) = 1+e^{jkd\sin\theta} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ AF(\theta) = 1+e^{jkd\sin\theta} \]" type="button">Copy LaTeX</button>\[ AF(\theta) = 1+e^{jkd\sin\theta} \]</div>
+<p>Using a centered phase reference and normalizing by the maximum value gives:</p>
+<div class="equation equation-copyable" data-latex="\[ AF_{\mathrm{norm}}(\theta) = \left| \cos\left(\frac{kd\sin\theta}{2}\right) \right| \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ AF_{\mathrm{norm}}(\theta) = \left| \cos\left(\frac{kd\sin\theta}{2}\right) \right| \]" type="button">Copy LaTeX</button>\[ AF_{\mathrm{norm}}(\theta) = \left| \cos\left(\frac{kd\sin\theta}{2}\right) \right| \]</div>
+<p>where:</p>
+<div class="equation equation-copyable" data-latex="\[ k=\frac{2\pi}{\lambda_0} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ k=\frac{2\pi}{\lambda_0} \]" type="button">Copy LaTeX</button>\[ k=\frac{2\pi}{\lambda_0} \]</div>
+<p>As the spacing increases, the phase difference between the element contributions changes more rapidly with observation angle. The main beam consequently becomes narrower.</p>
+<p>Figure 5.3 shows this behavior in the HFSS results. The \(0.35\lambda_0\) case produces the widest main beam and lowest peak gain. Increasing the spacing progressively narrows the beam and increases its peak gain.</p>
+<p>The pattern improvement is accompanied by increasingly strong secondary lobes. These become particularly significant as the spacing approaches one wavelength.</p>
+<figure class="project-figure" id="figure-5-3"><a href="../assets/img/projects/phased-patch-antenna-array/figure-5-3.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-5-3.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-5-3.png" alt="Broadside realized-gain patterns at 3 GHz for different element spacings." width="1428" height="825" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 5.3.</strong> Broadside realized-gain patterns at 3 GHz for different element spacings.</figcaption></figure>
+<h3 class="text-secondary" id="section-5-4">5.4 Gain and Beamwidth</h3>
+<p>The peak realized gain and half-power beamwidth were extracted from each radiation pattern. The \(-3\text{ dB}\) crossing angles were interpolated between adjacent angular samples.</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Element spacing</th><th scope="col">Peak realized gain</th><th scope="col">Array-plane HPBW</th></tr>
+</thead>
+<tbody>
+<tr><td>\(0.35\lambda_0\)</td><td>7.72 dBi</td><td>\(55.9^\circ\)</td></tr>
+
+<tr><td>\(0.40\lambda_0\)</td><td>8.30 dBi</td><td>\(52.6^\circ\)</td></tr>
+
+<tr><td>\(0.50\lambda_0\)</td><td>8.62 dBi</td><td>\(46.5^\circ\)</td></tr>
+
+<tr><td>\(0.60\lambda_0\)</td><td>8.83 dBi</td><td>\(41.2^\circ\)</td></tr>
+
+<tr><td>\(0.75\lambda_0\)</td><td>9.04 dBi</td><td>\(34.8^\circ\)</td></tr>
+
+<tr><td>\(1.00\lambda_0\)</td><td>9.31 dBi</td><td>\(27.1^\circ\)</td></tr>
+
+<tr><td>\(1.20\lambda_0\)</td><td>9.29 dBi</td><td>\(23.0^\circ\)</td></tr>
+</tbody></table></div>
+<p>The realized gain increased from \(7.72\text{ dBi}\) at \(0.35\lambda_0\) to approximately \(9.3\text{ dBi}\) at \(1.0\lambda_0\). Increasing the spacing further to \(1.2\lambda_0\) produced essentially no additional broadside gain.</p>
+<p>The lower gain at close spacing is partly caused by the strong mutual coupling and poorer input match. As the elements are separated, each element behaves more like an isolated radiator and the effective array aperture increases.</p>
+<p>Over the same spacing range, the HPBW decreased from approximately \(55.9^\circ\) to \(23.0^\circ\). This confirms the expected inverse relationship between aperture size and angular beamwidth.</p>
+<h3 class="text-secondary" id="section-5-5">5.5 Secondary Lobes and Grating-Lobe Onset</h3>
+<p>For broadside excitation, a grating lobe becomes possible when the spacing reaches:</p>
+<div class="equation equation-copyable" data-latex="\[ d\geq\lambda_0 \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ d\geq\lambda_0 \]" type="button">Copy LaTeX</button>\[ d\geq\lambda_0 \]</div>
+<p>At exactly one wavelength, the additional in-phase direction occurs at endfire:</p>
+<div class="equation equation-copyable" data-latex="\[ \theta_{\mathrm{GL}}=\pm90^\circ \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \theta_{\mathrm{GL}}=\pm90^\circ \]" type="button">Copy LaTeX</button>\[ \theta_{\mathrm{GL}}=\pm90^\circ \]</div>
+<p>The patch element pattern radiates weakly toward endfire, so the full-wave grating-lobe branch does not reach the level of the broadside beam. However, the strongest secondary maximum rises substantially as this threshold is approached.</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Element spacing</th><th scope="col">Strongest secondary maximum</th><th scope="col">Approximate angle</th></tr>
+</thead>
+<tbody>
+<tr><td>\(0.35\lambda_0\)</td><td>No distinct maximum</td><td>Not applicable</td></tr>
+
+<tr><td>\(0.40\lambda_0\)</td><td>\(-26.5\text{ dB}\)</td><td>\(90^\circ\)</td></tr>
+
+<tr><td>\(0.50\lambda_0\)</td><td>\(-18.5\text{ dB}\)</td><td>\(90^\circ\)</td></tr>
+
+<tr><td>\(0.60\lambda_0\)</td><td>\(-15.1\text{ dB}\)</td><td>\(80^\circ\)</td></tr>
+
+<tr><td>\(0.75\lambda_0\)</td><td>\(-11.1\text{ dB}\)</td><td>\(68^\circ\)</td></tr>
+
+<tr><td>\(1.00\lambda_0\)</td><td>\(-7.1\text{ dB}\)</td><td>\(54^\circ\)</td></tr>
+
+<tr><td>\(1.20\lambda_0\)</td><td>\(-5.3\text{ dB}\)</td><td>\(46^\circ\)</td></tr>
+</tbody></table></div>
+<p>For \(d=1.2\lambda_0\), the ideal array-factor grating-lobe direction is:</p>
+<div class="equation equation-copyable" data-latex="\[ \sin\theta_{\mathrm{GL}} = \frac{\lambda_0}{d} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \sin\theta_{\mathrm{GL}} = \frac{\lambda_0}{d} \]" type="button">Copy LaTeX</button>\[ \sin\theta_{\mathrm{GL}} = \frac{\lambda_0}{d} \]</div>
+<div class="equation equation-copyable" data-latex="\[ \theta_{\mathrm{GL}} = \sin^{-1}\left(\frac{1}{1.2}\right) \approx56.4^\circ \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \theta_{\mathrm{GL}} = \sin^{-1}\left(\frac{1}{1.2}\right) \approx56.4^\circ \]" type="button">Copy LaTeX</button>\[ \theta_{\mathrm{GL}} = \sin^{-1}\left(\frac{1}{1.2}\right) \approx56.4^\circ \]</div>
+<p>The strongest secondary maximum in the HFSS pattern occurred closer to \(46^\circ\). This difference does not contradict the analytical grating-lobe condition. The analytical value describes the maximum of the isolated array factor, while the full radiation pattern also includes the angular response of the patch elements:</p>
+<div class="equation equation-copyable" data-latex="\[ F_{\mathrm{array}}(\theta) = F_{\mathrm{element}}(\theta)AF(\theta) \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ F_{\mathrm{array}}(\theta) = F_{\mathrm{element}}(\theta)AF(\theta) \]" type="button">Copy LaTeX</button>\[ F_{\mathrm{array}}(\theta) = F_{\mathrm{element}}(\theta)AF(\theta) \]</div>
+<p>The patch element pattern decreases toward endfire, shifting the maximum of the combined pattern toward broadside. Mutual coupling and the finite ground plane introduce additional differences from the ideal array-factor prediction.</p>
+<p>Figure 5.4 summarizes the gain, beamwidth, and secondary-lobe trends. The results clearly show the primary spacing tradeoff: increasing the spacing produces a narrower beam and slightly higher gain, but also causes a substantial increase in secondary radiation.</p>
+<figure class="project-figure" id="figure-5-4"><a href="../assets/img/projects/phased-patch-antenna-array/figure-5-4.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-5-4.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-5-4.png" alt="Peak realized gain, half-power beamwidth, and secondary-lobe level as functions of element spacing." width="1547" height="1640" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 5.4.</strong> Peak realized gain, half-power beamwidth, and secondary-lobe level as functions of element spacing.</figcaption></figure>
+<h3 class="text-secondary" id="section-5-6">5.6 Spacing Selection</h3>
+<p>The spacing sweep demonstrates that no single value simultaneously minimizes mutual coupling, maximizes gain, minimizes beamwidth, and suppresses secondary lobes.</p>
+<p>Spacings below \(0.5\lambda_0\) produced:</p>
+<ul>
+<li>Stronger mutual coupling</li>
+<li>Greater resonance detuning</li>
+<li>Lower realized gain</li>
+<li>Wider main beams</li>
+</ul>
+<p>Larger spacings produced:</p>
+<ul>
+<li>Lower mutual coupling</li>
+<li>Narrower main beams</li>
+<li>Slightly higher broadside gain</li>
+<li>Stronger secondary lobes</li>
+<li>Grating-lobe behavior as \(d\) approached or exceeded \(\lambda_0\)</li>
+</ul>
+<p>The original \(0.5\lambda_0\) spacing provides a practical compromise:</p>
+<ul>
+<li>Mutual coupling of approximately \(-18.1\text{ dB}\)</li>
+<li>Peak realized gain of approximately \(8.62\text{ dBi}\)</li>
+<li>Array-plane HPBW of approximately \(46.5^\circ\)</li>
+<li>Secondary radiation approximately \(18.5\text{ dB}\) below the main beam</li>
+<li>Stable input-match behavior</li>
+<li>No prominent grating lobes</li>
+</ul>
+<p>The \(0.5\lambda_0\) configuration was therefore retained as the reference geometry for the subsequent beam-steering study.</p>
+<h2 class="text-secondary text-uppercase" id="section-6">6. Progressive Phase and Beam Steering</h2>
+<p>Beam steering was demonstrated by applying a progressive phase difference between the two array elements while maintaining equal source magnitudes. Port 1 was used as the phase reference at \(0^\circ\), while the phase applied to Port 2 was varied.</p>
+<p>For two elements positioned along the \(y\)-axis, the array factor in the \(\phi=90^\circ\) plane is</p>
+<div class="equation equation-copyable" data-latex="\[ AF(\theta) = 1+ e^{j\left(k_0d\sin\theta+\beta\right)}, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ AF(\theta) = 1+ e^{j\left(k_0d\sin\theta+\beta\right)}, \]" type="button">Copy LaTeX</button>\[ AF(\theta) = 1+ e^{j\left(k_0d\sin\theta+\beta\right)}, \]</div>
+<p>where \(d\) is the element spacing, \(k_0=2\pi/\lambda_0\), and \(\beta\) is the phase applied to the second element relative to the first.</p>
+<p>To direct the array-factor maximum toward a commanded angle \(\theta_0\), the required progressive phase is</p>
+<div class="equation equation-copyable" data-latex="\[ \beta=-k_0d\sin\theta_0. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \beta=-k_0d\sin\theta_0. \]" type="button">Copy LaTeX</button>\[ \beta=-k_0d\sin\theta_0. \]</div>
+<p>The array used a spacing of</p>
+<div class="equation equation-copyable" data-latex="\[ d=0.5\lambda_0, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ d=0.5\lambda_0, \]" type="button">Copy LaTeX</button>\[ d=0.5\lambda_0, \]</div>
+<p>so the phase relationship reduces to</p>
+<div class="equation equation-copyable" data-latex="\[ \beta=-180^\circ\sin\theta_0. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \beta=-180^\circ\sin\theta_0. \]" type="button">Copy LaTeX</button>\[ \beta=-180^\circ\sin\theta_0. \]</div>
+<p>Therefore, positive commanded angles require a negative Port 2 phase, while negative commanded angles require a positive phase.</p>
+<p>A Python script automated the phase sweep from \(-60^\circ\) to \(+60^\circ\) in \(15^\circ\) increments. For each configuration, the script updated the HFSS source phases, exported the realized-gain pattern at 3 GHz in the \(\phi=90^\circ\) array plane, and extracted the angle and magnitude of the maximum forward radiation.</p>
+<p>The normalized patterns for selected commanded angles are shown in Figure 6.1.</p>
+<figure class="project-figure" id="figure-6-1"><a href="../assets/img/projects/phased-patch-antenna-array/figure-6-1.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-6-1.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-6-1.png" alt="Normalized realized-gain patterns at 3 GHz for commanded scan angles from \(-60^\circ\) to \(+60^\circ\), evaluated in the array plane at \(\phi=90^\circ\)." width="1430" height="858" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 6.1.</strong> Normalized realized-gain patterns at 3 GHz for commanded scan angles from \(-60^\circ\) to \(+60^\circ\), evaluated in the array plane at \(\phi=90^\circ\).</figcaption></figure>
+<p>The radiation patterns demonstrate clear electronic steering in both directions. However, the achieved beam angles are consistently closer to broadside than the theoretical commanded angles. For example, a commanded angle of \(30^\circ\) produced a beam maximum at approximately \(19^\circ\), while a commanded angle of \(60^\circ\) produced a maximum at only \(32^\circ\).</p>
+<p>This behavior occurs because the phase equation controls the maximum of the array factor, not necessarily the maximum of the complete antenna pattern. The total pattern can be approximated as</p>
+<div class="equation equation-copyable" data-latex="\[ E_{\mathrm{array}}(\theta) = E_{\mathrm{element}}(\theta)AF(\theta), \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ E_{\mathrm{array}}(\theta) = E_{\mathrm{element}}(\theta)AF(\theta), \]" type="button">Copy LaTeX</button>\[ E_{\mathrm{array}}(\theta) = E_{\mathrm{element}}(\theta)AF(\theta), \]</div>
+<p>or, in terms of power gain,</p>
+<div class="equation equation-copyable" data-latex="\[ G_{\mathrm{array}}(\theta) \propto G_{\mathrm{element}}(\theta) \left|AF(\theta)\right|^2. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ G_{\mathrm{array}}(\theta) \propto G_{\mathrm{element}}(\theta) \left|AF(\theta)\right|^2. \]" type="button">Copy LaTeX</button>\[ G_{\mathrm{array}}(\theta) \propto G_{\mathrm{element}}(\theta) \left|AF(\theta)\right|^2. \]</div>
+<p>The patch-element pattern is strongest near broadside and decreases toward endfire. Because the two-element array factor has a relatively broad main beam, multiplication by the element pattern pulls the maximum of the complete pattern back toward broadside. An analytical combination of the isolated patch pattern and the two-element array factor predicted a peak near \(18^\circ\) for the commanded \(30^\circ\) case, compared with approximately \(19^\circ\) in the full-wave HFSS result.</p>
+<p>The complete phase-sweep results are summarized in Table 6.1.</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Commanded Angle (deg)</th><th scope="col">Port 2 Phase (deg)</th><th scope="col">Achieved Angle (deg)</th><th scope="col">Peak Realized Gain (dBi)</th><th scope="col">Scan Error (deg)</th><th scope="col">Scan Loss (dB)</th></tr>
+</thead>
+<tbody>
+<tr><td>-60</td><td>155.9</td><td>-32</td><td>6.407</td><td>28</td><td>2.211</td></tr>
+
+<tr><td>-45</td><td>127.3</td><td>-27</td><td>7.263</td><td>18</td><td>1.355</td></tr>
+
+<tr><td>-30</td><td>90.0</td><td>-19</td><td>8.004</td><td>11</td><td>0.614</td></tr>
+
+<tr><td>-15</td><td>46.6</td><td>-10</td><td>8.463</td><td>5</td><td>0.155</td></tr>
+
+<tr><td>0</td><td>0.0</td><td>0</td><td>8.618</td><td>0</td><td>0.000</td></tr>
+
+<tr><td>15</td><td>-46.6</td><td>10</td><td>8.480</td><td>-5</td><td>0.138</td></tr>
+
+<tr><td>30</td><td>-90.0</td><td>19</td><td>8.036</td><td>-11</td><td>0.582</td></tr>
+
+<tr><td>45</td><td>-127.3</td><td>26</td><td>7.312</td><td>-19</td><td>1.306</td></tr>
+
+<tr><td>60</td><td>-155.9</td><td>32</td><td>6.476</td><td>-28</td><td>2.142</td></tr>
+</tbody></table></div>
+<p>Table 6.1: Applied phase, achieved beam angle, peak realized gain, scan error, and scan loss for the progressive-phase sweep.</p>
+<p>The signed scan error was calculated as</p>
+<div class="equation equation-copyable" data-latex="\[ \epsilon_\theta = \theta_{\mathrm{achieved}} - \theta_{\mathrm{commanded}}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \epsilon_\theta = \theta_{\mathrm{achieved}} - \theta_{\mathrm{commanded}}. \]" type="button">Copy LaTeX</button>\[ \epsilon_\theta = \theta_{\mathrm{achieved}} - \theta_{\mathrm{commanded}}. \]</div>
+<p>Consequently, the positive error for negative steering and negative error for positive steering both indicate that the beam was pulled toward broadside. The magnitude of the error increased from \(5^\circ\) at a commanded angle of \(15^\circ\) to \(28^\circ\) at a commanded angle of \(60^\circ\).</p>
+<p>Figure 6.2 compares the commanded and achieved beam angles against the ideal relationship.</p>
+<figure class="project-figure" id="figure-6-2"><a href="../assets/img/projects/phased-patch-antenna-array/figure-6-2.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-6-2.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-6-2.png" alt="Commanded scan angle compared with the achieved HFSS beam angle. The dashed line represents ideal steering in which the achieved and commanded angles are equal." width="1109" height="1117" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 6.2.</strong> Commanded scan angle compared with the achieved HFSS beam angle. The dashed line represents ideal steering in which the achieved and commanded angles are equal.</figcaption></figure>
+<p>The HFSS response remains approximately symmetric about broadside, but increasingly departs from the ideal steering line at larger phase shifts. The positive and negative results differed by no more than \(1^\circ\) in achieved angle and \(0.07\ \text{dB}\) in peak gain. This close symmetry confirms that the two elements and their applied phase states behaved consistently.</p>
+<p>Scan loss was calculated relative to the broadside peak realized gain:</p>
+<div class="equation equation-copyable" data-latex="\[ L_{\mathrm{scan}}(\theta_0) = G_{\mathrm{r,max}}(0^\circ) - G_{\mathrm{r,max}}(\theta_0). \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ L_{\mathrm{scan}}(\theta_0) = G_{\mathrm{r,max}}(0^\circ) - G_{\mathrm{r,max}}(\theta_0). \]" type="button">Copy LaTeX</button>\[ L_{\mathrm{scan}}(\theta_0) = G_{\mathrm{r,max}}(0^\circ) - G_{\mathrm{r,max}}(\theta_0). \]</div>
+<p>The broadside phase-sweep result was \(8.618\ \text{dBi}\), which is consistent with the \(8.626\ \text{dBi}\) baseline result reported previously. The small difference results from pattern sampling and numerical precision.</p>
+<p>Figure 6.3 shows the reduction in realized gain as the commanded scan angle increases.</p>
+<figure class="project-figure" id="figure-6-3"><a href="../assets/img/projects/phased-patch-antenna-array/figure-6-3.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-6-3.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-6-3.png" alt="Peak realized gain and scan loss as functions of commanded scan angle at 3 GHz." width="1429" height="1193" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 6.3.</strong> Peak realized gain and scan loss as functions of commanded scan angle at 3 GHz.</figcaption></figure>
+<p>The scan loss remained below approximately \(0.62\ \text{dB}\) for commanded angles through \(\pm30^\circ\), corresponding to achieved beam angles of approximately \(\pm19^\circ\). At the commanded \(\pm45^\circ\) cases, the scan loss increased to approximately \(1.3\ \text{dB}\). At \(\pm60^\circ\), the loss exceeded \(2.1\ \text{dB}\), and the patterns developed strong secondary radiation on the opposite side of broadside.</p>
+<p>These results show that progressive phase successfully steers the two-element array, but the usable scan range is limited by the broad two-element array factor and the angular response of the patch elements. Larger commanded angles do not translate directly into equal beam displacement. Instead, they produce increasing beam pulling, scan loss, and pattern distortion. For a scan-loss criterion below \(1\ \text{dB}\), the tested configuration remained within the limit through commanded angles of approximately \(\pm30^\circ\), corresponding to an achieved scan range of approximately \(\pm19^\circ\).</p>
+<h2 class="text-secondary text-uppercase" id="section-7">7. Grating Lobes and Scan-Angle Limits</h2>
+<p>Increasing the element spacing narrows the array beam and reduces mutual coupling, as demonstrated in Section 5. However, large spacing can also produce additional array-factor maxima known as grating lobes. These lobes become particularly important when progressive phase is used to steer the beam away from broadside.</p>
+<p>For an array commanded toward \(\theta_0\), the phase difference is</p>
+<div class="equation equation-copyable" data-latex="\[ \beta=-k_0d\sin\theta_0. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \beta=-k_0d\sin\theta_0. \]" type="button">Copy LaTeX</button>\[ \beta=-k_0d\sin\theta_0. \]</div>
+<p>The array-factor maxima occur when</p>
+<div class="equation equation-copyable" data-latex="\[ k_0d\left(\sin\theta-\sin\theta_0\right)=2\pi m, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ k_0d\left(\sin\theta-\sin\theta_0\right)=2\pi m, \]" type="button">Copy LaTeX</button>\[ k_0d\left(\sin\theta-\sin\theta_0\right)=2\pi m, \]</div>
+<p>where \(m\) is an integer. Therefore, the possible maximum directions are</p>
+<div class="equation equation-copyable" data-latex="\[ \sin\theta_m = \sin\theta_0 + m\frac{\lambda_0}{d}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \sin\theta_m = \sin\theta_0 + m\frac{\lambda_0}{d}. \]" type="button">Copy LaTeX</button>\[ \sin\theta_m = \sin\theta_0 + m\frac{\lambda_0}{d}. \]</div>
+<p>The desired main beam corresponds to \(m=0\). A grating lobe exists when a nonzero value of \(m\) produces a physically visible direction:</p>
+<div class="equation equation-copyable" data-latex="\[ \left| \sin\theta_0 + m\frac{\lambda_0}{d} \right| \leq 1. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \left| \sin\theta_0 + m\frac{\lambda_0}{d} \right| \leq 1. \]" type="button">Copy LaTeX</button>\[ \left| \sin\theta_0 + m\frac{\lambda_0}{d} \right| \leq 1. \]</div>
+<p>For scanning over a maximum angle \(\theta_{\mathrm{max}}\), the approximate spacing requirement for avoiding visible grating lobes is</p>
+<div class="equation equation-copyable" data-latex="\[ \frac{d}{\lambda_0} &lt; \frac{1}{1+\left|\sin\theta_{\mathrm{max}}\right|}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \frac{d}{\lambda_0} &lt; \frac{1}{1+\left|\sin\theta_{\mathrm{max}}\right|}. \]" type="button">Copy LaTeX</button>\[ \frac{d}{\lambda_0} &lt; \frac{1}{1+\left|\sin\theta_{\mathrm{max}}\right|}. \]</div>
+<p>For a \(30^\circ\) scan, this gives</p>
+<div class="equation equation-copyable" data-latex="\[ \frac{d}{\lambda_0}&lt;0.667, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \frac{d}{\lambda_0}&lt;0.667, \]" type="button">Copy LaTeX</button>\[ \frac{d}{\lambda_0}&lt;0.667, \]</div>
+<p>while a \(60^\circ\) scan requires</p>
+<div class="equation equation-copyable" data-latex="\[ \frac{d}{\lambda_0}&lt;0.536. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \frac{d}{\lambda_0}&lt;0.536. \]" type="button">Copy LaTeX</button>\[ \frac{d}{\lambda_0}&lt;0.536. \]</div>
+<p>These conditions predict that \(0.5\lambda_0\) should remain free of true grating lobes for both scan commands. A spacing of \(0.75\lambda_0\) may appear acceptable at broadside, but should produce grating lobes once the beam is scanned.</p>
+<p>The previously solved spacing variations were evaluated at commanded angles of \(30^\circ\) and \(60^\circ\). The required Port 2 phase was calculated separately for every spacing because the phase required for a given scan angle is proportional to \(d/\lambda_0\).</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Spacing</th><th scope="col">Port 2 Phase for \(30^\circ\)</th><th scope="col">Predicted Grating Lobe</th><th scope="col">Port 2 Phase for \(60^\circ\)</th><th scope="col">Predicted Grating Lobes</th></tr>
+</thead>
+<tbody>
+<tr><td>\(0.50\lambda_0\)</td><td>\(-90.0^\circ\)</td><td>None</td><td>\(-155.9^\circ\)</td><td>None</td></tr>
+
+<tr><td>\(0.75\lambda_0\)</td><td>\(-135.0^\circ\)</td><td>\(-56.4^\circ\)</td><td>\(+126.2^\circ\)</td><td>\(-27.9^\circ\)</td></tr>
+
+<tr><td>\(1.00\lambda_0\)</td><td>\(-180.0^\circ\)</td><td>\(-30.0^\circ\)</td><td>\(+48.2^\circ\)</td><td>\(-7.7^\circ\)</td></tr>
+
+<tr><td>\(1.20\lambda_0\)</td><td>\(+144.0^\circ\)</td><td>\(-19.5^\circ\)</td><td>\(-14.1^\circ\)</td><td>\(-53.2^\circ,\ +1.9^\circ\)</td></tr>
+</tbody></table></div>
+<p>Table 7.1: Applied phase and analytically predicted grating-lobe directions for the spacing-and-scan study.</p>
+<p>A Python script applied each source configuration, exported the corresponding \(\phi=90^\circ\) realized-gain pattern at 3 GHz, and extracted the strongest angularly separated peaks. Each pattern in the following figures was normalized to its own maximum so that the relative lobe levels could be compared directly.</p>
+<figure class="project-figure" id="figure-7-1"><a href="../assets/img/projects/phased-patch-antenna-array/figure-7-1.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-7-1.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-7-1.png" alt="Normalized realized-gain patterns for a commanded \(30^\circ\) scan at element spacings from \(0.50\lambda_0\) to \(1.20\lambda_0\). The dashed line indicates the array-factor command angle." width="1429" height="856" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 7.1.</strong> Normalized realized-gain patterns for a commanded \(30^\circ\) scan at element spacings from \(0.50\lambda_0\) to \(1.20\lambda_0\). The dashed line indicates the array-factor command angle.</figcaption></figure>
+<p>For the \(30^\circ\) command, the \(0.50\lambda_0\) array produced its strongest beam at \(+19^\circ\). The difference from the commanded angle is consistent with the beam-pulling behavior discussed in Section 6. The strongest secondary peak occurred at \(-59^\circ\), but it remained \(8.52\ \text{dB}\) below the main beam and was not a true grating lobe.</p>
+<p>At \(0.75\lambda_0\), a strong secondary lobe appeared at \(-38^\circ\), only \(2.72\ \text{dB}\) below the desired-side peak at \(+23^\circ\). This confirms the predicted onset of spatial aliasing, although the observed angle differs from the ideal array-factor prediction of \(-56.4^\circ\).</p>
+<p>At \(1.00\lambda_0\), the pattern contained peaks at \(+25^\circ\) and \(-25^\circ\) with a difference of only \(0.03\ \text{dB}\). The array therefore radiated almost equally in two directions, making the commanded direction ambiguous.</p>
+<p>At \(1.20\lambda_0\), the grating lobe at \(-17^\circ\) became the strongest beam. The intended-side peak at \(+26^\circ\) was approximately \(1.04\ \text{dB}\) weaker. The array was therefore no longer primarily radiating toward the commanded side.</p>
+<figure class="project-figure" id="figure-7-2"><a href="../assets/img/projects/phased-patch-antenna-array/figure-7-2.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-7-2.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-7-2.png" alt="Normalized realized-gain patterns for a commanded \(60^\circ\) scan at element spacings from \(0.50\lambda_0\) to \(1.20\lambda_0\)." width="1429" height="858" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 7.2.</strong> Normalized realized-gain patterns for a commanded \(60^\circ\) scan at element spacings from \(0.50\lambda_0\) to \(1.20\lambda_0\).</figcaption></figure>
+<p>The \(60^\circ\) command produced a more severe response. At \(0.50\lambda_0\), the strongest beam occurred at \(+32^\circ\), while a secondary peak at \(-42^\circ\) remained \(2.24\ \text{dB}\) lower. Although this secondary peak was relatively strong, the analytical condition confirms that it was not a true grating lobe. It resulted from the broad two-element array factor, the patch-element pattern, and the severe near-endfire phase command.</p>
+<p>At \(0.75\lambda_0\), the grating lobe became dominant. The strongest beam appeared at \(-21^\circ\), while the intended-side peak occurred at \(+39^\circ\) and was \(3.16\ \text{dB}\) weaker.</p>
+<p>For \(1.00\lambda_0\), the strongest beam occurred at \(-7^\circ\), closely matching the theoretical grating-lobe prediction of \(-7.7^\circ\). The intended-side peak near \(+45^\circ\) was approximately \(5.21\ \text{dB}\) lower.</p>
+<p>At \(1.20\lambda_0\), the dominant beam appeared at \(+2^\circ\), in excellent agreement with the predicted \(+1.9^\circ\) grating lobe. Another lobe appeared at approximately \(-44^\circ\), associated with the predicted \(-53.2^\circ\) array-factor maximum. The intended-side peak near \(+48^\circ\) was only the third strongest peak.</p>
+<p>The extracted full-wave results are summarized below.</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Command</th><th scope="col">Spacing</th><th scope="col">Strongest Peak</th><th scope="col">Second Peak</th><th scope="col">Second-Peak Relative Level</th></tr>
+</thead>
+<tbody>
+<tr><td>\(30^\circ\)</td><td>\(0.50\lambda_0\)</td><td>\(+19^\circ\)</td><td>\(-59^\circ\)</td><td>\(-8.52\ \text{dB}\)</td></tr>
+
+<tr><td>\(30^\circ\)</td><td>\(0.75\lambda_0\)</td><td>\(+23^\circ\)</td><td>\(-38^\circ\)</td><td>\(-2.72\ \text{dB}\)</td></tr>
+
+<tr><td>\(30^\circ\)</td><td>\(1.00\lambda_0\)</td><td>\(+25^\circ\)</td><td>\(-25^\circ\)</td><td>\(-0.03\ \text{dB}\)</td></tr>
+
+<tr><td>\(30^\circ\)</td><td>\(1.20\lambda_0\)</td><td>\(-17^\circ\)</td><td>\(+26^\circ\)</td><td>\(-1.04\ \text{dB}\)</td></tr>
+
+<tr><td>\(60^\circ\)</td><td>\(0.50\lambda_0\)</td><td>\(+32^\circ\)</td><td>\(-42^\circ\)</td><td>\(-2.24\ \text{dB}\)</td></tr>
+
+<tr><td>\(60^\circ\)</td><td>\(0.75\lambda_0\)</td><td>\(-21^\circ\)</td><td>\(+39^\circ\)</td><td>\(-3.16\ \text{dB}\)</td></tr>
+
+<tr><td>\(60^\circ\)</td><td>\(1.00\lambda_0\)</td><td>\(-7^\circ\)</td><td>\(+45^\circ\)</td><td>\(-5.21\ \text{dB}\)</td></tr>
+
+<tr><td>\(60^\circ\)</td><td>\(1.20\lambda_0\)</td><td>\(+2^\circ\)</td><td>\(-44^\circ\)</td><td>\(-4.82\ \text{dB}\)</td></tr>
+</tbody></table></div>
+<p>Table 7.2: Strongest full-wave pattern peaks and relative secondary-lobe levels for the spacing-and-scan sweep.</p>
+<p>The theoretical grating-lobe equation predicts the maxima of the array factor, while HFSS calculates the complete antenna pattern:</p>
+<div class="equation equation-copyable" data-latex="\[ G_{\mathrm{total}}(\theta) \propto G_{\mathrm{element}}(\theta) \left|AF(\theta)\right|^2. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ G_{\mathrm{total}}(\theta) \propto G_{\mathrm{element}}(\theta) \left|AF(\theta)\right|^2. \]" type="button">Copy LaTeX</button>\[ G_{\mathrm{total}}(\theta) \propto G_{\mathrm{element}}(\theta) \left|AF(\theta)\right|^2. \]</div>
+<p>Consequently, the full-wave maxima do not always occur exactly at the theoretical array-factor angles. The patch-element pattern favors directions closer to broadside, while finite ground-plane effects, mutual coupling, and the two-element aperture further modify the final pattern. Despite these angular shifts, the predicted onset and progression of the grating lobes agree clearly with the HFSS results.</p>
+<p>The high realized gains observed for some grating-lobe directions do not represent improved steering performance. Those lobes occur closer to broadside, where the patch elements naturally provide greater gain. The array is therefore redirecting power into an unintended direction rather than efficiently steering it toward the commanded angle.</p>
+<p>These results demonstrate the fundamental compromise between spacing, beamwidth, coupling, and scanning capability. Larger spacing narrowed the broadside beam and reduced mutual coupling, but rapidly introduced spatial ambiguity during scanning. Among the tested configurations, \(0.50\lambda_0\) was the only spacing that avoided true visible grating lobes for both commanded angles. It therefore remains the most suitable spacing for the steerable array, even though its two-element implementation still exhibits beam pulling and strong secondary radiation at large scan commands.</p>
+<h2 class="text-secondary text-uppercase" id="section-8">8. Active Input Matching During Beam Steering</h2>
+<p>The input match of an array element depends on the excitation applied to the other elements. This differs from the conventional passive \(S_{11}\), which assumes that all other ports are terminated in the reference impedance. During beam steering, every element is excited simultaneously, and the signals coupled between elements combine with the reflected signal at each port.</p>
+<p>For an \(N\)-element array, the active reflection coefficient at port \(n\) is</p>
+<div class="equation equation-copyable" data-latex="\[ \Gamma_{\mathrm{act},n} = \frac{1}{a_n} \sum_{m=1}^{N} S_{nm}a_m \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \Gamma_{\mathrm{act},n} = \frac{1}{a_n} \sum_{m=1}^{N} S_{nm}a_m \]" type="button">Copy LaTeX</button>\[ \Gamma_{\mathrm{act},n} = \frac{1}{a_n} \sum_{m=1}^{N} S_{nm}a_m \]</div>
+<p>where \(a_m\) is the complex excitation applied to port \(m\). For the two-element array,</p>
+<div class="equation equation-copyable" data-latex="\[ \Gamma_{\mathrm{act},1} = S_{11}+S_{12}\frac{a_2}{a_1} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \Gamma_{\mathrm{act},1} = S_{11}+S_{12}\frac{a_2}{a_1} \]" type="button">Copy LaTeX</button>\[ \Gamma_{\mathrm{act},1} = S_{11}+S_{12}\frac{a_2}{a_1} \]</div>
+<div class="equation equation-copyable" data-latex="\[ \Gamma_{\mathrm{act},2} = S_{22}+S_{21}\frac{a_1}{a_2} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \Gamma_{\mathrm{act},2} = S_{22}+S_{21}\frac{a_1}{a_2} \]" type="button">Copy LaTeX</button>\[ \Gamma_{\mathrm{act},2} = S_{22}+S_{21}\frac{a_1}{a_2} \]</div>
+<p>The excitation ratios contain the progressive steering phase. Consequently, changing the commanded scan angle changes the active reflection coefficient even though the physical antenna geometry remains unchanged.</p>
+<p>The corresponding active return loss and active VSWR are</p>
+<div class="equation equation-copyable" data-latex="\[ RL_{\mathrm{act}} = -20\log_{10} \left| \Gamma_{\mathrm{act}} \right| \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ RL_{\mathrm{act}} = -20\log_{10} \left| \Gamma_{\mathrm{act}} \right| \]" type="button">Copy LaTeX</button>\[ RL_{\mathrm{act}} = -20\log_{10} \left| \Gamma_{\mathrm{act}} \right| \]</div>
+<div class="equation equation-copyable" data-latex="\[ VSWR_{\mathrm{act}} = \frac{1+\left|\Gamma_{\mathrm{act}}\right|} {1-\left|\Gamma_{\mathrm{act}}\right|} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ VSWR_{\mathrm{act}} = \frac{1+\left|\Gamma_{\mathrm{act}}\right|} {1-\left|\Gamma_{\mathrm{act}}\right|} \]" type="button">Copy LaTeX</button>\[ VSWR_{\mathrm{act}} = \frac{1+\left|\Gamma_{\mathrm{act}}\right|} {1-\left|\Gamma_{\mathrm{act}}\right|} \]</div>
+<h3 class="text-secondary" id="section-8-1">8.1 Simulation Method</h3>
+<p>The active matching behavior was evaluated for the \(d=0.5\lambda_0\) array used in the beam-steering study. Both ports were excited with equal \(1\text{ W}\) magnitudes. Port 1 remained at \(0^\circ\), while the phase of Port 2 was changed according to the steering commands developed in Section 6.</p>
+<p>The active S-parameters were exported from \(2.85\) to \(3.15\text{ GHz}\) for all nine commanded scan angles. The results included</p>
+<div class="equation equation-copyable" data-latex="\[ \mathrm{dB}\left(\mathrm{ActiveS}_{1}\right) \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \mathrm{dB}\left(\mathrm{ActiveS}_{1}\right) \]" type="button">Copy LaTeX</button>\[ \mathrm{dB}\left(\mathrm{ActiveS}_{1}\right) \]</div>
+<p>and</p>
+<div class="equation equation-copyable" data-latex="\[ \mathrm{dB}\left(\mathrm{ActiveS}_{2}\right) \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \mathrm{dB}\left(\mathrm{ActiveS}_{2}\right) \]" type="button">Copy LaTeX</button>\[ \mathrm{dB}\left(\mathrm{ActiveS}_{2}\right) \]</div>
+<p>for the two antenna ports.</p>
+<p>Figure 8.1 shows the frequency-dependent active reflection coefficient. The depth and position of the matching minimum change with the steering phase. The changes are different at the two ports because the coupled contribution depends on the direction of the applied phase progression.</p>
+<figure class="project-figure" id="figure-8-1"><a href="../assets/img/projects/phased-patch-antenna-array/figure-8-1.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-8-1.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-8-1.png" alt="Active reflection coefficient of both array ports for the nine commanded steering states." width="1431" height="1157" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 8.1.</strong> Active reflection coefficient of both array ports for the nine commanded steering states.</figcaption></figure>
+<h3 class="text-secondary" id="section-8-2">8.2 Active Match at 3 GHz</h3>
+<p>Table 8.1 summarizes the active matching performance at the \(3\text{ GHz}\) design frequency.</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Commanded angle</th><th scope="col">Port 1 return loss</th><th scope="col">Port 2 return loss</th><th scope="col">Worst-port return loss</th><th scope="col">Worst-port VSWR</th></tr>
+</thead>
+<tbody>
+<tr><td>\(-60^\circ\)</td><td>8.31 dB</td><td>7.29 dB</td><td>7.29 dB</td><td>2.52</td></tr>
+
+<tr><td>\(-45^\circ\)</td><td>9.47 dB</td><td>7.41 dB</td><td>7.41 dB</td><td>2.48</td></tr>
+
+<tr><td>\(-30^\circ\)</td><td>11.78 dB</td><td>8.26 dB</td><td>8.26 dB</td><td>2.26</td></tr>
+
+<tr><td>\(-15^\circ\)</td><td>14.83 dB</td><td>10.31 dB</td><td>10.31 dB</td><td>1.88</td></tr>
+
+<tr><td>\(0^\circ\)</td><td>13.89 dB</td><td>13.57 dB</td><td>13.57 dB</td><td>1.53</td></tr>
+
+<tr><td>\(+15^\circ\)</td><td>10.52 dB</td><td>14.40 dB</td><td>10.52 dB</td><td>1.85</td></tr>
+
+<tr><td>\(+30^\circ\)</td><td>8.44 dB</td><td>11.48 dB</td><td>8.44 dB</td><td>2.22</td></tr>
+
+<tr><td>\(+45^\circ\)</td><td>7.59 dB</td><td>9.24 dB</td><td>7.59 dB</td><td>2.43</td></tr>
+
+<tr><td>\(+60^\circ\)</td><td>7.47 dB</td><td>8.11 dB</td><td>7.47 dB</td><td>2.47</td></tr>
+</tbody></table></div>
+<p>The broadside state provides a worst-port return loss of approximately \(13.57\text{ dB}\), corresponding to an active VSWR of approximately \(1.53\). Both ports also satisfy the \(10\text{ dB}\) return-loss criterion for the \(-15^\circ\), \(0^\circ\), and \(+15^\circ\) commands.</p>
+<p>At larger steering commands, at least one port falls below the \(10\text{ dB}\) criterion. At the two extreme commands, the worst-port return loss decreases to approximately \(7.3\) to \(7.5\text{ dB}\), with an active VSWR of approximately \(2.5\).</p>
+<figure class="project-figure" id="figure-8-2"><a href="../assets/img/projects/phased-patch-antenna-array/figure-8-2.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-8-2.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-8-2.png" alt="Active return loss and active VSWR at \(3\text{ GHz}\) as functions of the commanded scan angle." width="1431" height="1468" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 8.2.</strong> Active return loss and active VSWR at \(3\text{ GHz}\) as functions of the commanded scan angle.</figcaption></figure>
+<h3 class="text-secondary" id="section-8-3">8.3 Scan-Dependent Resonance Shift</h3>
+<p>For this analysis, the active resonant frequency was defined as the frequency of the minimum active reflection coefficient within the simulated range. The sweep used a frequency resolution of \(1\text{ MHz}\).</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table">
+<thead>
+<tr><th scope="col">Commanded angle</th><th scope="col">Port 1 active resonance</th><th scope="col">Port 2 active resonance</th></tr>
+</thead>
+<tbody>
+<tr><td>\(-60^\circ\)</td><td>3.028 GHz</td><td>3.035 GHz</td></tr>
+
+<tr><td>\(-45^\circ\)</td><td>3.023 GHz</td><td>3.037 GHz</td></tr>
+
+<tr><td>\(-30^\circ\)</td><td>3.018 GHz</td><td>3.037 GHz</td></tr>
+
+<tr><td>\(-15^\circ\)</td><td>3.015 GHz</td><td>3.030 GHz</td></tr>
+
+<tr><td>\(0^\circ\)</td><td>3.018 GHz</td><td>3.019 GHz</td></tr>
+
+<tr><td>\(+15^\circ\)</td><td>3.029 GHz</td><td>3.016 GHz</td></tr>
+
+<tr><td>\(+30^\circ\)</td><td>3.035 GHz</td><td>3.019 GHz</td></tr>
+
+<tr><td>\(+45^\circ\)</td><td>3.036 GHz</td><td>3.024 GHz</td></tr>
+
+<tr><td>\(+60^\circ\)</td><td>3.034 GHz</td><td>3.028 GHz</td></tr>
+</tbody></table></div>
+<p>At broadside, the active resonances occur at approximately \(3.018\) and \(3.019\text{ GHz}\). Across all steering states, the Port 1 resonance varies from \(3.015\) to \(3.036\text{ GHz}\), while the Port 2 resonance varies from \(3.016\) to \(3.037\text{ GHz}\). Each port therefore exhibits a total frequency span of approximately \(21\text{ MHz}\).</p>
+<p>Relative to the broadside state, the active resonance of each port moves by approximately \(-3\) to \(+18\text{ MHz}\). This corresponds to a maximum change of approximately \(0.6\%\) relative to the \(3\text{ GHz}\) design frequency.</p>
+<figure class="project-figure" id="figure-8-3"><a href="../assets/img/projects/phased-patch-antenna-array/figure-8-3.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-8-3.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-8-3.png" alt="Active resonant frequency and return loss at the shifted resonance for both antenna ports. The error bars represent half of the \(1\text{ MHz}\) frequency step." width="1429" height="1495" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 8.3.</strong> Active resonant frequency and return loss at the shifted resonance for both antenna ports. The error bars represent half of the \(1\text{ MHz}\) frequency step.</figcaption></figure>
+<p>The opposing trends of the two ports are consistent with the reversal of the progressive phase across the array. Ideally, reversing the scan direction would exchange the behavior of the two elements. The remaining asymmetry can result from the finite array geometry, feed orientation, edge effects, and small numerical or structural differences between the two ports.</p>
+<p>These results demonstrate that the passive input match alone is insufficient for evaluating a phased array. Although the individual elements remain strongly matched near their shifted active resonances, the array can become poorly matched at the fixed operating frequency as the steering phase increases. Practical phased-array design must therefore evaluate active impedance over the complete frequency and scan-angle range, rather than only at the broadside excitation state.</p>
+<h2 class="text-secondary text-uppercase" id="section-9">9. Extension to a 2×2 Planar Array</h2>
+<p>The original 1×2 array was extended into a 2×2 planar configuration by duplicating the two-element row in the orthogonal direction. The spacing between adjacent elements was maintained at approximately \(0.5\lambda_0\), corresponding to 50 mm at 3 GHz. All four ports were excited with equal amplitude and a relative phase of \(0^\circ\), producing a broadside beam.</p>
+<figure class="project-figure" id="figure-9-1"><a href="../assets/img/projects/phased-patch-antenna-array/figure-9-1.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-9-1.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-9-1.png" alt="HFSS model of the 2×2 planar patch array." width="957" height="518" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 9.1.</strong> HFSS model of the 2×2 planar patch array.</figcaption></figure>
+<p>For a rectangular 2×2 array, the array factor can be written as</p>
+<div class="equation equation-copyable" data-latex="\[ AF(\theta,\phi)= \sum_{m=0}^{1}\sum_{n=0}^{1} e^{j\left[ km d_x\sin\theta\cos\phi+ kn d_y\sin\theta\sin\phi+ m\beta_x+n\beta_y \right]}, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ AF(\theta,\phi)= \sum_{m=0}^{1}\sum_{n=0}^{1} e^{j\left[ km d_x\sin\theta\cos\phi+ kn d_y\sin\theta\sin\phi+ m\beta_x+n\beta_y \right]}, \]" type="button">Copy LaTeX</button>\[ AF(\theta,\phi)= \sum_{m=0}^{1}\sum_{n=0}^{1} e^{j\left[ km d_x\sin\theta\cos\phi+ kn d_y\sin\theta\sin\phi+ m\beta_x+n\beta_y \right]}, \]</div>
+<p>where \(d_x\) and \(d_y\) are the element spacings and \(\beta_x\) and \(\beta_y\) are the progressive phase differences along the two array axes. For the broadside case,</p>
+<div class="equation equation-copyable" data-latex="\[ \beta_x=\beta_y=0^\circ. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \beta_x=\beta_y=0^\circ. \]" type="button">Copy LaTeX</button>\[ \beta_x=\beta_y=0^\circ. \]</div>
+<p>Unlike the 1×2 configuration, which increases the effective aperture in only one direction, the 2×2 array extends the aperture along both principal axes. It can therefore concentrate the radiation pattern in both planes and produce a more symmetric pencil-like beam.</p>
+<p>The four reflection coefficients remained closely grouped, with resonances near 3.02-3.03 GHz and minima below approximately \(-26\) dB. Coupling between adjacent elements was approximately \(-17\) to \(-18\) dB around the operating frequency, while the diagonally separated elements exhibited substantially lower coupling of approximately \(-30\) dB. The small differences between the individual port responses are expected because corner elements experience slightly different coupling paths and feed orientations.</p>
+<h3 class="text-secondary" id="section-9-1">9.1 Three-Dimensional Radiation Pattern</h3>
+<p>The simulated three-dimensional realized-gain pattern is shown in Figure 9.2. The maximum remains directed toward broadside at</p>
+<div class="equation equation-copyable" data-latex="\[ \theta_{\max}=0^\circ, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \theta_{\max}=0^\circ, \]" type="button">Copy LaTeX</button>\[ \theta_{\max}=0^\circ, \]</div>
+<p>with a peak realized gain of</p>
+<div class="equation equation-copyable" data-latex="\[ G_{\max}=10.11\text{ dBi}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ G_{\max}=10.11\text{ dBi}. \]" type="button">Copy LaTeX</button>\[ G_{\max}=10.11\text{ dBi}. \]</div>
+<figure class="project-figure" id="figure-9-2"><a href="../assets/img/projects/phased-patch-antenna-array/figure-9-2.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-9-2.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-9-2.png" alt="Three-dimensional realized-gain pattern of the 2×2 array at 3 GHz." width="594" height="460" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 9.2.</strong> Three-dimensional realized-gain pattern of the 2×2 array at 3 GHz.</figcaption></figure>
+<p>The broadside lobe is visibly concentrated in both angular dimensions. This is the primary radiation-pattern advantage of the planar configuration. Some smaller rear and lower-hemisphere lobes remain because the array uses finite ground and substrate dimensions and practical patch elements rather than ideal isotropic radiators.</p>
+<h3 class="text-secondary" id="section-9-2">9.2 Comparison with the 1×2 Array</h3>
+<p>Figure 9.3 compares the principal-plane patterns of the 1×2 and 2×2 arrays. The most significant change occurs in the \(\phi=0^\circ\) plane. The 1×2 array had a relatively broad half-power beamwidth of \(88.0^\circ\) in this plane because it contained only one element along that axis. Adding the second row reduced the beamwidth to \(52.3^\circ\).</p>
+<p>In the \(\phi=90^\circ\) plane, the 1×2 array was already narrowed by its original two-element arrangement. Its HPBW was \(46.5^\circ\), compared with \(50.4^\circ\) for the 2×2 array. The slight broadening is attributable to the changed finite-array geometry, mutual coupling and the individual element pattern. The main benefit is therefore not additional narrowing in the already-arrayed plane, but the introduction of comparable beam control in the previously broad plane.</p>
+<figure class="project-figure" id="figure-9-3"><a href="../assets/img/projects/phased-patch-antenna-array/figure-9-3.png" target="_blank" rel="noopener"><picture><source type="image/webp" srcset="../assets/img/projects/phased-patch-antenna-array/figure-9-3.webp"/><img src="../assets/img/projects/phased-patch-antenna-array/figure-9-3.png" alt="Principal-plane realized-gain comparison between the 1×2 and 2×2 arrays at 3 GHz. The dashed segments indicate the interpolated half-power beamwidths." width="1431" height="637" loading="lazy" decoding="async"/></picture></a><figcaption><strong>Figure 9.3.</strong> Principal-plane realized-gain comparison between the 1×2 and 2×2 arrays at 3 GHz. The dashed segments indicate the interpolated half-power beamwidths.</figcaption></figure>
+<p>The \(\phi=0^\circ\) beamwidth decreased by approximately</p>
+<div class="equation equation-copyable" data-latex="\[ 88.0^\circ-52.3^\circ=35.7^\circ, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ 88.0^\circ-52.3^\circ=35.7^\circ, \]" type="button">Copy LaTeX</button>\[ 88.0^\circ-52.3^\circ=35.7^\circ, \]</div>
+<p>representing a reduction of approximately 41%. The final beamwidths of \(52.3^\circ\) and \(50.4^\circ\) are also much closer to one another, demonstrating that the 2×2 configuration produces a more symmetric main beam.</p>
+<h3 class="text-secondary" id="section-9-3">9.3 Gain and Beamwidth Improvement</h3>
+<p>The peak realized gain increased from 8.63 dBi for the 1×2 array to 10.11 dBi for the 2×2 array:</p>
+<div class="equation equation-copyable" data-latex="\[ \Delta G = 10.11-8.63 = 1.48\text{ dB}. \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \Delta G = 10.11-8.63 = 1.48\text{ dB}. \]" type="button">Copy LaTeX</button>\[ \Delta G = 10.11-8.63 = 1.48\text{ dB}. \]</div>
+<p>An ideal doubling of the number of equally excited elements can provide an approximately 3 dB increase in directivity. The simulated realized-gain improvement is smaller because it includes the effects of dielectric and conductor loss, port mismatch, mutual coupling, the finite ground plane and the nonideal embedded radiation patterns of the individual elements.</p>
+<p>Nevertheless, the 2×2 array demonstrates the two principal benefits expected from increasing the planar aperture: higher realized gain and a narrower overall beam. The 1×2 array produces a fan-shaped beam that is narrow primarily in one plane, while the 2×2 array produces a more concentrated pencil-like beam with similar beamwidths in both principal planes.</p>
+<div class="project-table-scroll"><table class="table table-bordered comparison-table"><thead><tr><th scope="col">Configuration</th><th scope="col">Peak realized gain</th><th scope="col">HPBW φ = 0°</th><th scope="col">HPBW φ = 90°</th></tr></thead><tbody><tr><td>1×2 linear array</td><td>8.63 dBi</td><td>88.0°</td><td>46.5°</td></tr><tr><td>2×2 planar array</td><td>10.11 dBi</td><td>52.3°</td><td>50.4°</td></tr></tbody></table></div>
+<h2 class="text-secondary text-uppercase" id="section-10">10. Practical Implementation Considerations and Limitations</h2>
+<p>The HFSS simulations used ideal port excitations whose amplitudes and phases could be assigned independently. This is useful for studying array behavior, but a physical phased array requires additional RF hardware to generate and distribute these signals.</p>
+<h3 class="text-secondary" id="section-10-1">10.1 Feed Network and Phase Control</h3>
+<p>A practical four-element array requires a one-to-four power-divider network. An ideal equal divider delivers one quarter of the input power to each element, corresponding to a division ratio of</p>
+<div class="equation equation-copyable" data-latex="\[ 10\log_{10}\left(\frac{1}{4}\right)=-6.02\text{ dB} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ 10\log_{10}\left(\frac{1}{4}\right)=-6.02\text{ dB} \]" type="button">Copy LaTeX</button>\[ 10\log_{10}\left(\frac{1}{4}\right)=-6.02\text{ dB} \]</div>
+<p>at each output. This division is not itself a dissipative loss because the total input power is distributed between the four elements. However, conductor loss, dielectric loss, connector loss and imperfect isolation introduce additional insertion loss.</p>
+<p>Electronic steering also requires a controllable phase shift in each RF channel. For a planar array, the required progressive phase differences are</p>
+<div class="equation equation-copyable" data-latex="\[ \beta_x=-kd_x\sin\theta_0\cos\phi_0 \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \beta_x=-kd_x\sin\theta_0\cos\phi_0 \]" type="button">Copy LaTeX</button>\[ \beta_x=-kd_x\sin\theta_0\cos\phi_0 \]</div>
+<p>and</p>
+<div class="equation equation-copyable" data-latex="\[ \beta_y=-kd_y\sin\theta_0\sin\phi_0, \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ \beta_y=-kd_y\sin\theta_0\sin\phi_0, \]" type="button">Copy LaTeX</button>\[ \beta_y=-kd_y\sin\theta_0\sin\phi_0, \]</div>
+<p>where \((\theta_0,\phi_0)\) defines the commanded beam direction. These phase differences may be produced using analog phase shifters, switched transmission-line networks, digital beamforming or true-time-delay devices.</p>
+<p>The phase values used in HFSS represent the relative phase at each antenna port. A physical feed system must therefore account for the phase delay introduced by cables, transmission lines, connectors, dividers and phase-shifter components.</p>
+<h3 class="text-secondary" id="section-10-2">10.2 Scan Loss and Limited Steering Range</h3>
+<p>The beam-steering results demonstrated that the achieved angle increasingly departed from the commanded angle at large scan commands. For example, a commanded angle of \(30^\circ\) produced an achieved angle of approximately \(19^\circ\), while a \(60^\circ\) command produced only approximately \(32^\circ\) of beam displacement.</p>
+<p>The realized gain also decreased from 8.62 dBi at broadside to approximately 6.4-6.5 dBi for the largest phase commands, corresponding to more than 2 dB of scan loss.</p>
+<p>This behavior occurs because the analytical phase relationship assumes ideal elements with identical patterns. The patch elements instead have directional radiation patterns whose gain decreases away from broadside. As the beam is steered, the array factor points farther away from the maximum of the individual element pattern. The total pattern is given by</p>
+<div class="equation equation-copyable" data-latex="\[ F_{\mathrm{total}}(\theta,\phi) = F_{\mathrm{element}}(\theta,\phi) AF(\theta,\phi), \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ F_{\mathrm{total}}(\theta,\phi) = F_{\mathrm{element}}(\theta,\phi) AF(\theta,\phi), \]" type="button">Copy LaTeX</button>\[ F_{\mathrm{total}}(\theta,\phi) = F_{\mathrm{element}}(\theta,\phi) AF(\theta,\phi), \]</div>
+<p>so the element pattern ultimately limits the useful steering range.</p>
+<p>Mutual coupling, finite-array effects and the small number of elements also contribute to the observed pointing error. The progressive phase calculated from the ideal array-factor equation should therefore be treated as an initial command rather than a guarantee of the final beam direction.</p>
+<h3 class="text-secondary" id="section-10-3">10.3 Mutual Coupling and Active Impedance</h3>
+<p>The impedance observed at an array element depends on the signals present at the other ports. Consequently, changing the steering phases changes the active reflection coefficient of each element even though the physical antenna geometry remains unchanged.</p>
+<p>This effect was visible in the active-match analysis, where the resonant frequency and matching level varied with the commanded scan angle. A feed network designed only from the isolated or broadside input impedance may therefore become mismatched during steering.</p>
+<p>Practical phased arrays may address this through:</p>
+<ul>
+<li>Broadband element and matching-network design</li>
+<li>Reduced coupling through suitable element spacing</li>
+<li>Decoupling structures</li>
+<li>Scan-dependent matching states</li>
+<li>Digital calibration and correction</li>
+<li>Amplifiers capable of tolerating the expected reflected power</li>
+</ul>
+<p>Not every array requires a continuously reconfigurable matching network. Many systems instead design the elements and RF electronics to maintain acceptable performance over the required scan volume.</p>
+<h3 class="text-secondary" id="section-10-4">10.4 Element Spacing and Grating Lobes</h3>
+<p>Increasing the element spacing enlarges the physical aperture and can narrow the main beam. However, excessive spacing permits additional directions in which the fields from adjacent elements add coherently, producing grating lobes.</p>
+<p>Maintaining approximately</p>
+<div class="equation equation-copyable" data-latex="\[ d\leq\frac{\lambda_0}{2} \]"><button aria-label="Copy LaTeX equation" class="copy-equation" data-latex="\[ d\leq\frac{\lambda_0}{2} \]" type="button">Copy LaTeX</button>\[ d\leq\frac{\lambda_0}{2} \]</div>
+<p>is a conservative design choice for arrays intended to scan over a wide angular range. Larger spacing may be acceptable for a limited scan sector, but the allowable value depends on the maximum steering angle.</p>
+<p>The spacing study demonstrated that element spacing must therefore balance several competing requirements:</p>
+<ul>
+<li>Smaller spacing suppresses grating lobes but increases mutual coupling.</li>
+<li>Larger spacing reduces coupling and increases aperture size.</li>
+<li>Excessive spacing produces unwanted grating lobes during steering.</li>
+<li>The optimum spacing depends on the required bandwidth and scan volume.</li>
+</ul>
+<h3 class="text-secondary" id="section-10-5">10.5 Calibration and Manufacturing Errors</h3>
+<p>A physical array will also contain amplitude and phase errors caused by component tolerances, unequal transmission-line lengths, temperature changes and frequency-dependent phase-shifter behavior. These errors can shift the main beam, reduce peak gain and increase sidelobe levels.</p>
+<p>Practical systems are therefore calibrated by measuring the complex response of each RF channel relative to a common reference. Correction values are then applied so that the intended amplitude and phase appear at the antenna ports rather than only at the beamformer outputs.</p>
+<p>This becomes increasingly important as the array grows. A 2×2 array requires only four controlled channels, but larger arrays may contain hundreds or thousands of elements. The potential gain and angular resolution increase with aperture size, while the feed network, thermal management, calibration and control architecture become substantially more complex.</p>
+<p>The simulations in this project therefore represent the electromagnetic behavior of the antenna aperture itself. A complete phased-array implementation would additionally require the RF distribution network, phase-control electronics, calibration process and system-level control required to reproduce the simulated port excitations.</p>
+<h2 class="text-secondary text-uppercase" id="section-11">11. Conclusion</h2>
+<p>This project extended a validated rectangular patch antenna into both linear and planar phased-array configurations. The study began with a two-element array and progressed through broadside operation, analytical array-factor comparison, phase-controlled beam steering, element-spacing analysis, grating-lobe formation and active impedance behavior. The final stage extended the design into a 2×2 planar array.</p>
+<p>The 1×2 array produced a broadside peak realized gain of approximately 8.62 dBi. Applying a progressive phase difference successfully steered the main beam, although the achieved angle became increasingly smaller than the ideal commanded angle at large scan commands. A theoretical \(60^\circ\) command produced an achieved angle of approximately \(32^\circ\), while the peak realized gain decreased to approximately 6.4-6.5 dBi.</p>
+<p>These results demonstrated that the analytical array factor provides a useful starting point for determining the required phase progression, but it does not fully predict the behavior of a practical array. The embedded patch-element pattern, mutual coupling, finite ground plane and active impedance all influence the final beam direction and realized gain.</p>
+<p>The element-spacing study demonstrated the primary design tradeoff between aperture size, mutual coupling and grating-lobe formation. Increasing the spacing can narrow the main beam and reduce coupling, but sufficiently large spacing creates additional radiation lobes, particularly when the beam is steered. A spacing near \(0.5\lambda_0\) provided a practical compromise for the array studied here.</p>
+<p>The active-match analysis also showed that the impedance presented at each port changes with the relative excitation phases. Beam steering therefore affects both the radiation pattern and the RF matching condition. This is an important distinction between an isolated antenna and an actively excited array.</p>
+<p>Finally, the array was extended from a 1×2 linear arrangement to a 2×2 planar configuration. The peak realized gain increased from 8.63 dBi to 10.11 dBi, an improvement of approximately 1.48 dB using the rounded values. The additional row reduced the previously broad \(\phi=0^\circ\) half-power beamwidth from \(88.0^\circ\) to \(52.3^\circ\). The final 2×2 beamwidths were \(52.3^\circ\) and \(50.4^\circ\), producing a more symmetric pencil-like beam.</p>
+<p>Overall, the project demonstrated the relationships between element count, aperture size, phase progression, mutual coupling, beamwidth, scan loss, active matching and grating lobes. It also showed why practical phased arrays require more than calculating an ideal progressive phase. Full-wave simulation and system-level calibration are necessary to determine the excitation values that produce the intended radiation pattern.</p>
+<p>Future work could extend the design through a physical corporate-feed network, electronic phase-shifter models and two-dimensional steering of the 2×2 array. Fabricating and measuring the array would also allow the simulated gain, impedance, coupling and steering behavior to be validated experimentally.</p>
+<div class="project-actions"><a class="btn btn-primary" href="../index.html#portfolio">Back to Portfolio</a></div>
+</div></div></div></main>
+<footer class="footer text-center"><div class="container"><div class="row justify-content-center"><div class="col-lg-4 mb-5 mb-lg-0"><h4 class="text-uppercase mb-4">Socials</h4><a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/yaniv.lieberman/" rel="noreferrer" target="_blank" aria-label="Facebook profile"><span class="social-glyph" aria-hidden="true">f</span></a><a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/yaniv-lieberman-67325588/" rel="noreferrer" target="_blank" aria-label="LinkedIn profile"><span class="social-glyph social-glyph-in" aria-hidden="true">in</span></a><a class="btn btn-outline-light btn-social mx-1" href="mailto:yanivlieberman101@gmail.com" aria-label="Email Yaniv Lieberman"><span class="social-glyph" aria-hidden="true">@</span></a></div></div></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script><script src="../js/scripts.js"></script>
+</body></html>
